@@ -8,15 +8,16 @@ Add your own name (do not add the names for others!) to the section below.
 
 ## Group members
 
-| Profile Picture | Name | Email |
-|---|---|---|
-| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon"  width="100" height="100"> | Christos Tamvakas | C.Tamvakas@student.tudelft.nl |
+| Profile Picture                                                                                                             | Name              | Email                           |
+| --------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------- |
+| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon"  width="100" height="100"> | Christos Tamvakas | C.Tamvakas@student.tudelft.nl   |
+| <img src="https://secure.gravatar.com/avatar/3ff1211b531166f159e3a884e117aefb?s=800&d=identicon" width="100" height="100">  | Janusz Urbański   | J.J.Urbanski@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
 <!-- - Mention your *student* email address -->
 <!-- - Preferably add a recognizable photo, otherwise add your GitLab photo -->
-<!-- - (please make sure the photos have the same size) --> 
+<!-- - (please make sure the photos have the same size) -->
 
 ## How to run it
 
