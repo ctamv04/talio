@@ -10,7 +10,7 @@ Add your own name (do not add the names for others!) to the section below.
 
 | Profile Picture | Name | Email |
 |---|---|---|
-| ![](https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon) | Christos Tamvakas | C.Tamvakas@student.tudelft.nl |
+| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon"  width="100" height="100"> | Christos Tamvakas | C.Tamvakas@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
