@@ -8,10 +8,11 @@ Add your own name (do not add the names for others!) to the section below.
 
 ## Group members
 
-| Profile Picture                                                                                                             | Name              | Email                           |
-| --------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------- |
-| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon"  width="100" height="100"> | Christos Tamvakas | C.Tamvakas@student.tudelft.nl   |
-| <img src="https://secure.gravatar.com/avatar/3ff1211b531166f159e3a884e117aefb?s=800&d=identicon" width="100" height="100">  | Janusz Urbański   | J.J.Urbanski@student.tudelft.nl |
+| Profile Picture                                                                                                            | Name              | Email                           |
+|----------------------------------------------------------------------------------------------------------------------------|-------------------|---------------------------------|
+| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon" width="100" height="100"> | Christos Tamvakas | C.Tamvakas@student.tudelft.nl   |
+| <img src="https://secure.gravatar.com/avatar/3ff1211b531166f159e3a884e117aefb?s=800&d=identicon" width="100" height="100"> | Janusz Urbański   | J.J.Urbanski@student.tudelft.nl |
+| <img src="https://secure.gravatar.com/avatar/b2a64c08aa91d4f7509e299c3674d862?s=800&d=identicon" width="100" height="100"> | Eduard Mihai      | E.Mihai@student.tudelft.nl      |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
