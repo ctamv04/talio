@@ -5,8 +5,11 @@
 ### 1. Important data
 
 **Location:** DW PC1 cubicle 6
+
 **Date:** 28th of February 2023
+
 **Time:** 14.45-15.30
+
 **Attendees:** Janusz Urbanski, Christos Tamvakas, Ksenia Sycheva, Eduard Mihai, Ilse Inanc, Yasir al-Hasnawy, Carina-Silvia Oprean
 
 ### 2. Backlog discussion and corrections
@@ -61,7 +64,7 @@
 + Dependency injections are important. 
 + Try to watch every Lecture you missed this week
 
-### 3. To do
+### 5. To do
 + Download and use IntelliJ Ultimate - **When**: Before 03/03/23 - **Who**: Everyone
 + Transfer user stories to GitLab - **When**: Before we start coding - **Who**: Everyone 
     + Every user story should be an issue
@@ -82,12 +85,12 @@
  
 
 
-### 4. Git reminders
+### 6. Git reminders
 + Never push to the main branch
 + Push to the branch with your name
 + A merge request should be accepted by you and 1 more person. 
 
-### 5. Practical data next official meeting
+### 7. Practical data next official meeting
 + Chair = Ilse
 + Minute taker = Janusz
 
