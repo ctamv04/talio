@@ -8,14 +8,14 @@ Add your own name (do not add the names for others!) to the section below.
 
 ## Group members
 
-| Profile Picture                                                                                                            | Name              | Email                           |
-|----------------------------------------------------------------------------------------------------------------------------|-------------------|---------------------------------|
-| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon" width="110" height="110"> | Christos Tamvakas | C.Tamvakas@student.tudelft.nl   |
-| <img src="https://secure.gravatar.com/avatar/3ff1211b531166f159e3a884e117aefb?s=800&d=identicon" width="100" height="100"> | Janusz Urbański   | J.J.Urbanski@student.tudelft.nl |
-| <img src="https://secure.gravatar.com/avatar/b2a64c08aa91d4f7509e299c3674d862?s=800&d=identicon" width="100" height="100"> | Eduard Mihai      | E.Mihai@student.tudelft.nl      |
-| <img src="https://secure.gravatar.com/avatar/ba2765452b70cae6e62e6da728b78e3b?s=800&d=identicon" width="100" height="100"> | Ilse Inanc        | I.A.N.Inanc@student.tudelft.nl  |
-| <img src="https://secure.gravatar.com/avatar/97736bc46764412ba5bd097a08968233?s=800&d=identicon" width="100" height="100"> | Ksenia Sycheva    | K.Sycheva@student.tudelft.nl    |
-| <img src="https://secure.gravatar.com/avatar/0512d1ce7a232f4e148e8ed9b6f0e11f?s=800&d=identicon" width="100" height="100"> | Yasir al-Hasnawy      | y.al-hasnawy@student.tudelft.nl      |
+| Profile Picture                                                                                                            | Name                | Email                             |
+|----------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------|
+| <img src="https://secure.gravatar.com/avatar/2a2401c549d44588617689508bd4aa32?s=192&d=identicon" width="100" height="100"> | Christos Tamvakas   | C.Tamvakas@student.tudelft.nl     |
+| <img src="https://secure.gravatar.com/avatar/3ff1211b531166f159e3a884e117aefb?s=800&d=identicon" width="100" height="100"> | Janusz Urbański     | J.J.Urbanski@student.tudelft.nl   |
+| <img src="https://secure.gravatar.com/avatar/b2a64c08aa91d4f7509e299c3674d862?s=800&d=identicon" width="100" height="100"> | Eduard Mihai        | E.Mihai@student.tudelft.nl        |
+| <img src="https://secure.gravatar.com/avatar/ba2765452b70cae6e62e6da728b78e3b?s=800&d=identicon" width="100" height="100"> | Ilse Inanc          | I.A.N.Inanc@student.tudelft.nl    |
+| <img src="https://secure.gravatar.com/avatar/97736bc46764412ba5bd097a08968233?s=800&d=identicon" width="100" height="100"> | Ksenia Sycheva      | K.Sycheva@student.tudelft.nl      |
+| <img src="https://secure.gravatar.com/avatar/0512d1ce7a232f4e148e8ed9b6f0e11f?s=800&d=identicon" width="100" height="100"> | Yasir al-Hasnawy    | y.al-hasnawy@student.tudelft.nl   |
 
 
 <!-- Instructions (remove once assignment has been completed -->
