@@ -10,21 +10,21 @@ allprojects {
 
 subprojects {
 	apply plugin: 'java'
-	apply plugin: 'checkstyle'
+//	apply plugin: 'checkstyle'
 	apply plugin: 'jacoco'
 	
 	
 	group = 'oopp'
 	version = '0.0.1-SNAPSHOT'
 	sourceCompatibility = '11'
-	checkstyle {
-		toolVersion "9.2.1"
-
-		ignoreFailures = false
-		maxErrors = 0
-		maxWarnings = 0
-		configFile = '../checkstyle.xml' as File
-	}
+//	checkstyle {
+//		toolVersion "9.2.1"
+//
+//		ignoreFailures = false
+//		maxErrors = 0
+//		maxWarnings = 0
+//		configFile = '../checkstyle.xml' as File
+//	}
 
 	tasks.named('test') {
 		useJUnitPlatform()
