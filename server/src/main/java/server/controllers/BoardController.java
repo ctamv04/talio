@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import models.Board;
 import server.repositories.BoardRepository;
+import server.services.BoardService;
 import server.services.IsNullOrEmptyService;
 
 import java.util.List;
@@ -13,15 +14,15 @@ import java.util.List;
 @RequestMapping("/api/boards")
 public class BoardController {
 
-    private final BoardRepository repository;
+    private final BoardService boardService;
 
-    public BoardController(BoardRepository repository) {
-        this.repository = repository;
+    public BoardController(BoardService boardService) {
+        this.boardService = boardService;
     }
 
     @GetMapping("")
     public List<Board> getAll() {
-        return repository.findAll();
+        return boardService.findAll();
     }
 
 //    @GetMapping("/{id}")
