@@ -39,24 +39,13 @@ public class QuoteControllerTest {
     public void setup() {
         random = new MyRandom();
         repo = new TestQuoteRepository();
-        sut = new QuoteController(random, repo);
+        sut = new QuoteController(repo);
     }
 
     @Test
     public void cannotAddNullPerson() {
         var actual = sut.add(getQuote(null));
         assertEquals(BAD_REQUEST, actual.getStatusCode());
-    }
-
-    @Test
-    public void randomSelection() {
-        sut.add(getQuote("q1"));
-        sut.add(getQuote("q2"));
-        nextInt = 1;
-        var actual = sut.getRandom();
-
-        assertTrue(random.wasCalled);
-        assertEquals("q2", actual.getBody().quote);
     }
 
     @Test
