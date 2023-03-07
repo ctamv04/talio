@@ -2,16 +2,10 @@ package models;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.util.ArrayList;
+import java.util.Objects;
 
 //Temporary model class
 @Entity
@@ -19,30 +13,44 @@ public class Tasklist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    private long id;
 
     public String name;
+    @OneToMany
+    public long boardid;
 
-    public Tasklist(String name) {
+    public Tasklist(long id, String name, long boardid) {
+        this.id = id;
         this.name = name;
-    }
-
-    public Tasklist() {
+        this.boardid = boardid;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tasklist tasklist = (Tasklist) o;
+
+        if (id != tasklist.id) return false;
+        if (boardid != tasklist.boardid) return false;
+        return Objects.equals(name, tasklist.name);
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (int) (boardid ^ (boardid >>> 32));
+        return result;
     }
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+        return "Tasklist{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", boardid=" + boardid +
+                '}';
     }
-
 }
