@@ -16,7 +16,6 @@
 package server.controllers;
 
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,45 +25,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import models.Quote;
-import server.repositories.QuoteRepository;
-
 @RestController
 @RequestMapping("/api/quotes")
 public class QuoteController {
 
-    private final QuoteRepository repo;
-
-    public QuoteController(QuoteRepository repo) {
-        this.repo = repo;
-    }
-
-    @GetMapping(path = { "", "/" })
-    public List<Quote> getAll() {
-        return repo.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Quote> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findById(id).get());
-    }
-
-    @PostMapping(path = { "", "/" })
-    public ResponseEntity<Quote> add(@RequestBody Quote quote) {
-
-        if (quote.person == null || isNullOrEmpty(quote.person.firstName) || isNullOrEmpty(quote.person.lastName)
-                || isNullOrEmpty(quote.quote)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Quote saved = repo.save(quote);
-        return ResponseEntity.ok(saved);
-    }
-
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
+//    private final QuoteRepository repo;
+//
+//    public QuoteController(QuoteRepository repo) {
+//        this.repo = repo;
+//    }
+//
+//    @GetMapping(path = { "", "/" })
+//    public List<Quote> getAll() {
+//        return repo.findAll();
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Quote> getById(@PathVariable("id") long id) {
+//        if (id < 0 || !repo.existsById(id)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//        return ResponseEntity.ok(repo.findById(id).get());
+//    }
+//
+//    @PostMapping(path = { "", "/" })
+//    public ResponseEntity<Quote> add(@RequestBody Quote quote) {
+//
+//        if (quote.person == null || isNullOrEmpty(quote.person.firstName) || isNullOrEmpty(quote.person.lastName)
+//                || isNullOrEmpty(quote.quote)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        Quote saved = repo.save(quote);
+//        return ResponseEntity.ok(saved);
+//    }
+//
+//    private static boolean isNullOrEmpty(String s) {
+//        return s == null || s.isEmpty();
+//    }
 }
