@@ -4,15 +4,12 @@ import java.util.List;
 
 import models.Tasklist;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import server.repositories.TasklistRepository;
 
+@RestController
+@RequestMapping("/api/lists")
 public class TasklistController {
 
     private final TasklistRepository repo;
@@ -42,7 +39,7 @@ public class TasklistController {
     //        return ResponseEntity.ok(repo.findById(id).get());
     //    }
 
-    @GetMapping("/{id}") //not interested in b_id here. I don't know if this will work
+    @GetMapping(path = { "", "/{id}" })
     public ResponseEntity<Tasklist> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
@@ -50,7 +47,7 @@ public class TasklistController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
-    @PostMapping(path = { "", "/{b_id}/" })
+    @PostMapping(path = {"/"})
     public ResponseEntity<Tasklist> add(@RequestBody Tasklist list) {
 
         if (list.name == null) {
@@ -61,7 +58,7 @@ public class TasklistController {
         return ResponseEntity.ok(saved);
     }
 
-    @PostMapping(path = { "", "/{b_id}/" })
+    @DeleteMapping (path = {"/{id}"})
     public ResponseEntity<Tasklist> delete(@PathVariable("id") long id) {
 
         if (id < 0) {
@@ -72,7 +69,7 @@ public class TasklistController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(path = { "", "/{b_id}/" })
+    @PutMapping (path = {"/{id}"})
     public ResponseEntity<Tasklist> update(@PathVariable("id") long id, @RequestBody Tasklist list) {
 
         if (id < 0) {
