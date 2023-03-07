@@ -9,7 +9,7 @@ import server.repositories.BoardRepository;
 import java.util.List;
 
 @Configuration
-public class BoardConfig {
+public class H2MemConfig {
     @Bean
     CommandLineRunner commandLineRunner(BoardRepository repository){
         return args -> {
