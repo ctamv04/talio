@@ -33,11 +33,9 @@ import server.repositories.QuoteRepository;
 @RequestMapping("/api/quotes")
 public class QuoteController {
 
-    private final Random random;
     private final QuoteRepository repo;
 
-    public QuoteController(Random random, QuoteRepository repo) {
-        this.random = random;
+    public QuoteController(QuoteRepository repo) {
         this.repo = repo;
     }
 
@@ -68,12 +66,5 @@ public class QuoteController {
 
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
-    }
-
-    @GetMapping("rnd")
-    public ResponseEntity<Quote> getRandom() {
-        var quotes = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(quotes.get(idx));
     }
 }

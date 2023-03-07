@@ -16,7 +16,7 @@ public class Tasklist {
     private long id;
 
     public String name;
-    @OneToMany
+//    @OneToMany
     public long boardid;
 
     public Tasklist(long id, String name, long boardid) {

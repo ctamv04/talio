@@ -20,15 +20,13 @@ public class BoardIdGenerator implements IdentifierGenerator {
             SecureRandom secureRandom = new SecureRandom();
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM BOARD WHERE id=?");
             while (true) {
-                StringBuilder builder=new StringBuilder();
-                for(int i=0;i<8;i++)
-                    builder.append(secureRandom.nextInt(10));
+                Long id=secureRandom.nextLong(10000000,100000000);
 
-                statement.setString(1,builder.toString());
+                statement.setLong(1,id);
                 ResultSet rs = statement.executeQuery();
 
                 if (!rs.next())
-                    return builder.toString();
+                    return id;
             }
         } catch (SQLException ex){
             ex.printStackTrace();

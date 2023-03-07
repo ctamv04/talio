@@ -11,11 +11,9 @@ import java.util.Random;
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskCardController {
-    private final Random random;
     private final TaskCardRepository repo;
 
-    public TaskCardController(Random random, TaskCardRepository repo) {
-        this.random = random;
+    public TaskCardController( TaskCardRepository repo) {
         this.repo = repo;
     }
 
@@ -35,13 +33,6 @@ public class TaskCardController {
     @PostMapping(path = {"", "/"})
     public ResponseEntity<TaskCard> add(@RequestBody TaskCard task) {
         return ResponseEntity.ok(repo.save(task));
-    }
-
-    @GetMapping("rnd")
-    public ResponseEntity<TaskCard> getRandom() {
-        var tasks = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(tasks.get(idx));
     }
 
     @PutMapping("/{id}")

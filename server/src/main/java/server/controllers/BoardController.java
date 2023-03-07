@@ -4,9 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import models.Board;
-import server.repositories.BoardRepository;
 import server.services.BoardService;
-import server.services.IsNullOrEmptyService;
 
 import java.util.List;
 
@@ -25,13 +23,10 @@ public class BoardController {
         return boardService.findAll();
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Board> getById(@PathVariable("id") long id) {
-//        if (id < 0 || !repo.existsById(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok(repo.getById(id));
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Board> getById(@PathVariable("id") Long id) {
+        return boardService.getById(id);
+    }
 //
 //    @PostMapping(path = { "", "/" })
 //    public ResponseEntity<Board> add(@RequestBody Board board) {
