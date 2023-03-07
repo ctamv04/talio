@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import server.repositories.TaskCardRepository;
 
 import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -22,6 +21,7 @@ public class TaskCardController {
         return repo.findAll();
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @GetMapping("/{id}")
     public ResponseEntity<TaskCard> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
@@ -36,23 +36,27 @@ public class TaskCardController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskCard> update(@PathVariable("id") long id, @RequestBody TaskCard task) {
+    public ResponseEntity<TaskCard> update(@PathVariable("id") long id,
+                                           @RequestBody TaskCard newTask) {
         if (id < 0) {
             return ResponseEntity.badRequest().build();
         }
 
-        if (!repo.existsById(id)) {
-            add(task);
-        }
-
-        return ResponseEntity.ok(task);
+        return repo.findById(id).map(task -> {
+            task.setName(newTask.getName());
+            return ResponseEntity.ok(repo.save(task));
+        }).orElseGet(() -> {
+            newTask.setId(id);
+            return ResponseEntity.ok(repo.save(newTask));
+        });
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskCard> delete(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
+        if (!repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
+
         repo.deleteById(id);
 
         return ResponseEntity.ok().build();

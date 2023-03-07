@@ -20,16 +20,9 @@ public class TaskCard {
 
     private String name;
 
-    @ManyToOne(cascade = CascadeType.MERGE, optional = false)
-    private TaskList taskList;
-
-    public TaskCard(String name, TaskList taskList) {
+    public TaskCard(String name) {
         this.name = name;
-        this.taskList = taskList;
-    }
 
-    public Long getTaskList() {
-        return taskList.getId();
     }
 
     @Override
