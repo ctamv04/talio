@@ -14,11 +14,14 @@ import java.sql.SQLException;
 @SuppressWarnings("all")
 public class BoardIdGenerator implements IdentifierGenerator {
     @Override
-    public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+    public Serializable generate(SharedSessionContractImplementor session,
+                                 Object object)
+        throws HibernateException {
         Connection connection = session.connection();
         try{
             SecureRandom secureRandom = new SecureRandom();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM BOARD WHERE id=?");
+            PreparedStatement statement =
+                    connection.prepareStatement("SELECT * FROM BOARD WHERE id=?");
             while (true) {
                 Long id=secureRandom.nextLong(10000000,100000000);
 

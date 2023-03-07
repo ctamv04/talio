@@ -21,28 +21,17 @@ public class TaskList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne(cascade = CascadeType.MERGE, optional = false)
-    private Board board;
-
     @OneToMany(cascade = CascadeType.MERGE)
     private List<TaskCard> taskCards;
 
-    public TaskList(String name, Board boardId) {
+    public TaskList(String name) {
         this.name = name;
-        this.board = boardId;
         this.taskCards=new ArrayList<>();
     }
-
-    public TaskList(String name, Board boardId, List<TaskCard> taskCards) {
+    public TaskList(String name, List<TaskCard> taskCards) {
         this.name = name;
-        this.board = boardId;
         this.taskCards = taskCards;
     }
-
-    public Long getBoard() {
-        return board.getId();
-    }
-
     @Override
     public boolean equals(Object obj) {return EqualsBuilder.reflectionEquals(this, obj);}
 

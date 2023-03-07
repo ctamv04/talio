@@ -21,13 +21,8 @@ import java.util.ResourceBundle;
 import com.google.inject.Inject;
 
 import client.utils.ServerUtils;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+
 
 public class QuoteOverviewCtrl implements Initializable {
 
@@ -53,8 +48,10 @@ public class QuoteOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        colFirstName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.firstName));
-//        colLastName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.lastName));
+//        colFirstName.setCellValueFactory(q ->
+//        new SimpleStringProperty(q.getValue().person.firstName));
+//        colLastName.setCellValueFactory(q ->
+//        new SimpleStringProperty(q.getValue().person.lastName));
 //        colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
     }
 

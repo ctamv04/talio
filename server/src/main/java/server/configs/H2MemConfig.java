@@ -22,10 +22,10 @@ public class H2MemConfig {
             Board board1=new Board("Board1");
             Board board2=new Board("Board2");
             Board board3=new Board("Board3");
-            TaskList taskList1=new TaskList("In Progress",board1);
-            TaskList taskList2=new TaskList("Done",board1);
-            TaskList taskList3=new TaskList("Unfinished",board2);
-            TaskCard taskCard1=new TaskCard("Prepare",taskList1);
+            TaskList taskList1=new TaskList("In Progress");
+            TaskList taskList2=new TaskList("Done");
+            TaskList taskList3=new TaskList("Unfinished");
+            TaskCard taskCard1=new TaskCard("Prepare");
 
 
             boardRepository.saveAll(List.of(board1,board2,board3));
