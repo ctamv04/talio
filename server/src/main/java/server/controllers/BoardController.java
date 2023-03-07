@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.*;
 
 import models.Board;
 import server.repositories.BoardRepository;
-import server.services.BoardService;
-import server.services.IsNullOrEmptyService;
 
 import java.util.List;
 
@@ -14,53 +12,55 @@ import java.util.List;
 @RequestMapping("/api/boards")
 public class BoardController {
 
-    private final BoardService boardService;
+    private final BoardRepository repo;
 
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
+    public BoardController(BoardRepository repo) {
+        this.repo = repo;
     }
 
     @GetMapping("")
     public List<Board> getAll() {
-        return boardService.findAll();
+        return repo.findAll();
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Board> getById(@PathVariable("id") long id) {
-//        if (id < 0 || !repo.existsById(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok(repo.getById(id));
-//    }
-//
-//    @PostMapping(path = { "", "/" })
-//    public ResponseEntity<Board> add(@RequestBody Board board) {
-//        return ResponseEntity.ok(repo.save(board));
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board board) {
-//        if (id < 0) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        if (!repo.existsById(id)) {
-//            add(board);
-//        }
-//
-//        return ResponseEntity.ok(board);
-//
-//        //TODO: update functionality after board model is done
-//    }
-//
-//    @SuppressWarnings("rawtypes")
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity delete(@PathVariable("id") long id) {
-//        if (id < 0 || !repo.existsById(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        repo.deleteById(id);
-//
-//        return ResponseEntity.ok().build();
-//    }
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @GetMapping("/{id}")
+    public ResponseEntity<Board> getById(@PathVariable long id) {
+        if (!repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(repo.findById(id).get());
+    }
+
+    @PostMapping(path = { "", "/" })
+    public ResponseEntity<Board> add(@RequestBody Board board) {
+        return ResponseEntity.ok(repo.save(board));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board newBoard) {
+        if (id < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return repo.findById(id).map(board -> {
+            board.setName(newBoard.getName());
+            board.setTaskLists(newBoard.getTaskLists());
+            return ResponseEntity.ok(repo.save(board));
+        }).orElseGet(() -> {
+            newBoard.setId(id);
+            return ResponseEntity.ok(repo.save(newBoard));
+        });
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Board> delete(@PathVariable("id") long id) {
+        if (!repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        repo.deleteById(id);
+
+        return ResponseEntity.ok().build();
+    }
 }

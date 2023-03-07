@@ -2,33 +2,38 @@ package models;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.GenericGenerator;
-import serializers.BoardSerializer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-@JsonSerialize(using = BoardSerializer.class)
 public class Board {
     @Id
     @GenericGenerator(name = "sequence_board_id", strategy = "generators.BoardIdGenerator")
     @GeneratedValue(generator = "sequence_board_id")
-    private String id;
-
+    private Long id;
     private String name;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<TaskList> taskLists;
 
     public Board(String name) {
+        this.name=name;
+        this.taskLists=new ArrayList<>();
+    }
+
+    public Board(String name, List<TaskList> taskLists) {
         this.name = name;
+        this.taskLists = taskLists;
     }
 
     @Override
