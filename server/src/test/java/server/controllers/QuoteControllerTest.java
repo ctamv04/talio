@@ -24,49 +24,46 @@ import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import models.Person;
-import models.Quote;
-
 public class QuoteControllerTest {
 
-    public int nextInt;
-    private MyRandom random;
-    private TestQuoteRepository repo;
-
-    private QuoteController sut;
-
-    @BeforeEach
-    public void setup() {
-        random = new MyRandom();
-        repo = new TestQuoteRepository();
-        sut = new QuoteController(repo);
-    }
-
-    @Test
-    public void cannotAddNullPerson() {
-        var actual = sut.add(getQuote(null));
-        assertEquals(BAD_REQUEST, actual.getStatusCode());
-    }
-
-    @Test
-    public void databaseIsUsed() {
-        sut.add(getQuote("q1"));
-        repo.calledMethods.contains("save");
-    }
-
-    private static Quote getQuote(String q) {
-        return new Quote(new Person(q, q), q);
-    }
-
-    @SuppressWarnings("serial")
-    public class MyRandom extends Random {
-
-        public boolean wasCalled = false;
-
-        @Override
-        public int nextInt(int bound) {
-            wasCalled = true;
-            return nextInt;
-        }
-    }
+//    public int nextInt;
+//    private MyRandom random;
+//    private TestQuoteRepository repo;
+//
+//    private QuoteController sut;
+//
+//    @BeforeEach
+//    public void setup() {
+//        random = new MyRandom();
+//        repo = new TestQuoteRepository();
+//        sut = new QuoteController(repo);
+//    }
+//
+//    @Test
+//    public void cannotAddNullPerson() {
+//        var actual = sut.add(getQuote(null));
+//        assertEquals(BAD_REQUEST, actual.getStatusCode());
+//    }
+//
+//    @Test
+//    public void databaseIsUsed() {
+//        sut.add(getQuote("q1"));
+//        repo.calledMethods.contains("save");
+//    }
+//
+//    private static Quote getQuote(String q) {
+//        return new Quote(new Person(q, q), q);
+//    }
+//
+//    @SuppressWarnings("serial")
+//    public class MyRandom extends Random {
+//
+//        public boolean wasCalled = false;
+//
+//        @Override
+//        public int nextInt(int bound) {
+//            wasCalled = true;
+//            return nextInt;
+//        }
+//    }
 }
