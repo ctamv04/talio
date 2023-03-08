@@ -28,7 +28,7 @@ public class TaskList {
             orphanRemoval = true
     )
     private List<TaskCard> taskCards=new ArrayList<>();
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private Board board;
 
