@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,12 +18,14 @@ public class TaskCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
+    private TaskList taskList;
 
-    public TaskCard(String name) {
+    public TaskCard(String name, TaskList taskList) {
         this.name = name;
-
+        this.taskList = taskList;
     }
 
     @Override

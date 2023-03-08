@@ -5,17 +5,21 @@ import org.springframework.web.bind.annotation.*;
 
 import models.Board;
 import server.repositories.BoardRepository;
+import server.services.BoardService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardRepository repo;
+    private final BoardService service;
 
-    public BoardController(BoardRepository repo) {
+    public BoardController(BoardRepository repo, BoardService service) {
         this.repo = repo;
+        this.service = service;
     }
 
     @GetMapping("")
@@ -23,44 +27,29 @@ public class BoardController {
         return repo.findAll();
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @GetMapping("/{id}")
-    public ResponseEntity<Board> getById(@PathVariable long id) {
-        if (!repo.existsById(id)) {
+    public ResponseEntity<Board> getById(@PathVariable Long id) {
+        Optional<Board> board=repo.findById(id);
+        if(board.isEmpty())
             return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(repo.findById(id).get());
+        return ResponseEntity.ok(board.get());
     }
 
-    @PostMapping(path = { "", "/" })
+    @PostMapping("")
     public ResponseEntity<Board> add(@RequestBody Board board) {
         return ResponseEntity.ok(repo.save(board));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board newBoard) {
-        if (id < 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return repo.findById(id).map(board -> {
-            board.setName(newBoard.getName());
-            board.setTaskLists(newBoard.getTaskLists());
-            return ResponseEntity.ok(repo.save(board));
-        }).orElseGet(() -> {
-            newBoard.setId(id);
-            return ResponseEntity.ok(repo.save(newBoard));
-        });
+    public ResponseEntity<Board> update(@PathVariable("id") Long id, @RequestBody Board newBoard) {
+        return service.update(id,newBoard);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Board> delete(@PathVariable("id") long id) {
-        if (!repo.existsById(id)) {
+        if (!repo.existsById(id))
             return ResponseEntity.badRequest().build();
-        }
-
         repo.deleteById(id);
-
         return ResponseEntity.ok().build();
     }
 }

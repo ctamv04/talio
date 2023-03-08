@@ -23,14 +23,18 @@ public class Board {
     @GeneratedValue(generator = "sequence_board_id")
     private Long id;
     private String name;
-    @OneToMany(cascade = CascadeType.MERGE)
-    private List<TaskList> taskLists;
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<TaskList> taskLists=new ArrayList<>();
 
     public Board(String name) {
         this.name=name;
-        this.taskLists=new ArrayList<>();
     }
 
+    @SuppressWarnings("unused")
     public Board(String name, List<TaskList> taskLists) {
         this.name = name;
         this.taskLists = taskLists;

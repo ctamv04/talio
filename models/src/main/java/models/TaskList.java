@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -21,17 +22,33 @@ public class TaskList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(cascade = CascadeType.MERGE)
-    private List<TaskCard> taskCards;
+    @OneToMany(
+            mappedBy = "taskList",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<TaskCard> taskCards=new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
+    private Board board;
 
-    public TaskList(String name) {
+    public TaskList(String name, Board board) {
         this.name = name;
+        this.board = board;
         this.taskCards=new ArrayList<>();
     }
-    public TaskList(String name, List<TaskCard> taskCards) {
+
+    @SuppressWarnings("unused")
+    public TaskList(String name, List<TaskCard> taskCards, Board board) {
         this.name = name;
         this.taskCards = taskCards;
+        this.board = board;
     }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     @Override
     public boolean equals(Object obj) {return EqualsBuilder.reflectionEquals(this, obj);}
 
