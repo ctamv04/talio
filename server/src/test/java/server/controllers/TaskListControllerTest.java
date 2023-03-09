@@ -25,22 +25,20 @@ import java.util.List;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import server.repositories.TaskListRepository;
 
-@DataJpaTest
+
 public class TaskListControllerTest {
 
-    @Autowired
-    private TaskListRepository repo;
+    private TestTaskListRepository repo;
     private TaskListController sut;
 
     private List<TaskList> tasks = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
+        repo = new TestTaskListRepository();
         sut = new TaskListController(repo);
+
         for(int i = 0; i < 2; i++){
             tasks.add(new TaskList());
             repo.save(tasks.get(i));
@@ -69,7 +67,7 @@ public class TaskListControllerTest {
 
     @Test
     public void getIdTestFail() {
-        assertEquals(BAD_REQUEST, sut.getById(0).getStatusCode());
+        assertEquals(BAD_REQUEST, sut.getById(2).getStatusCode());
     }
 
     @Test
