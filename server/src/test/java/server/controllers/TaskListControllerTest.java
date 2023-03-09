@@ -47,13 +47,13 @@ public class TaskListControllerTest {
     }
 
     @Test
-    public void addPersonSuccess() {
+    public void addTaskListSuccess() {
         var actual = sut.add(new TaskList("null"));
         assertEquals(OK, actual.getStatusCode());
     }
 
     @Test
-    public void addPersonSuccess2() {
+    public void addTaskListSuccess2() {
         var actual = sut.add(new TaskList(null));
         assertEquals(OK, actual.getStatusCode());
     }
