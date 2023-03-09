@@ -15,35 +15,37 @@
  */
 package server.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import server.repositories.TaskListRepository;
 
+@DataJpaTest
 public class TaskListControllerTest {
 
-    public int nextInt;
-    private TestTaskListRepository repo;
+    @Autowired
+    private TaskListRepository repo;
     private TaskListController sut;
 
-    private TaskList test;
+    private List<TaskList> tasks = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
-        repo = new TestTaskListRepository();
         sut = new TaskListController(repo);
+        for(int i = 0; i < 2; i++){
+            tasks.add(new TaskList());
+            repo.save(tasks.get(i));
+        }
 
-        test = new TaskList("test");
-        sut.add(test);
     }
 
     @Test
@@ -60,29 +62,37 @@ public class TaskListControllerTest {
 
     @Test
     public void getIdTest() {
-        var actual = sut.add(new TaskList(null));
-        assertEquals(OK, actual.getStatusCode());
+
+        assertSame(tasks.get(0), sut.getById(tasks.get(0).getId()).getBody());
+
+    }
+
+    @Test
+    public void getIdTestFail() {
+        assertEquals(BAD_REQUEST, sut.getById(0).getStatusCode());
     }
 
     @Test
     public void getAllTest() {
-        var actual = sut.getAll();
+        List<TaskList> test_list = sut.getAll();
+
+        for(int i = 0; i < 1; i++){
+            assertEquals(test_list.get(i), tasks.get(i));
+        }
     }
 
     @Test
     public void updateTest() {
-        TaskList updated = new TaskList(0L,"john");
-        var actual = sut.update(0L, updated);
-
-        List<TaskList> list = new ArrayList<>();
-        list.add(updated);
-        assertEquals(sut.getAll(), list);
+        TaskList updated = tasks.get(0);
+        updated.setName("updated");
+        var actual = sut.update(tasks.get(0).getId(), updated);
+        assertEquals(updated.getName(), sut.getById(updated.getId()).getBody().getName());
     }
 
     @Test
     public void deleteTest() {
-        var actual = sut.add(new TaskList(null));
-        assertEquals(OK, actual.getStatusCode());
+        var actual = sut.delete(tasks.get(0).getId());
+        assertFalse(sut.getAll().contains(tasks.get(0)));
     }
 
 }
