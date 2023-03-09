@@ -22,9 +22,11 @@ import static org.springframework.http.HttpStatus.OK;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Board;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.services.TaskListService;
 
 
 public class TaskListControllerTest {
@@ -32,12 +34,23 @@ public class TaskListControllerTest {
     private TestTaskListRepository repo;
     private TaskListController sut;
 
+    private TaskListService service;
+
+    private TestBoardRepository board_repo;
+
+    private Board board;
+
     private List<TaskList> tasks = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
+        board = new Board();
+        board_repo = new TestBoardRepository();
+        board_repo.save(board);
+
         repo = new TestTaskListRepository();
-        sut = new TaskListController(repo);
+        service = new TaskListService(repo, board_repo);
+        sut = new TaskListController(repo, service);
 
         for(int i = 0; i < 2; i++){
             tasks.add(new TaskList());
@@ -48,26 +61,26 @@ public class TaskListControllerTest {
 
     @Test
     public void addTaskListSuccess() {
-        var actual = sut.add(new TaskList("null"));
+        var actual = sut.add(new TaskList("null", board), board.getId());
         assertEquals(OK, actual.getStatusCode());
     }
 
     @Test
     public void addTaskListSuccess2() {
-        var actual = sut.add(new TaskList(null));
+        var actual = sut.add(new TaskList(null, board), board.getId());
         assertEquals(OK, actual.getStatusCode());
     }
 
     @Test
     public void getIdTest() {
 
-        assertSame(tasks.get(0), sut.getById(tasks.get(0).getId()).getBody());
+        assertSame(tasks.get(0), sut.findById(tasks.get(0).getId()).getBody());
 
     }
 
     @Test
     public void getIdTestFail() {
-        assertEquals(BAD_REQUEST, sut.getById(2).getStatusCode());
+        assertEquals(BAD_REQUEST, sut.findById(2L).getStatusCode());
     }
 
     @Test
@@ -84,7 +97,7 @@ public class TaskListControllerTest {
         TaskList updated = tasks.get(0);
         updated.setName("updated");
         var actual = sut.update(tasks.get(0).getId(), updated);
-        assertEquals(updated.getName(), sut.getById(updated.getId()).getBody().getName());
+        assertEquals(updated.getName(), sut.findById(updated.getId()).getBody().getName());
     }
 
     @Test

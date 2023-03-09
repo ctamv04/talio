@@ -96,8 +96,8 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public boolean existsById(Long aLong) {
-        for (TaskList TaskList : lists) {
-            if (TaskList.getId().equals(aLong)) {
+        for (TaskList list : lists) {
+            if (list.getId().equals(aLong)) {
                 return true;
             }
         }
