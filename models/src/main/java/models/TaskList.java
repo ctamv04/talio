@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -7,7 +8,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,23 +21,49 @@ public class TaskList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(cascade = CascadeType.MERGE)
-    private List<TaskCard> taskCards;
+    @OneToMany(
+            mappedBy = "taskList",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<TaskCard> taskCards = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
+    private Board board;
 
-    public TaskList(String name) {
+    public TaskList(String name, Board board) {
         this.name = name;
-        this.taskCards=new ArrayList<>();
+        this.board = board;
+        this.taskCards = new ArrayList<>();
     }
-    public TaskList(String name, List<TaskCard> taskCards) {
+
+    @SuppressWarnings("unused")
+    public TaskList(String name, List<TaskCard> taskCards, Board board) {
         this.name = name;
         this.taskCards = taskCards;
+        this.board = board;
     }
-    @Override
-    public boolean equals(Object obj) {return EqualsBuilder.reflectionEquals(this, obj);}
 
     @Override
-    public int hashCode() {return HashCodeBuilder.reflectionHashCode(this);}
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
 
     @Override
-    public String toString() {return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);}
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+    }
+
+    public void add(TaskCard t) {
+        taskCards.add(t);
+    }
+
+    public void remove(TaskCard t) {
+        if (taskCards.contains(t)) taskCards.remove(t);
+    }
 }

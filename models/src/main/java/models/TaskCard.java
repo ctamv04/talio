@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,12 +18,41 @@ public class TaskCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
+    private String description;
 
-    public TaskCard(String name) {
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
+    private TaskList taskList;
+
+    /**
+     * Constructor by giving an existing taskList, but no name or description.
+     */
+    public TaskCard(TaskList taskList) {
+        this.name = "";
+        this.description = "";
+        this.taskList = taskList;
+        taskList.add(this);
+    }
+
+    /**
+     * Constructor by giving an existing taskList, but no description.
+     */
+    public TaskCard(String name, TaskList taskList) {
         this.name = name;
+        this.description = "";
+        this.taskList = taskList;
+        taskList.add(this);
+    }
 
+    /**
+     * Constructor by giving all parameters..
+     */
+    public TaskCard(String name, String description, TaskList taskList) {
+        this.name = name;
+        this.description = description;
+        this.taskList = taskList;
+        taskList.add(this);
     }
 
     @Override
