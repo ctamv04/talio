@@ -31,12 +31,23 @@ public class TaskList {
     @JsonIgnore
     private Board board;
 
+    /**
+     * Constructor functions for the TaskList class
+     * @param name name of the TaskList
+     * @param board the board where the tasklist is located
+     */
     public TaskList(String name, Board board) {
         this.name = name;
         this.board = board;
         this.taskCards = new ArrayList<>();
     }
 
+    /**
+     * Constructor functions for the TaskList class
+     * @param name name of the TaskList
+     * @param taskCards Task Cards in the Task List
+     * @param board the board where the tasklist is located
+     */
     @SuppressWarnings("unused")
     public TaskList(String name, List<TaskCard> taskCards, Board board) {
         this.name = name;
@@ -44,25 +55,46 @@ public class TaskList {
         this.board = board;
     }
 
+    /**
+     * Checks if 2 Task Lists are equal
+     * @param obj the object we check to see if it's equal with the Task List
+     * @return returns true or false
+     */
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
+    /**
+     * Hashes a board
+     * @return returns a hashcode for a Task List
+     */
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    /**
+     * A function that gives a String with all the Task List information
+     * @return returns a string with all the Task List information
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
 
+    /**
+     * Adds a Task Card to the Task List
+     * @param t task card which is added to the Task List
+     */
     public void add(TaskCard t) {
         taskCards.add(t);
     }
 
+    /**
+     * Removes a Task Card to the Task List
+     * @param t task card which is removed to the Task List
+     */
     public void remove(TaskCard t) {
         if (taskCards.contains(t)) taskCards.remove(t);
     }
