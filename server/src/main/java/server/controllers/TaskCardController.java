@@ -3,53 +3,43 @@ package server.controllers;
 import models.TaskCard;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.repositories.TaskCardRepository;
 import server.services.TaskCardService;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskCardController {
-    private final TaskCardRepository taskCardRepository;
-    private final TaskCardService taskCardService;
+    private final TaskCardService service;
 
-    public TaskCardController(TaskCardRepository taskCardRepository, TaskCardService taskCardService) {
-        this.taskCardRepository = taskCardRepository;
-        this.taskCardService = taskCardService;
+    public TaskCardController(TaskCardService service) {
+        this.service = service;
     }
 
-    @GetMapping("")
-    public List<TaskCard> getAll() {
-        return taskCardRepository.findAll();
-    }
-
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @GetMapping("/{id}")
     public ResponseEntity<TaskCard> getById(@PathVariable("id") long id) {
-        Optional<TaskCard> taskCard=taskCardRepository.findById(id);
-        if(taskCard.isEmpty())
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(taskCard.get());
+        return service.getById(id);
     }
 
-    @PostMapping("")
-    public ResponseEntity<TaskCard> add(@RequestBody TaskCard taskCard, @PathParam("taskListId") Long taskListId) {
-        return taskCardService.add(taskCard,taskListId);
+    @GetMapping(path = {"", "/"})
+    public List<TaskCard> getAll() {
+        return service.findAll();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TaskCard> update(@PathVariable("id") Long id,
-                                           @RequestBody TaskCard newTask) {
-        return taskCardService.update(id,newTask);
+    @PostMapping(path = {"", "/{id}/"})
+    public ResponseEntity<TaskCard> add(@RequestBody TaskCard task) {
+        return service.add(task, task.getTaskList().getId());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskCard> delete(@PathVariable("id") long id) {
-        if (!taskCardRepository.existsById(id))
-            return ResponseEntity.badRequest().build();
-        taskCardRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        return service.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskCard> update(@PathVariable("id") long id,
+                                           @RequestBody TaskCard newTask) {
+        return service.update(id, newTask);
     }
 }
