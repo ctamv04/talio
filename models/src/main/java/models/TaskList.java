@@ -8,7 +8,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class TaskList {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<TaskCard> taskCards=new ArrayList<>();
+    private List<TaskCard> taskCards = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private Board board;
@@ -35,7 +34,7 @@ public class TaskList {
     public TaskList(String name, Board board) {
         this.name = name;
         this.board = board;
-        this.taskCards=new ArrayList<>();
+        this.taskCards = new ArrayList<>();
     }
 
     @SuppressWarnings("unused")
@@ -45,16 +44,26 @@ public class TaskList {
         this.board = board;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
-    public boolean equals(Object obj) {return EqualsBuilder.reflectionEquals(this, obj);}
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
 
     @Override
-    public int hashCode() {return HashCodeBuilder.reflectionHashCode(this);}
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+    }
 
-    @Override
-    public String toString() {return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);}
+    public void add(TaskCard t) {
+        taskCards.add(t);
+    }
+
+    public void remove(TaskCard t) {
+        if (taskCards.contains(t)) taskCards.remove(t);
+    }
 }
