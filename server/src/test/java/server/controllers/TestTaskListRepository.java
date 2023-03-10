@@ -14,12 +14,14 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class TestTaskListRepository implements TaskListRepository {
+    private long counter = 0;
     private final List<TaskList> lists = new ArrayList<>();
     private final List<String> calledMethods = new ArrayList<>();
 
     private void call(String name) {
         calledMethods.add(name);
     }
+
     @Override
     public List<TaskList> findAll() {
         call("findAll");
@@ -74,7 +76,19 @@ public class TestTaskListRepository implements TaskListRepository {
     @Override
     public <S extends TaskList> S save(S entity) {
         call("save");
-        entity.setId((long) lists.size());
+        if (entity.getId() != null) {
+            Optional<TaskList> opt = findById(entity.getId());
+            if (opt.isPresent()) {
+                deleteById(opt.get().getId());
+            } else {
+                entity.setId(counter);
+                counter++;
+            }
+        } else {
+            entity.setId(counter);
+            counter++;
+        }
+
         lists.add(entity);
         return entity;
     }
@@ -141,6 +155,10 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public TaskList getById(Long aLong) {
+        Optional<TaskList> opt = findById(aLong);
+        if (opt.isPresent()) {
+            return opt.get();
+        }
         return null;
     }
 
