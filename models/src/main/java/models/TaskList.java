@@ -31,6 +31,7 @@ public class TaskList {
     @JsonIgnore
     private Board board;
 
+
     /**
      * Constructor functions for the TaskList class
      * @param name name of the TaskList

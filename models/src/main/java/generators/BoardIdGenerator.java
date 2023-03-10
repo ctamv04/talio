@@ -16,22 +16,22 @@ public class BoardIdGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session,
                                  Object object)
-        throws HibernateException {
+            throws HibernateException {
         Connection connection = session.connection();
-        try{
+        try {
             SecureRandom secureRandom = new SecureRandom();
             PreparedStatement statement =
                     connection.prepareStatement("SELECT * FROM BOARD WHERE id=?");
             while (true) {
-                Long id=secureRandom.nextLong(10000000,100000000);
+                Long id = secureRandom.nextLong();
 
-                statement.setLong(1,id);
+                statement.setLong(1, id);
                 ResultSet rs = statement.executeQuery();
 
                 if (!rs.next())
                     return id;
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return null;

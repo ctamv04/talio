@@ -40,7 +40,6 @@ public class TaskCardService {
             return ResponseEntity.badRequest().build();
         }
         taskCardRepository.deleteById(id);
-
         return ResponseEntity.ok().build();
     }
 

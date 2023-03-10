@@ -14,10 +14,6 @@ public class TaskCardTest {
 		assertEquals("", t.getName());
 		assertEquals("", t.getDescription());
 		assertEquals(t.getTaskList().getTaskCards(), new ArrayList<>(Collections.singleton(t)));
-		// ID needs to be tested differently, as its value will be null here. However, being
-		// generated in an actual database will trigger the @generatedValue tag to automatically
-		// make a unique id. Testing this looks like it will need a sort of mock database,
-		// but this looks like a lot of work. I couldn't find anything useful online either.
 	}
 
 	@Test
