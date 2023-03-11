@@ -1,4 +1,4 @@
-package controllers;
+package mocks;
 
 import models.Board;
 import org.springframework.data.domain.Example;

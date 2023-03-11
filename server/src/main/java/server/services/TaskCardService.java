@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -19,40 +18,39 @@ public class TaskCardService {
     private final TaskCardRepository taskCardRepository;
     private final TaskListRepository taskListRepository;
 
-    public TaskCardService(TaskCardRepository taskCardRepository, TaskListRepository taskListRepository) {
+    /**
+     * Constructor Method
+     * @param taskCardRepository The injected taskCardRepository of the object
+     * @param taskListRepository The injected taskListRepository of the object
+     */
+    public TaskCardService(TaskCardRepository taskCardRepository,
+                           TaskListRepository taskListRepository) {
         this.taskCardRepository = taskCardRepository;
         this.taskListRepository = taskListRepository;
     }
 
-    public List<TaskCard> findAll() {
-        return taskCardRepository.findAll();
-    }
-
-    public ResponseEntity<TaskCard> getById(@PathVariable("id") Long id) {
-        if (!taskCardRepository.existsById(id))
-            return ResponseEntity.badRequest().build();
-
-        return ResponseEntity.ok(taskCardRepository.getById(id));
-    }
-
-    public ResponseEntity<TaskCard> delete(@PathVariable("id") long id) {
-        if (!taskCardRepository.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        taskCardRepository.deleteById(id);
-        return ResponseEntity.ok().build();
-    }
-
+    /**
+     * Update an taskCard
+     * @param id The id of the taskCard
+     * @param newTaskCard The new taskCard
+     * @return A response based on the existence of the taskCard
+     */
     @Transactional
     public ResponseEntity<TaskCard> update(@PathVariable("id") Long id,
-                                           @RequestBody TaskCard newTask) {
+                                           @RequestBody TaskCard newTaskCard) {
         return taskCardRepository.findById(id).map(task -> {
-            task.setName(newTask.getName());
-            task.setDescription(newTask.getDescription());
+            task.setName(newTaskCard.getName());
+            task.setDescription(newTaskCard.getDescription());
             return ResponseEntity.ok(taskCardRepository.save(task));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    /**
+     * Add a new taskCard
+     * @param taskCard The wanted taskCard
+     * @param taskListId The list it belongs to
+     * @return A response based on the existence of the list
+     */
     @Transactional
     public ResponseEntity<TaskCard> add(TaskCard taskCard, Long taskListId) {
         Optional<TaskList> optional = taskListRepository.findById(taskListId);

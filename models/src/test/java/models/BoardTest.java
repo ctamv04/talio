@@ -44,8 +44,7 @@ class BoardTest {
     @Test
     void testEqualsNull() {
         Board board1 = new Board("board");
-        Board board2 = null;
-        assertNotEquals(board1, board2);
+        assertNotEquals(board1, null);
     }
 
     /**

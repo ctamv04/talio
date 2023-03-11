@@ -31,7 +31,7 @@ public class Board {
 
     /**
      * Constructor functions for the Board class
-     * @param name Name of the board
+     * @param name name of the board
      */
     public Board(String name) {
         this.name = name;
@@ -39,7 +39,7 @@ public class Board {
 
     /**
      * Other constructor functions for the Board class which takes a taskList
-     * @param name Name of the board
+     * @param name name of the board
      * @param taskLists List with all the tasklists
      */
     public Board(String name, List<TaskList> taskLists) {
@@ -49,8 +49,8 @@ public class Board {
 
     /**
      * Checks if 2 boards are equal
-     * @param obj The object we check to see if it's equal with the board
-     * @return Returns true or false
+     * @param obj the object we check to see if it's equal with the board
+     * @return returns true or false
      */
     @Override
     public boolean equals(Object obj) {
@@ -59,7 +59,7 @@ public class Board {
 
     /**
      * Hashes a board
-     * @return Returns a hashcode for a board
+     * @return returns a hashcode for a board
      */
     @Override
     public int hashCode() {
@@ -68,7 +68,7 @@ public class Board {
 
     /**
      * A function that gives a String with all the board information
-     * @return Returns a string with all the board information
+     * @return returns a string with all the board information
      */
     @Override
     public String toString() {

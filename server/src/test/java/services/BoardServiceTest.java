@@ -1,50 +1,50 @@
-package server.services;
+package services;
 
 import models.Board;
-import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import server.repositories.BoardRepository;
+import server.services.BoardService;
 
-import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
 
     @Mock
-    private BoardRepository boardRepository;
-
+    private BoardRepository mockBoardRepository;
     @InjectMocks
-    private BoardService boardService;
-
-    private Board board;
+    private BoardService sut;
 
     @BeforeEach
     public void setup(){
-        boardRepository = Mockito.mock(BoardRepository.class);
-        boardService = new BoardService(boardRepository);
-        board = Board.builder()
-            .id(1L)
-            .name("Bee Beep")
-            .taskLists(new ArrayList<TaskList>()).build();
+        mockBoardRepository = Mockito.mock(BoardRepository.class);
+        sut = new BoardService(mockBoardRepository);
     }
 
     @Test
-    public void update(){
-        boardRepository.save(board);
-        board.setName("Talio");
-        Long boardId = board.getId();
+    public void testUpdateExistingBoard(){
+        Board board = new Board("Dummy Board");
+        Board expectedBoard= new Board("New Board");
+        Mockito.when(mockBoardRepository.findById(10000000L)).thenReturn(Optional.of(board));
+        Mockito.when(mockBoardRepository.save(Mockito.any())).thenReturn(expectedBoard);
+        Board givenBoard=sut.update(10000000L,new Board("New Board")).getBody();
 
-        boardService.update(boardId, board).getBody();
-
-        assertEquals(board.getName(),"Talio");
-        assertEquals(board.getId(), boardId);
+        Mockito.verify(mockBoardRepository).findById(10000000L);
+        assertNotNull(givenBoard);
+        assertEquals(expectedBoard.getName(),givenBoard.getName());
     }
+    @Test
+    public void testUpdateNonExistingBoard(){
+        Mockito.when(mockBoardRepository.findById(10000000L)).thenReturn(Optional.empty());
+        Board givenBoard=sut.update(10000000L,new Board("New Board")).getBody();
+
+        Mockito.verify(mockBoardRepository).findById(10000000L);
+        assertNull(givenBoard);
+    }
+
 }

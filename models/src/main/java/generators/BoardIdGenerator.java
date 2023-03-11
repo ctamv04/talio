@@ -17,7 +17,6 @@ public class BoardIdGenerator implements IdentifierGenerator {
      * Id generator for the board model
      * @param session The session from which the request originates
      * @param object the entity or collection (idbag) for which the id is being generated
-     *
      * @return An integer of 8 digits which will represent the id of the corresponding board
      * @throws HibernateException
      */

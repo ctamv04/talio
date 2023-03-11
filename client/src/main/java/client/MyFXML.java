@@ -37,6 +37,13 @@ public class MyFXML {
         this.injector = injector;
     }
 
+    /**
+     * Creating a pair scene-controller
+     * @param c The used class
+     * @param parts The corresponding URL
+     * @return The pair scene-controller
+     * @param <T> The generics
+     */
     public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
         try {
             var loader = new FXMLLoader(getLocation(parts),

@@ -1,69 +1,84 @@
-package server.services;
+package services;
 
 import models.Board;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.controllers.TestBoardRepository;
-import server.controllers.TestTaskListRepository;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+import server.repositories.BoardRepository;
+import server.repositories.TaskListRepository;
+import server.services.TaskListService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 class TaskListServiceTest {
-    private TaskListService service;
-    private TestBoardRepository boardRepo;
-    private TestTaskListRepository taskListRepo;
+    @InjectMocks
+    private TaskListService sut;
+    @Mock
+    private BoardRepository mockBoardRepo;
+    @Mock
+    private TaskListRepository mockTaskListRepo;
 
     @BeforeEach
     public void setup() {
-        boardRepo = new TestBoardRepository();
-        taskListRepo = new TestTaskListRepository();
-        service = new TaskListService(taskListRepo, boardRepo);
+        mockBoardRepo = Mockito.mock(BoardRepository.class);
+        mockTaskListRepo = Mockito.mock(TaskListRepository.class);
+        sut = new TaskListService(mockTaskListRepo, mockBoardRepo);
     }
 
     @Test
-    void update() {
+    void testUpdateExistingTaskList() {
         Board board = new Board("board");
         TaskList taskList = new TaskList("taskList1", board);
         TaskList newTaskList = new TaskList("taskList2", board);
-        board.getTaskLists().add(taskList);
 
-        boardRepo.save(board);
-        service.add(taskList, taskList.getBoard().getId());
-        service.update((long) 0, newTaskList);
-        assertEquals(newTaskList.getName(), taskListRepo.getById((long) 0).getName());
+        Mockito.when(mockTaskListRepo.findById(10000000L)).thenReturn(Optional.of(taskList));
+        Mockito.when(mockTaskListRepo.save(Mockito.any())).thenReturn(taskList);
+
+        TaskList givenTaskList=sut.update(10000000L,newTaskList).getBody();
+        assertNotNull(givenTaskList);
+        assertEquals(newTaskList.getName(), taskList.getName());
     }
 
     @Test
-    void testWrongUpdate() {
+    void testUpdateNonExistingTaskList() {
         Board board = new Board("board");
-        TaskList taskList = new TaskList("taskList1", board);
         TaskList newTaskList = new TaskList("taskList2", board);
-        board.getTaskLists().add(taskList);
 
-        boardRepo.save(board);
-        assertEquals(BAD_REQUEST, service.update((long) 0, newTaskList).getStatusCode());
+        Mockito.when(mockTaskListRepo.findById(1000000L)).thenReturn(Optional.empty());
+        ResponseEntity<TaskList> response=sut.update(10000000L,newTaskList);
+
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    void testAdd() {
+    void testAddExistingBoard() {
         Board board = new Board("board");
         TaskList taskList = new TaskList("taskList1", board);
-        board.getTaskLists().add(taskList);
 
-        boardRepo.save(board);
-        service.add(taskList, taskList.getBoard().getId());
-        assertEquals(taskList, taskListRepo.getById((long) 0));
+        Mockito.when(mockBoardRepo.findById(10000000L)).thenReturn(Optional.of(board));
+        Mockito.when(mockTaskListRepo.save(Mockito.any())).thenReturn(taskList);
+
+        ResponseEntity<TaskList> response=sut.add(taskList,10000000L);
+        assertNotNull(response.getBody());
+        assertEquals(taskList.getName(),response.getBody().getName());
     }
 
     @Test
-    void testWrongAdd() {
+    void testAddNonExistingBoard() {
         Board board = new Board("board");
         TaskList taskList = new TaskList("taskList1", board);
-        board.getTaskLists().add(taskList);
 
-        service.add(taskList, taskList.getBoard().getId());
-        assertEquals(BAD_REQUEST, service.add(taskList, taskList.getBoard().getId()).getStatusCode());
+        Mockito.when(mockBoardRepo.findById(10000000L)).thenReturn(Optional.empty());
+        ResponseEntity<TaskList> response=sut.add(taskList,10000000L);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 }

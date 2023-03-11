@@ -1,30 +1,31 @@
-package server.controllers;
+package controllers;
 
+import mocks.TestTaskCardRepository;
+import mocks.TestTaskListRepository;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.repositories.TaskCardRepository;
-import server.repositories.TaskListRepository;
+import org.springframework.http.ResponseEntity;
+import server.controllers.TaskCardController;
 import server.services.TaskCardService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class TaskCardControllerTest {
-    private TaskCardService service;
     private TaskCardController controller;
-    private TaskCardRepository taskCardRepo;
-    private TaskListRepository taskListRepo;
+    private TestTaskListRepository taskListRepo;
 
     @BeforeEach
     public void setup() {
-        taskCardRepo = new TestTaskCardRepository();
+        TestTaskCardRepository taskCardRepo = new TestTaskCardRepository();
         taskListRepo = new TestTaskListRepository();
 
-        service = new TaskCardService(taskCardRepo, taskListRepo);
-        controller = new TaskCardController(repo, service);
+        TaskCardService service = new TaskCardService(taskCardRepo, taskListRepo);
+        controller = new TaskCardController(taskCardRepo, service);
     }
 
     @Test
@@ -39,7 +40,7 @@ public class TaskCardControllerTest {
 
         TaskCard tc = new TaskCard(tl);
         taskListRepo.save(tl);
-        controller.add(tc);
+        controller.add(tc,0L);
         assertEquals(1, controller.getAll().size());
     }
 
@@ -52,12 +53,12 @@ public class TaskCardControllerTest {
         TaskCard tc2 = new TaskCard(tl);
 
         taskListRepo.save(tl);
-        controller.add(tc1);
+        controller.add(tc1,0L);
         assertEquals(1, controller.getAll().size());
-        controller.add(tc2);
+        controller.add(tc2,0L);
         assertEquals(2, controller.getAll().size());
-        assertEquals(controller.getById(1).getBody(), tc1);
-        assertEquals(controller.getById(2).getBody(), tc2);
+        assertEquals(controller.getById(1L).getBody(), tc1);
+        assertEquals(controller.getById(2L).getBody(), tc2);
     }
 
     @Test
@@ -67,8 +68,8 @@ public class TaskCardControllerTest {
         TaskCard tc = new TaskCard(tl);
 
         taskListRepo.save(tl);
-        controller.add(tc);
-        assertEquals(BAD_REQUEST, controller.getById(2).getStatusCode());
+        controller.add(tc,0L);
+        assertEquals(BAD_REQUEST, controller.getById(2L).getStatusCode());
     }
 
     @Test
@@ -78,8 +79,8 @@ public class TaskCardControllerTest {
 
         TaskCard tc = new TaskCard(tl);
         taskListRepo.save(tl);
-        controller.add(tc);
-        assertEquals(tc, controller.getById(1).getBody());
+        controller.add(tc,0L);
+        assertEquals(tc, controller.getById(1L).getBody());
     }
 
     @Test
@@ -91,11 +92,13 @@ public class TaskCardControllerTest {
         TaskCard newTc = new TaskCard("name2", tl);
 
         taskListRepo.save(tl);
-        controller.add(tc);
-        controller.update(1, newTc);
-        assertEquals(newTc.getName(), controller.getById(1).getBody().getName());
-        assertEquals(newTc.getDescription(), controller.getById(1).getBody().getDescription());
-        assertEquals(BAD_REQUEST, controller.update(2, newTc).getStatusCode());
+        controller.add(tc,0L);
+        controller.update(1L, newTc);
+        ResponseEntity<TaskCard> response=controller.getById(1L);
+        assertNotNull(response.getBody());
+        assertEquals(newTc.getName(), response.getBody().getName());
+        assertEquals(newTc.getDescription(), response.getBody().getDescription());
+        assertEquals(BAD_REQUEST, controller.update(2L, newTc).getStatusCode());
     }
 
     @Test
@@ -107,11 +110,22 @@ public class TaskCardControllerTest {
         TaskCard tc2 = new TaskCard(tl);
 
         taskListRepo.save(tl);
-        controller.add(tc1);
-        controller.add(tc2);
+        controller.add(tc1,0L);
+        controller.add(tc2,0L);
         assertEquals(2, controller.getAll().size());
-        controller.delete(1);
+        controller.delete(1L);
         assertEquals(1, controller.getAll().size());
         assertEquals(tc2, controller.getAll().get(0));
+    }
+
+    @Test
+    public void testDeleteFalse() {
+        Board b = new Board("board1");
+        TaskList tl = new TaskList("taskList1", b);
+
+        taskListRepo.save(tl);
+
+        ResponseEntity<TaskCard> response=controller.delete(1L);
+        assertEquals(BAD_REQUEST,response.getStatusCode());
     }
 }

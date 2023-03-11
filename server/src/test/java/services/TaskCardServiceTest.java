@@ -1,4 +1,4 @@
-package server.services;
+package services;
 
 import models.Board;
 import models.TaskCard;
@@ -8,90 +8,74 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
+import server.services.TaskCardService;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 class TaskCardServiceTest {
 
     @Mock
-    private TaskCardRepository taskCardRepository;
-
+    private TaskCardRepository mockTaskCardRepository;
     @Mock
-    private TaskListRepository taskListRepository;
-
+    private TaskListRepository mockTaskListRepository;
     @InjectMocks
-    private TaskCardService taskCardService;
-
+    private TaskCardService sut;
+    private TaskList taskList;
     private TaskCard taskCard;
 
     @BeforeEach
-    public void setup(){
-        taskCardRepository = Mockito.mock(TaskCardRepository.class);
-        taskListRepository = Mockito.mock(TaskListRepository.class);
-        taskCardService = new TaskCardService(taskCardRepository, taskListRepository);
-        taskCard = TaskCard.builder()
-            .id(1L)
-            .name("Bee Beep")
-            .taskList(new TaskList("name", new Board("boardName"))).build();
+    public void setup() {
+        mockTaskCardRepository = Mockito.mock(TaskCardRepository.class);
+        mockTaskListRepository = Mockito.mock(TaskListRepository.class);
+        sut=new TaskCardService(mockTaskCardRepository,mockTaskListRepository);
+        Board board = new Board("board");
+        taskList = new TaskList("taskList", board);
+        taskCard = new TaskCard("taskCard1", "Bee Beep1", taskList);
     }
 
     @Test
-    public void testFindAll(){
-        TaskCard taskCard1 = TaskCard.builder()
-            .id(1L)
-            .name("Boo Boop")
-            .taskList(new TaskList("name", new Board("boardName"))).build();
+    void testUpdateExistingTaskList() {
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard));
+        Mockito.when(mockTaskCardRepository.save(Mockito.any())).thenReturn(taskCard);
 
-        given(taskCardRepository.findAll()).willReturn(List.of(taskCard,taskCard1));
-
-        List<TaskCard> taskCardList = taskCardService.findAll();
-
-        assertNotNull(taskCardList);
-        assertEquals(taskCardList.size(), 2);
+        TaskCard newTaskCard=new TaskCard("taskCard2","Bee Beep2",taskList);
+        TaskCard givenTaskCard=sut.update(10000000L,newTaskCard).getBody();
+        assertNotNull(givenTaskCard);
+        assertEquals(newTaskCard.getName(), givenTaskCard.getName());
+        assertEquals(newTaskCard.getDescription(), givenTaskCard.getDescription());
     }
 
     @Test
-    public void testFindAllShouldBeNone(){
-        TaskCard taskCard1 = TaskCard.builder()
-            .id(1L)
-            .name("Boo Boop")
-            .taskList(new TaskList("name", new Board("boardName"))).build();
-        given(taskCardRepository.findAll()).willReturn(Collections.emptyList());
-        List<TaskCard> employeeList = taskCardService.findAll();
-        assertTrue((employeeList).isEmpty());
-        assertEquals(employeeList.size(), 0);
+    void testUpdateNonExistingTaskList() {
+        TaskCard newTaskCard=new TaskCard("taskCard2","Bee Beep2",taskList);
+        Mockito.when(mockTaskCardRepository.findById(1000000L)).thenReturn(Optional.empty());
+        ResponseEntity<TaskCard> response=sut.update(10000000L,newTaskCard);
+
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    void testCorrectGetById() {
-        taskCardRepository.save(taskCard);
-        assertNotNull(taskCardService.getById(taskCard.getId()));
+    void testAddExistingBoard() {
+        Mockito.when(mockTaskListRepository.findById(10000000L)).thenReturn(Optional.of(taskList));
+        Mockito.when(mockTaskCardRepository.save(Mockito.any())).thenReturn(taskCard);
+
+        ResponseEntity<TaskCard> response=sut.add(taskCard,10000000L);
+        assertNotNull(response.getBody());
+        assertEquals(taskCard.getName(),response.getBody().getName());
     }
 
     @Test
-    void testFalseGetById() {
-        taskCardRepository.save(taskCard);
-        assertNotNull(taskCardService.getById(11L));
-    }
-
-    @Test
-    void delete() {
-        taskCardRepository.save(taskCard);
-        taskCardService.delete(taskCard.getId());
-        assertEquals(0, taskCardRepository.findAll().size());
-    }
-
-    @Test
-    public void testUpdate(){
-        taskCardRepository.save(taskCard);
-        taskCard.setName("New Name!");
-        taskCardService.update(taskCard.getId(), taskCard);
-        assertEquals(taskCard.getName(), "New Name!");
+    void testAddNonExistingBoard() {
+        Mockito.when(mockTaskListRepository.findById(10000000L)).thenReturn(Optional.empty());
+        ResponseEntity<TaskCard> response=sut.add(taskCard,10000000L);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 }

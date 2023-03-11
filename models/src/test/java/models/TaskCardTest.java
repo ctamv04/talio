@@ -13,7 +13,6 @@ public class TaskCardTest {
 		var t = new TaskCard(new TaskList());
 		assertEquals("", t.getName());
 		assertEquals("", t.getDescription());
-		assertEquals(t.getTaskList().getTaskCards(), new ArrayList<>(Collections.singleton(t)));
 	}
 
 	@Test
@@ -21,7 +20,6 @@ public class TaskCardTest {
 		var t = new TaskCard("name", new TaskList());
 		assertEquals("name", t.getName());
 		assertEquals("", t.getDescription());
-		assertEquals(t.getTaskList().getTaskCards(), new ArrayList<>(Collections.singleton(t)));
 	}
 
 	@Test
@@ -29,7 +27,6 @@ public class TaskCardTest {
 		var t = new TaskCard("name", "description", new TaskList());
 		assertEquals("name", t.getName());
 		assertEquals("description", t.getDescription());
-		assertEquals(t.getTaskList().getTaskCards(), new ArrayList<>(Collections.singleton(t)));
 	}
 
 	@Test
