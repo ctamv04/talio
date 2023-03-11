@@ -1,7 +1,5 @@
 package models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -18,18 +16,12 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Board {
     @Id
     @GenericGenerator(name = "sequence_board_id", strategy = "generators.BoardIdGenerator")
     @GeneratedValue(generator = "sequence_board_id")
     private Long id;
-
-    @Column
     private String name;
-
-    @Column
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.ALL,
@@ -39,15 +31,15 @@ public class Board {
 
     /**
      * Constructor functions for the Board class
-     * @param name name of the board
+     * @param name Name of the board
      */
     public Board(String name) {
         this.name = name;
     }
 
     /**
-     * Other constructor functions for the Board class. Currently unused
-     * @param name name of the board
+     * Other constructor functions for the Board class which takes a taskList
+     * @param name Name of the board
      * @param taskLists List with all the tasklists
      */
     public Board(String name, List<TaskList> taskLists) {
@@ -57,8 +49,8 @@ public class Board {
 
     /**
      * Checks if 2 boards are equal
-     * @param obj the object we check to see if it's equal with the board
-     * @return returns true or false
+     * @param obj The object we check to see if it's equal with the board
+     * @return Returns true or false
      */
     @Override
     public boolean equals(Object obj) {
@@ -67,7 +59,7 @@ public class Board {
 
     /**
      * Hashes a board
-     * @return returns a hashcode for a board
+     * @return Returns a hashcode for a board
      */
     @Override
     public int hashCode() {
@@ -76,7 +68,7 @@ public class Board {
 
     /**
      * A function that gives a String with all the board information
-     * @return returns a string with all the board information
+     * @return Returns a string with all the board information
      */
     @Override
     public String toString() {

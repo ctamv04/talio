@@ -1,4 +1,4 @@
-package server.controllers;
+package controllers;
 
 import models.TaskList;
 import org.springframework.data.domain.Example;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings("all")
 public class TestTaskListRepository implements TaskListRepository {
     private long counter = 0;
     private final List<TaskList> lists = new ArrayList<>();

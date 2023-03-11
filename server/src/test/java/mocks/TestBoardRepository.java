@@ -1,4 +1,4 @@
-package server.controllers;
+package controllers;
 
 import models.Board;
 import org.springframework.data.domain.Example;
@@ -13,13 +13,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings("all")
 public class TestBoardRepository implements BoardRepository {
-private final List<Board> boards = new ArrayList<>();
-private final List<String> calledMethods = new ArrayList<>();
+    private final List<Board> boards = new ArrayList<>();
+    private final List<String> calledMethods = new ArrayList<>();
 
     private void call(String name) {
         calledMethods.add(name);
     }
+
+    private List<String> getCalledMethods(){
+        return calledMethods;
+    }
+
     @Override
     public List<Board> findAll() {
         call("findAll");
@@ -48,12 +54,14 @@ private final List<String> calledMethods = new ArrayList<>();
 
     @Override
     public void deleteById(Long aLong) {
+        call("deleteById");
         boards.removeIf(board -> board.getId().equals(aLong));
     }
 
     @Override
     public void delete(Board entity) {
-
+        call("delete");
+        boards.remove(entity);
     }
 
     @Override
