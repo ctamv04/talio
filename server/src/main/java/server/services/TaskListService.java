@@ -17,21 +17,37 @@ public class TaskListService {
     private final TaskListRepository taskListRepository;
     private final BoardRepository boardRepository;
 
+    /**
+     * Constructor Method
+     * @param taskListRepository The injected taskListRepository of the object
+     * @param boardRepository The injected boardRepository of the object
+     */
     public TaskListService(TaskListRepository taskListRepository, BoardRepository boardRepository) {
         this.taskListRepository = taskListRepository;
         this.boardRepository = boardRepository;
     }
 
+    /**
+     * Update a taskList
+     * @param id The id of the current taskList
+     * @param newTaskList The new taskList
+     * @return A response based on the existence of the taskList
+     */
     @Transactional
     public ResponseEntity<TaskList> update(@PathVariable("id") Long id,
                                            @RequestBody TaskList newTaskList) {
         return taskListRepository.findById(id).map(list -> {
             list.setName(newTaskList.getName());
-            list.setTaskCards(newTaskList.getTaskCards());
             return ResponseEntity.ok(taskListRepository.save(list));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    /**
+     * Add a new taskList
+     * @param taskList The wanted taskList
+     * @param boardId The board it belongs to
+     * @return A response based on the existence of the board
+     */
     @Transactional
     public ResponseEntity<TaskList> add(TaskList taskList, Long boardId) {
         Optional<Board> optional=boardRepository.findById(boardId);

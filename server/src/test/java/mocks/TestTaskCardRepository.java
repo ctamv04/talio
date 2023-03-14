@@ -1,4 +1,4 @@
-package server.controllers;
+package mocks;
 
 import models.TaskCard;
 import org.springframework.data.domain.Example;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings("all")
 public class TestTaskCardRepository implements TaskCardRepository {
     private long counter = 1;
     public final List<TaskCard> taskCards = new ArrayList<>();
@@ -20,6 +21,10 @@ public class TestTaskCardRepository implements TaskCardRepository {
 
     private void call(String name) {
         calledMethods.add(name);
+    }
+
+    public List<String> getCalledMethods() {
+        return calledMethods;
     }
 
     @Override

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package client;
+package client.views;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
+import client.controllers.BoardController;
+import client.controllers.MainCtrl;
+import client.utils.ServerUtils;
 import com.google.inject.Injector;
 
 import javafx.fxml.FXMLLoader;
@@ -31,18 +32,18 @@ import javafx.util.Pair;
 
 public class MyFXML {
 
-    private Injector injector;
+    private final Injector injector;
 
     public MyFXML(Injector injector) {
         this.injector = injector;
     }
 
-    public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
+    public <T> Pair<T, Parent> load(Class<T> c, String url, Object... params) {
         try {
-            var loader = new FXMLLoader(getLocation(parts),
+            var loader = new FXMLLoader(getClass().getResource(url),
                         null,
                         null,
-                        new MyFactory(),
+                        new MyFactory(params),
                         StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
@@ -52,12 +53,12 @@ public class MyFXML {
         }
     }
 
-    private URL getLocation(String... parts) {
-        var path = Path.of("", parts).toString();
-        return MyFXML.class.getClassLoader().getResource(path);
-    }
-
     private class MyFactory implements BuilderFactory, Callback<Class<?>, Object> {
+        private final Object[] params;
+
+        public MyFactory(Object[] params) {
+            this.params = params;
+        }
 
         @Override
         @SuppressWarnings("rawtypes")
@@ -72,6 +73,9 @@ public class MyFXML {
 
         @Override
         public Object call(Class<?> type) {
+            if(type== BoardController.class)
+                return new BoardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class),(Long) params[0]);
             return injector.getInstance(type);
         }
     }
