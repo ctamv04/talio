@@ -71,13 +71,13 @@ public class TaskListControllerTest {
     @Test
     public void getIdTest() {
 
-        assertSame(tasks.get(0), sut.findById(tasks.get(0).getId()).getBody());
+        assertSame(tasks.get(0), sut.getById(tasks.get(0).getId()).getBody());
 
     }
 
     @Test
     public void getIdTestFail() {
-        assertEquals(BAD_REQUEST, sut.findById(2L).getStatusCode());
+        assertEquals(BAD_REQUEST, sut.getById(2L).getStatusCode());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class TaskListControllerTest {
     public void updateTest() {
         TaskList updated = tasks.get(0);
         updated.setName("updated");
-        ResponseEntity<TaskList> response=sut.findById(updated.getId());
+        ResponseEntity<TaskList> response=sut.getById(updated.getId());
         assertNotNull(response.getBody());
         assertEquals(updated.getName(), response.getBody().getName());
     }
