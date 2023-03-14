@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package client.scenes;
+package client.views;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.google.inject.Scopes;
 
-public class MainCtrlTest {
+import client.controllers.MainCtrl;
 
-    private MainCtrl sut;
+public class MyModule implements Module {
 
-    @BeforeEach
-    public void setup() {
-        sut = new MainCtrl();
-    }
-
-    @Test
-    public void writeSomeTests() {
-        // TODO create replacement objects and write some tests
-        // sut.initialize(null, null, null);
+    @Override
+    public void configure(Binder binder) {
+        binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
     }
 }
