@@ -40,7 +40,6 @@ public class TaskList {
     public TaskList(String name, Board board) {
         this.name = name;
         this.board = board;
-        this.taskCards = new ArrayList<>();
     }
 
     /**
@@ -82,21 +81,5 @@ public class TaskList {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
-    }
-
-    /**
-     * Adds a Task Card to the Task List
-     * @param t task card which is added to the Task List
-     */
-    public void add(TaskCard t) {
-        taskCards.add(t);
-    }
-
-    /**
-     * Removes a Task Card to the Task List
-     * @param t task card which is removed to the Task List
-     */
-    public void remove(TaskCard t) {
-        if (taskCards.contains(t)) taskCards.remove(t);
     }
 }

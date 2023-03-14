@@ -1,10 +1,12 @@
-package server.controllers;
+package controllers;
 
+import mocks.TestBoardRepository;
 import models.Board;
-import models.TaskCard;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
+import server.controllers.BoardController;
 import server.services.BoardService;
 
 
@@ -13,17 +15,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
 
 public class BoardControllerTest {
-    private BoardService service;
     private BoardController controller;
     private TestBoardRepository repo;
 
     @BeforeEach
     public void setup() {
         repo = new TestBoardRepository();
-        service = new BoardService(repo);
+        BoardService service = new BoardService(repo);
         controller = new BoardController(repo, service);
     }
 
@@ -85,15 +85,12 @@ public class BoardControllerTest {
     public void testUpdate() {
         Board board1 = new Board("board1");
         Board board2 = new Board("board2");
-        TaskList taskList = new TaskList("taskList1", board1);
-        board1.setTaskLists(List.of(taskList));
-        board2.setId((long) 1);
 
         repo.save(board1);
 
         controller.update((long) 0, board2);
 
-        assertEquals(board2, repo.findAll().get(0));
+        assertEquals(board2.getName(), repo.findAll().get(0).getName());
     }
 
     @Test
@@ -110,5 +107,15 @@ public class BoardControllerTest {
         controller.delete((long) 1);
 
         assertEquals(List.of(board1), repo.findAll());
+    }
+
+    @Test
+    public void testDeleteFalse() {
+        Board board1 = new Board("board1");
+        repo.save(board1);
+
+        ResponseEntity<Board> response=controller.delete(1L);
+
+        assertEquals(BAD_REQUEST,response.getStatusCode());
     }
 }

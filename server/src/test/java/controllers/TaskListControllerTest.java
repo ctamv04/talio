@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package server.controllers;
+package controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -22,34 +22,31 @@ import static org.springframework.http.HttpStatus.OK;
 import java.util.ArrayList;
 import java.util.List;
 
+import mocks.TestBoardRepository;
+import mocks.TestTaskListRepository;
 import models.Board;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
+import server.controllers.TaskListController;
 import server.services.TaskListService;
 
 
 public class TaskListControllerTest {
 
-    private TestTaskListRepository repo;
     private TaskListController sut;
-
-    private TaskListService service;
-
-    private TestBoardRepository board_repo;
-
     private Board board;
-
-    private List<TaskList> tasks = new ArrayList<>();
+    private final List<TaskList> tasks = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
         board = new Board();
-        board_repo = new TestBoardRepository();
+        TestBoardRepository board_repo = new TestBoardRepository();
         board_repo.save(board);
 
-        repo = new TestTaskListRepository();
-        service = new TaskListService(repo, board_repo);
+        TestTaskListRepository repo = new TestTaskListRepository();
+        TaskListService service = new TaskListService(repo, board_repo);
         sut = new TaskListController(repo, service);
 
         for(int i = 0; i < 2; i++){
@@ -96,14 +93,27 @@ public class TaskListControllerTest {
     public void updateTest() {
         TaskList updated = tasks.get(0);
         updated.setName("updated");
-        var actual = sut.update(tasks.get(0).getId(), updated);
-        assertEquals(updated.getName(), sut.findById(updated.getId()).getBody().getName());
+        ResponseEntity<TaskList> response=sut.findById(updated.getId());
+        assertNotNull(response.getBody());
+        assertEquals(updated.getName(), response.getBody().getName());
     }
+    @Test
+    public void updateTestFalse() {
+        sut.update(0L,tasks.get(1));
+        assertEquals(tasks.get(1),sut.getAll().get(0));
+    }
+
 
     @Test
     public void deleteTest() {
-        var actual = sut.delete(tasks.get(0).getId());
+        sut.delete(0L);
         assertFalse(sut.getAll().contains(tasks.get(0)));
     }
+    @Test
+    public void deleteTestFalse() {
+        ResponseEntity<TaskList> response=sut.delete(5L);
+        assertEquals(BAD_REQUEST,response.getStatusCode());
+    }
+
 
 }

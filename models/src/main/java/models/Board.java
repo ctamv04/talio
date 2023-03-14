@@ -1,7 +1,5 @@
 package models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -18,18 +16,12 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Board {
     @Id
     @GenericGenerator(name = "sequence_board_id", strategy = "generators.BoardIdGenerator")
     @GeneratedValue(generator = "sequence_board_id")
     private Long id;
-
-    @Column
     private String name;
-
-    @Column
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.ALL,
@@ -46,7 +38,7 @@ public class Board {
     }
 
     /**
-     * Other constructor functions for the Board class. Currently unused
+     * Other constructor functions for the Board class which takes a taskList
      * @param name name of the board
      * @param taskLists List with all the tasklists
      */

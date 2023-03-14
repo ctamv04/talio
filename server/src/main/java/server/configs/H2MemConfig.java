@@ -27,8 +27,6 @@ public class H2MemConfig {
             TaskList taskList3=new TaskList("Unfinished",board2);
             TaskCard taskCard1=new TaskCard("Prepare",taskList1);
 
-
-
             boardRepository.saveAll(List.of(board1,board2,board3));
             taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
 
