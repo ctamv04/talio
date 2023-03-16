@@ -50,6 +50,15 @@ public class ServerUtils {
                 });
     }
 
+    public List<Board> getTaskLists() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/taskLists") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
 //    public Quote addQuote(Quote quote) {
 //        return ClientBuilder.newClient(new ClientConfig()) //
 //                .target(SERVER).path("api/quotes") //
