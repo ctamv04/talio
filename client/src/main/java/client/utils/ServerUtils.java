@@ -20,6 +20,7 @@ package client.utils;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 import models.Board;
+import models.TaskCard;
 import org.glassfish.jersey.client.ClientConfig;
 
 import java.io.BufferedReader;
@@ -44,6 +45,15 @@ public class ServerUtils {
     public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public TaskCard getTaskCard(Long id){
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {

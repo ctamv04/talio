@@ -36,6 +36,11 @@ public class MainCtrl {
         primaryStage.setScene(new Scene(starting.getValue()));
         primaryStage.setTitle("Starting Page");
         primaryStage.show();
+
+//        var starting= ViewFactory.createStarting();
+//        primaryStage.setScene(new Scene(starting.getValue()));
+//        primaryStage.setTitle("Card");
+//        primaryStage.show();
     }
 
 
@@ -45,4 +50,11 @@ public class MainCtrl {
         primaryStage.setTitle("Board");
         primaryStage.show();
     }
+
+//    public void showCard() {
+//        var card= ViewFactory.createCard();
+//        primaryStage.setScene(new Scene(card.getValue()));
+//        primaryStage.setTitle("Card");
+//        primaryStage.show();
+//    }
 }
