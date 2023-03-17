@@ -1,6 +1,7 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
+import client.views.ViewFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import javafx.collections.FXCollections;
@@ -52,7 +53,7 @@ public class BoardController implements Initializable {
                             setGraphic(null);
                             return;
                         }
-                        setGraphic(new Label(item.getName()));
+                        setGraphic(ViewFactory.createTaskList(item.getId()).getValue());
                     }
                 };
             }
