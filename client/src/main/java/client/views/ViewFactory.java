@@ -27,6 +27,10 @@ public class ViewFactory {
         return FXML.load(StartingController.class, "/client/starting.fxml");
     }
 
+    public static Pair<ClientOverviewController,Parent> createClientOverview(Long boardId){
+        return FXML.load(ClientOverviewController.class,"/client/clientOverview.fxml",boardId);
+    }
+
     public static MainCtrl createMainCtrl() {
         return INJECTOR.getInstance(MainCtrl.class);
     }

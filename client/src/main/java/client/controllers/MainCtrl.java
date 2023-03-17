@@ -59,4 +59,11 @@ public class MainCtrl {
         secondaryStage.setTitle("Add board");
         secondaryStage.show();
     }
+
+    public void showClientOverview(Long boardId){
+        var clientOverview=ViewFactory.createClientOverview(boardId);
+        primaryStage.setScene(new Scene(clientOverview.getValue()));
+        primaryStage.setTitle("Client Overview");
+        primaryStage.show();
+    }
 }
