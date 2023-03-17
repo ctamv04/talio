@@ -17,6 +17,10 @@ package client.utils;
 
 //import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import client.controllers.BoardController;
+import client.controllers.StartingController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 import models.Board;
@@ -50,6 +54,18 @@ public class ServerUtils {
                 .get(new GenericType<>() {
                 });
     }
+    public List<TaskList> getTasklists() throws JsonProcessingException {
+        String json = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + StartingController.clickedBoardID)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Board board = mapper.readValue(json, Board.class);
+        return board.getTaskLists();
+    }
+
 
     public List<TaskList> getTaskLists() {
         return ClientBuilder.newClient(new ClientConfig()) //

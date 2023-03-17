@@ -21,19 +21,19 @@ import javafx.stage.Stage;
 import models.Board;
 import models.TaskList;
 
-import javax.swing.text.View;
-
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage secondaryStage;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        secondaryStage = new Stage();
         showStarting();
     }
 
     public void showStarting() {
-        var starting= ViewFactory.createStarting();
+        var starting = ViewFactory.createStarting();
         primaryStage.setScene(new Scene(starting.getValue()));
         primaryStage.setTitle("Starting Page");
         primaryStage.show();
@@ -48,9 +48,23 @@ public class MainCtrl {
 
 
     public void showBoard(Board selectedItem) {
-        var board= ViewFactory.createBoard(selectedItem.getId());
+        var board = ViewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
+    }
+
+    public void showMenu() {
+        var menu = ViewFactory.createMenu();
+        secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Menu");
+        secondaryStage.show();
+    }
+
+    public void showAddPage() {
+        var menu = ViewFactory.createAddBoard();
+        secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Add board");
+        secondaryStage.show();
     }
 }
