@@ -27,8 +27,12 @@ public class ViewFactory {
         return FXML.load(StartingController.class, "/client/starting.fxml");
     }
 
-    public static Pair<ClientOverviewController,Parent> createClientOverview(Long boardId){
-        return FXML.load(ClientOverviewController.class,"/client/clientOverview.fxml",boardId);
+    public static Pair<ClientOverviewController,Parent> createClientOverview(Long boardId) {
+        return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", boardId);
+    }
+
+    public static Pair<TaskListController, Parent> createTaskList(Long id) {
+        return FXML.load(TaskListController.class, "/client/taskList.fxml", id);
     }
 
     public static MainCtrl createMainCtrl() {

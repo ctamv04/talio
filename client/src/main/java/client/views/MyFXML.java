@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import client.controllers.BoardController;
 import client.controllers.ClientOverviewController;
 import client.controllers.MainCtrl;
+import client.controllers.TaskListController;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
 
@@ -77,9 +78,15 @@ public class MyFXML {
             if(type== BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long) params[0]);
+
             if(type== ClientOverviewController.class)
                 return new ClientOverviewController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long)params[0]);
+
+            if(type== TaskListController.class)
+                return new TaskListController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class),(Long) params[0]);
+
             return injector.getInstance(type);
         }
     }
