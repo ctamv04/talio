@@ -51,9 +51,9 @@ public class ServerUtils {
                 });
     }
 
-    public TaskCard getTaskCard(Long id){
+    public TaskCard getTaskCard(Long task_id){
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasks/" + id) //
+                .target(SERVER).path("api/tasks/" + task_id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {

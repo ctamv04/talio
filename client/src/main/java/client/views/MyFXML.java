@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import client.controllers.BoardController;
+import client.controllers.ExtendedCardController;
 import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
@@ -76,6 +77,11 @@ public class MyFXML {
             if(type== BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long) params[0]);
+
+            if(type == ExtendedCardController.class)
+                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+
             return injector.getInstance(type);
         }
     }

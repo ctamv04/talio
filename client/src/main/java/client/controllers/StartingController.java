@@ -59,8 +59,8 @@ public class StartingController implements Initializable {
             mainCtrl.showBoard(boards.getSelectionModel().getSelectedItem());
         });
 
-//        cardButton.setOnMouseClicked(event -> {
-//            mainCtrl.showCard();
-//        });
+        cardButton.setOnMouseClicked(event -> {
+            mainCtrl.showCard(1L);
+        });
     }
 }

@@ -1,7 +1,7 @@
 package client.views;
 
 import client.controllers.BoardController;
-import client.controllers.CardController;
+import client.controllers.ExtendedCardController;
 import client.controllers.MainCtrl;
 import client.controllers.StartingController;
 import com.google.inject.Injector;
@@ -19,15 +19,14 @@ public class ViewFactory {
     }
 
     public static Pair<StartingController, Parent> createStarting(){
-//        return FXML.load(StartingController.class, "/client/starting.fxml");
-        return FXML.load(StartingController.class, "/client/card.fxml");
+        return FXML.load(StartingController.class, "/client/starting.fxml");
     }
 
     public static MainCtrl createMainCtrl() {
         return INJECTOR.getInstance(MainCtrl.class);
     }
 
-//    public static Pair<CardController, Parent> createCard(){
-//        return FXML.load(CardController.class, "/client/card.fxml");
-//    }
+    public static Pair<ExtendedCardController, Parent> createCard(Long card_id){
+        return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
+    }
 }

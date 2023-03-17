@@ -12,9 +12,7 @@ import javafx.scene.control.TextArea;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import models.TaskCard;
-
-public class CardController implements Initializable{
+public class ExtendedCardController implements Initializable{
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
@@ -37,7 +35,7 @@ public class CardController implements Initializable{
     private ListView subList;
 
     @Inject
-    public CardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id) {
+    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.task_id = task_id;
@@ -45,6 +43,7 @@ public class CardController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
     }
 
 

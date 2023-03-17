@@ -51,10 +51,10 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-//    public void showCard() {
-//        var card= ViewFactory.createCard();
-//        primaryStage.setScene(new Scene(card.getValue()));
-//        primaryStage.setTitle("Card");
-//        primaryStage.show();
-//    }
+    public void showCard(Long card_id) {
+        var card= ViewFactory.createCard(card_id);
+        primaryStage.setScene(new Scene(card.getValue()));
+        primaryStage.setTitle("Card");
+        primaryStage.show();
+    }
 }
