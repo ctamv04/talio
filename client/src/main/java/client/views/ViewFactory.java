@@ -27,6 +27,10 @@ public class ViewFactory {
         return FXML.load(StartingController.class, "/client/starting.fxml");
     }
 
+    public static Pair<TaskListController, Parent> createTaskList(Long id) {
+        return FXML.load(TaskListController.class, "/client/taskList.fxml", id);
+    }
+
     public static MainCtrl createMainCtrl() {
         return INJECTOR.getInstance(MainCtrl.class);
     }

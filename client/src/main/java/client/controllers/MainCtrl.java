@@ -19,6 +19,7 @@ import client.views.ViewFactory;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.Board;
+import models.TaskList;
 
 public class MainCtrl {
 
@@ -35,6 +36,13 @@ public class MainCtrl {
         var starting = ViewFactory.createStarting();
         primaryStage.setScene(new Scene(starting.getValue()));
         primaryStage.setTitle("Starting Page");
+        primaryStage.show();
+    }
+
+    public void showTaskList(TaskList selectedItem) {
+        var taskList= ViewFactory.createTaskList(selectedItem.getId());
+        primaryStage.setScene(new Scene(taskList.getValue()));
+        primaryStage.setTitle("TaskList");
         primaryStage.show();
     }
 
