@@ -19,28 +19,31 @@ import client.views.ViewFactory;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.Board;
-
-import javax.swing.text.View;
+import models.TaskList;
 
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage secondaryStage;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        secondaryStage = new Stage();
         showStarting();
     }
 
     public void showStarting() {
-        var starting= ViewFactory.createStarting();
+        var starting = ViewFactory.createStarting();
         primaryStage.setScene(new Scene(starting.getValue()));
         primaryStage.setTitle("Starting Page");
         primaryStage.show();
+    }
 
-//        var starting= ViewFactory.createStarting();
-//        primaryStage.setScene(new Scene(starting.getValue()));
-//        primaryStage.setTitle("Card");
-//        primaryStage.show();
+    public void showTaskList(TaskList selectedItem) {
+        var taskList= ViewFactory.createTaskList(selectedItem.getId());
+        primaryStage.setScene(new Scene(taskList.getValue()));
+        primaryStage.setTitle("TaskList");
+        primaryStage.show();
     }
 
 
@@ -49,6 +52,20 @@ public class MainCtrl {
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
+    }
+
+    public void showMenu() {
+        var menu = ViewFactory.createMenu();
+        secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Menu");
+        secondaryStage.show();
+    }
+
+    public void showAddPage() {
+        var menu = ViewFactory.createAddBoard();
+        secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Add board");
+        secondaryStage.show();
     }
 
     public void showCard(Long card_id) {

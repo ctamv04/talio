@@ -4,7 +4,11 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.StartingController">
-    <ListView fx:id="boards" />
-   <Button fx:id="cardButton" layoutX="506.0" layoutY="340.0" mnemonicParsing="false" text="Card 1" />
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="client.controllers.StartingController"
+            prefHeight="400.0" prefWidth="600.0">
+    <ListView fx:id="boards"/>
+    <Button fx:id="cardButton" layoutX="506.0" layoutY="340.0" mnemonicParsing="false" text="Card 1" />
+    <Button fx:id="add_button" layoutX="550.0" layoutY="55.0" mnemonicParsing="false" text="..."/>
 </AnchorPane>

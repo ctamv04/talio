@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,6 +26,9 @@ public class StartingController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     public ListView<Board> boards;
+    public static Long clickedBoardID;
+
+    public Button add_button;
     public Button cardButton;
 
     @Inject
@@ -56,11 +60,14 @@ public class StartingController implements Initializable {
         });
 
         boards.setOnMouseClicked(event -> {
+            clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
             mainCtrl.showBoard(boards.getSelectionModel().getSelectedItem());
         });
 
         cardButton.setOnMouseClicked(event -> {
             mainCtrl.showCard(1L);
         });
+
+        add_button.setOnAction(event -> mainCtrl.showMenu());
     }
 }

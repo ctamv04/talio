@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import client.controllers.BoardController;
 import client.controllers.ExtendedCardController;
 import client.controllers.MainCtrl;
+import client.controllers.TaskListController;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
 
@@ -76,6 +77,9 @@ public class MyFXML {
         public Object call(Class<?> type) {
             if(type== BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class),(Long) params[0]);
+            else if(type== TaskListController.class)
+                return new TaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long) params[0]);
 
             if(type == ExtendedCardController.class)

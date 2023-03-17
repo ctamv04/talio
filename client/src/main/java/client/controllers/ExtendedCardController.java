@@ -46,6 +46,4 @@ public class ExtendedCardController implements Initializable{
 
     }
 
-
-
 }
