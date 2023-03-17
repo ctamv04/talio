@@ -17,6 +17,8 @@ public class StartingController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     public ListView<Board> boards;
+    public static Long clickedBoardID;
+
 
     @Inject
     public StartingController(ServerUtils serverUtils, MainCtrl mainCtrl) {
@@ -47,6 +49,7 @@ public class StartingController implements Initializable {
         });
 
         boards.setOnMouseClicked(event -> {
+            clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
             mainCtrl.showBoard(boards.getSelectionModel().getSelectedItem());
         });
     }
