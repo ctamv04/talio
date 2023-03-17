@@ -20,6 +20,7 @@ package client.utils;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 import models.Board;
+import models.TaskList;
 import org.glassfish.jersey.client.ClientConfig;
 
 import java.io.BufferedReader;
@@ -50,7 +51,7 @@ public class ServerUtils {
                 });
     }
 
-    public List<Board> getTaskLists() {
+    public List<TaskList> getTaskLists() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/taskLists") //
                 .request(APPLICATION_JSON) //
