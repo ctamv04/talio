@@ -18,7 +18,7 @@ public class ClientOverviewController implements Initializable {
     @FXML
     public BorderPane layout;
 
-    private MenuController menuController;
+    private StartingMenuController menuController;
     private BoardController boardController;
 
     @Inject
@@ -30,7 +30,7 @@ public class ClientOverviewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menu= ViewFactory.createMenu();
+        var menu= ViewFactory.createClientMenu();
         var board=ViewFactory.createBoard(boardId);
 
         layout.setTop(menu.getValue());

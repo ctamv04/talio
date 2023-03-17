@@ -55,6 +55,6 @@ public class StartingController implements Initializable {
             mainCtrl.showClientOverview(clickedBoardID);
         });
 
-        add_button.setOnAction(event -> mainCtrl.showMenu());
+        add_button.setOnAction(event -> mainCtrl.showStartingMenu());
     }
 }

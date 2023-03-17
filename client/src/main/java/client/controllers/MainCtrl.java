@@ -54,14 +54,14 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public void showMenu() {
-        var menu = ViewFactory.createMenu();
+    public void showStartingMenu() {
+        var menu = ViewFactory.createStartingMenu();
         secondaryStage.setScene(new Scene(menu.getValue()));
         secondaryStage.setTitle("Menu");
         secondaryStage.show();
     }
 
-    public void showAddPage() {
+    public void showAddBoardPage() {
         var menu = ViewFactory.createAddBoard();
         secondaryStage.setScene(new Scene(menu.getValue()));
         secondaryStage.setTitle("Add board");

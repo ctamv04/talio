@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MenuController implements Initializable {
+public class StartingMenuController implements Initializable {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
@@ -41,7 +41,7 @@ public class MenuController implements Initializable {
     }
 
     @Inject
-    public MenuController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public StartingMenuController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
     }
@@ -54,7 +54,7 @@ public class MenuController implements Initializable {
         back_button.setOnMouseClicked(event -> mainCtrl.showStarting());
 
         Button add_button = new Button("Add board");
-        add_button.setOnMouseClicked(event -> mainCtrl.showAddPage());
+        add_button.setOnMouseClicked(event -> mainCtrl.showAddBoardPage());
 
         buttonsList.add(new ButtonItem(1, back_button));
         buttonsList.add(new ButtonItem(2, add_button));
@@ -86,7 +86,7 @@ public class MenuController implements Initializable {
         if (item.getId() == 1) {
             mainCtrl.showStarting();
         } else {
-            mainCtrl.showAddPage();
+            mainCtrl.showAddBoardPage();
         }
 
     }

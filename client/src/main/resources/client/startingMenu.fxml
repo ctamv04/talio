@@ -8,6 +8,6 @@
 
 <AnchorPane prefHeight="50.0" prefWidth="100.0" styleClass="layout" stylesheets="@../styles/menu.css"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.controllers.MenuController">
+            fx:controller="client.controllers.StartingMenuController">
     <ListView fx:id="buttons" prefHeight="50.0" prefWidth="100.0"/>
 </AnchorPane>

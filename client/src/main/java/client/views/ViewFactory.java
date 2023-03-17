@@ -15,8 +15,12 @@ public class ViewFactory {
         return FXML.load(BoardController.class, "/client/board.fxml", boardId);
     }
 
-    public static Pair<MenuController, Parent> createMenu() {
-        return FXML.load(MenuController.class, "/client/menu.fxml");
+    public static Pair<StartingMenuController, Parent> createStartingMenu() {
+        return FXML.load(StartingMenuController.class, "/client/startingMenu.fxml");
+    }
+
+    public static Pair<ClientMenuController, Parent> createClientMenu() {
+        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml");
     }
 
     public static Pair<AddBoardController, Parent> createAddBoard() {
