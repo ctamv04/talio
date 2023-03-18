@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="329.0" prefWidth="143.0" styleClass="layout" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController">
+    <ListView fx:id="taskCards" layoutY="54.0" prefHeight="275.0" prefWidth="243.0" />
+</AnchorPane>

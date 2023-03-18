@@ -19,30 +19,59 @@ import client.views.ViewFactory;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.Board;
-
-import javax.swing.text.View;
+import models.TaskList;
 
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage secondaryStage;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        secondaryStage = new Stage();
         showStarting();
     }
 
     public void showStarting() {
-        var starting= ViewFactory.createStarting();
+        var starting = ViewFactory.createStarting();
         primaryStage.setScene(new Scene(starting.getValue()));
         primaryStage.setTitle("Starting Page");
         primaryStage.show();
     }
 
+    public void showTaskList(TaskList selectedItem) {
+        var taskList= ViewFactory.createTaskList(selectedItem.getId());
+        primaryStage.setScene(new Scene(taskList.getValue()));
+        primaryStage.setTitle("TaskList");
+        primaryStage.show();
+    }
+
 
     public void showBoard(Board selectedItem) {
-        var board= ViewFactory.createBoard(selectedItem.getId());
+        var board = ViewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
+        primaryStage.show();
+    }
+
+    public void showStartingMenu() {
+        var menu = ViewFactory.createStartingMenu();
+        secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Menu");
+        secondaryStage.show();
+    }
+
+    public void showAddBoardPage() {
+        var menu = ViewFactory.createAddBoard();
+        secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Add board");
+        secondaryStage.show();
+    }
+
+    public void showClientOverview(Long boardId){
+        var clientOverview=ViewFactory.createClientOverview(boardId);
+        primaryStage.setScene(new Scene(clientOverview.getValue()));
+        primaryStage.setTitle("Client Overview");
         primaryStage.show();
     }
 }
