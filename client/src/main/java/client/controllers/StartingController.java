@@ -3,22 +3,14 @@ package client.controllers;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import models.Board;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -27,7 +19,6 @@ public class StartingController implements Initializable {
     private final MainCtrl mainCtrl;
     public ListView<Board> boards;
     public static Long clickedBoardID;
-
     public Button add_button;
     public Button cardButton;
 
