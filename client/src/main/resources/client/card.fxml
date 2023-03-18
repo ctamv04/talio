@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -12,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExtendedCardController">
    <children>
-      <Label fx:id="taskName" layoutX="26.0" layoutY="14.0" text="Task">
+      <Label fx:id="taskName" layoutX="29.0" layoutY="14.0" text="Task">
          <font>
             <Font size="25.0" />
          </font>
@@ -72,7 +73,17 @@
             </VBox>
          </children>
       </HBox>
-      <Button fx:id="cancelButton" cancelButton="true" layoutX="519.0" layoutY="305.0" mnemonicParsing="false" text="Back" />
-      <Button fx:id="saveButton" layoutX="519.0" layoutY="345.0" mnemonicParsing="false" text="Save" />
+      <Button fx:id="backButton" cancelButton="true" layoutX="519.0" layoutY="305.0" mnemonicParsing="false" onAction="#back" text="Back" />
+      <Button fx:id="saveButton" layoutX="519.0" layoutY="345.0" mnemonicParsing="false" onAction="#save" text="Save" />
+      <TextArea fx:id="editTitle" layoutX="340.0" layoutY="33.0" onMouseEntered="#titleHoverIn" onMouseExited="#titleHoverOut" opacity="0.0" prefHeight="0.0" prefWidth="130.0">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </TextArea>
+      <TextField fx:id="editTitle2" layoutX="22.0" layoutY="8.0" onMouseEntered="#titleHoverIn" onMouseExited="#titleHoverOut" opacity="0.0" prefHeight="36.0" prefWidth="89.0">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </TextField>
    </children>
 </AnchorPane>
