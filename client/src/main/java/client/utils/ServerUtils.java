@@ -15,12 +15,6 @@
  */
 package client.utils;
 
-<<<<<<< client/src/main/java/client/utils/ServerUtils.java
-//import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import client.controllers.StartingController;
-=======
->>>>>>> client/src/main/java/client/utils/ServerUtils.java
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.client.ClientBuilder;
