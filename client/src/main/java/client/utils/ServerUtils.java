@@ -16,7 +16,6 @@
 package client.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -42,32 +41,39 @@ public class ServerUtils {
                 });
     }
     
-    public TaskCard getTaskCard(Long task_id){
+    public TaskCard getTaskCard(Long taskId){
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasks/" + task_id) //
+                .target(SERVER).path("api/tasks/" + taskId) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
                 });
     }
 
-    public void updateTaskCard(Long task_id, TaskCard updated){
+    public void updateTaskCard(Long taskId, TaskCard updated){
 
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tasks/" + task_id)
+                .target(SERVER).path("api/tasks/" + taskId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
-    public List<TaskList> getTasklists(Long boardId) throws JsonProcessingException {
+    public List<TaskList> getTaskLists(Long boardId) {
 
-        String json = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/" + boardId)
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/taskLists/" + boardId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(String.class);
+                .get(new GenericType<>() {
+                });
+    }
 
-        ObjectMapper mapper = new ObjectMapper();
-        Board board = mapper.readValue(json, Board.class);
-        return board.getTaskLists();
+    public List<TaskCard> getTaskCards(Long taskListId) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/taskCards/" + taskListId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 }
