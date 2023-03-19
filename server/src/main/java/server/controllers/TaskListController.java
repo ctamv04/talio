@@ -27,6 +27,7 @@ public class TaskListController {
      */
     public TaskListController(TaskListRepository taskListRepository,
                               TaskListService taskListService) {
+
         this.taskListRepository = taskListRepository;
         this.taskListService = taskListService;
     }
@@ -46,7 +47,8 @@ public class TaskListController {
      * @return A response based on the existence of the taskList
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TaskList> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<TaskList> getById(@PathVariable("id") Long id) {
+
         Optional<TaskList> taskList=taskListRepository.findById(id);
         return taskList.map(ResponseEntity::ok).
                             orElseGet(() -> ResponseEntity.badRequest().build());
@@ -74,6 +76,7 @@ public class TaskListController {
     @PostMapping("")
     public ResponseEntity<TaskList> add(@RequestBody TaskList taskList,
                                         @PathParam("boardId") Long boardId) {
+
         return taskListService.add(taskList,boardId);
     }
 
@@ -86,6 +89,7 @@ public class TaskListController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskList> update(@PathVariable("id") Long id,
                                            @RequestBody TaskList newTaskList) {
+
         return taskListService.update(id,newTaskList);
     }
 
@@ -96,9 +100,11 @@ public class TaskListController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskList> delete(@PathVariable("id") Long id) {
+
         if (!taskListRepository.existsById(id))
             return ResponseEntity.badRequest().build();
         taskListRepository.deleteById(id);
+
         return ResponseEntity.ok().build();
     }
 }

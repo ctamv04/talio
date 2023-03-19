@@ -18,8 +18,10 @@ package client.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import models.Board;
+import models.TaskCard;
 import models.TaskList;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -39,7 +41,25 @@ public class ServerUtils {
                 .get(new GenericType<>() {
                 });
     }
+    
+    public TaskCard getTaskCard(Long task_id){
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/" + task_id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public void updateTaskCard(Long task_id, TaskCard updated){
+
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/" + task_id)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
     public List<TaskList> getTasklists(Long boardId) throws JsonProcessingException {
+
         String json = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/" + boardId)
                 .request(APPLICATION_JSON)

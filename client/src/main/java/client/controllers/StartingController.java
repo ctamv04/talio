@@ -19,8 +19,8 @@ public class StartingController implements Initializable {
     private final MainCtrl mainCtrl;
     public ListView<Board> boards;
     public static Long clickedBoardID;
-
     public Button add_button;
+    public Button cardButton;
 
     @Inject
     public StartingController(ServerUtils serverUtils, MainCtrl mainCtrl) {
@@ -55,6 +55,11 @@ public class StartingController implements Initializable {
             mainCtrl.showClientOverview(clickedBoardID);
         });
 
+        cardButton.setOnMouseClicked(event -> { //temporary button
+            mainCtrl.showCard(1L);
+        });
+    
         add_button.setOnAction(event -> mainCtrl.showStartingMenu());
+
     }
 }
