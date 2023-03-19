@@ -1,5 +1,6 @@
 package server.controllers;
 
+import models.TaskList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,9 +45,20 @@ public class BoardController {
     @GetMapping("/{id}")
     public ResponseEntity<Board> getById(@PathVariable Long id) {
         Optional<Board> board=repo.findById(id);
-        if(board.isEmpty())
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(board.get());
+        return board.map(ResponseEntity::ok).
+                        orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    /**
+     * Get task lists of the board
+     * @param id The id of the board containing the task lists
+     * @return A list of the task lists belonging to the board
+     */
+    @GetMapping("/taskLists/{id}")
+    public ResponseEntity<List<TaskList>> getTaskLists(@PathVariable Long id) {
+        Optional<Board> board = repo.findById(id);
+        return board.map(value -> ResponseEntity.ok(value.getTaskLists())).
+                        orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
