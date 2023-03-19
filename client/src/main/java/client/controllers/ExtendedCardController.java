@@ -59,7 +59,7 @@ public class ExtendedCardController implements Initializable{
     }
 
     public void back() {
-        mainCtrl.closeCard();
+        mainCtrl.showStarting();
     }
 
     public void save() {
