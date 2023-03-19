@@ -48,7 +48,7 @@ public class MainCtrl {
 
 
     public void showBoard(Board selectedItem) {
-        var board = ViewFactory.createBoard(selectedItem.getId());
+        var board= ViewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
@@ -66,6 +66,13 @@ public class MainCtrl {
         secondaryStage.setScene(new Scene(menu.getValue()));
         secondaryStage.setTitle("Add board");
         secondaryStage.show();
+    }
+
+    public void showCard(Long card_id) {
+        var card= ViewFactory.createCard(card_id);
+        primaryStage.setScene(new Scene(card.getValue()));
+        primaryStage.setTitle("Card");
+        primaryStage.show();
     }
 
     public void showClientOverview(Long boardId){

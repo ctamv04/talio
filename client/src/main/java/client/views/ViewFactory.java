@@ -1,5 +1,9 @@
 package client.views;
 
+import client.controllers.BoardController;
+import client.controllers.ExtendedCardController;
+import client.controllers.MainCtrl;
+import client.controllers.StartingController;
 import client.controllers.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
@@ -41,5 +45,9 @@ public class ViewFactory {
 
     public static MainCtrl createMainCtrl() {
         return INJECTOR.getInstance(MainCtrl.class);
+    }
+
+    public static Pair<ExtendedCardController, Parent> createCard(Long card_id){
+        return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
     }
 }

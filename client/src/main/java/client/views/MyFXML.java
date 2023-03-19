@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import client.controllers.BoardController;
+import client.controllers.ExtendedCardController;
 import client.controllers.ClientOverviewController;
 import client.controllers.MainCtrl;
 import client.controllers.TaskListController;
@@ -81,6 +82,10 @@ public class MyFXML {
             if(type== TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long) params[0]);
+
+            if(type == ExtendedCardController.class)
+                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             return injector.getInstance(type);
         }
