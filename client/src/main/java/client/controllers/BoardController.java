@@ -7,11 +7,9 @@ import com.google.inject.Inject;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import models.Board;
 import models.TaskList;
 
 import java.net.URL;
@@ -35,11 +33,8 @@ public class BoardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            tasklists.setItems(FXCollections.observableArrayList(serverUtils.getTasklists(boardId)));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+
+        tasklists.setItems(FXCollections.observableArrayList(serverUtils.getTaskLists(boardId)));
 
         tasklists.setCellFactory(new Callback<>() {
             @Override
