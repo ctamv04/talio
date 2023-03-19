@@ -52,13 +52,14 @@ public class StartingController implements Initializable {
 
         boards.setOnMouseClicked(event -> {
             clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
-            mainCtrl.showBoard(boards.getSelectionModel().getSelectedItem());
+            mainCtrl.showClientOverview(clickedBoardID);
         });
 
-        cardButton.setOnMouseClicked(event -> {
+        cardButton.setOnMouseClicked(event -> { //temporary button
             mainCtrl.showCard(1L);
         });
+    
+        add_button.setOnAction(event -> mainCtrl.showStartingMenu());
 
-        add_button.setOnAction(event -> mainCtrl.showMenu());
     }
 }

@@ -64,6 +64,24 @@ public class BoardControllerTest {
     }
 
     @Test
+    public void testGetTaskLists() {
+        List<Board> boardsList = new ArrayList<>();
+
+        Board board1 = new Board("board1");
+        Board board2 = new Board("board2");
+        TaskList taskList = new TaskList("taskList1", board1);
+        board1.setTaskLists(List.of(taskList));
+
+        repo.save(board1);
+        repo.save(board2);
+
+        boardsList.add(board1);
+        boardsList.add(board2);
+
+        assertEquals(boardsList.get(0).getTaskLists(), controller.getTaskLists((long) 0).getBody());
+    }
+
+    @Test
     public void testGetByIdWrongId() {
         assertEquals(BAD_REQUEST, controller.getById((long) 2023).getStatusCode());
     }

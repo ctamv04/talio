@@ -3,6 +3,7 @@ package server.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import models.TaskCard;
 import models.TaskList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,10 +50,21 @@ public class TaskListController {
     public ResponseEntity<TaskList> getById(@PathVariable("id") Long id) {
 
         Optional<TaskList> taskList=taskListRepository.findById(id);
-        if(!taskList.isPresent())
-            return ResponseEntity.badRequest().build();
+        return taskList.map(ResponseEntity::ok).
+                            orElseGet(() -> ResponseEntity.badRequest().build());
+    }
 
-        return ResponseEntity.ok(taskList.get());
+    /**
+     * Get task cards of the task list
+     *
+     * @param id The id of the task list containing the task cards
+     * @return A list of the task cards belonging to the list
+     */
+    @GetMapping("/taskCards/{id}")
+    public ResponseEntity<List<TaskCard>> getTaskCard(@PathVariable Long id) {
+        Optional<TaskList> taskList = taskListRepository.findById(id);
+        return taskList.map(value -> ResponseEntity.ok(value.getTaskCards())).
+                orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**

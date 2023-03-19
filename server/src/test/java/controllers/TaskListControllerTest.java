@@ -25,6 +25,7 @@ import java.util.List;
 import mocks.TestBoardRepository;
 import mocks.TestTaskListRepository;
 import models.Board;
+import models.TaskCard;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,14 @@ public class TaskListControllerTest {
 
         assertSame(tasks.get(0), sut.getById(tasks.get(0).getId()).getBody());
 
+    }
+
+    @Test
+    public void getTaskCardsTest() {
+        TaskList list = tasks.get(0);
+        list.setTaskCards(List.of(new TaskCard("card 1", list)));
+
+        assertEquals(tasks.get(0).getTaskCards(), sut.getTaskCard((long) 0).getBody());
     }
 
     @Test

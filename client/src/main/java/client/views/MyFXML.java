@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 import client.controllers.BoardController;
 import client.controllers.ExtendedCardController;
+import client.controllers.ClientOverviewController;
 import client.controllers.MainCtrl;
 import client.controllers.TaskListController;
 import client.utils.ServerUtils;
@@ -65,12 +66,7 @@ public class MyFXML {
         @Override
         @SuppressWarnings("rawtypes")
         public Builder<?> getBuilder(Class<?> type) {
-            return new Builder() {
-                @Override
-                public Object build() {
-                    return injector.getInstance(type);
-                }
-            };
+            return (Builder) () -> injector.getInstance(type);
         }
 
         @Override
@@ -78,7 +74,12 @@ public class MyFXML {
             if(type== BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long) params[0]);
-            else if(type== TaskListController.class)
+
+            if(type== ClientOverviewController.class)
+                return new ClientOverviewController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class),(Long)params[0]);
+
+            if(type== TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class),(Long) params[0]);
 

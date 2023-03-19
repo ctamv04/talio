@@ -36,7 +36,7 @@ public class BoardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            tasklists.setItems(FXCollections.observableArrayList(serverUtils.getTasklists()));
+            tasklists.setItems(FXCollections.observableArrayList(serverUtils.getTasklists(boardId)));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

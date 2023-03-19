@@ -19,8 +19,12 @@ public class ViewFactory {
         return FXML.load(BoardController.class, "/client/board.fxml", boardId);
     }
 
-    public static Pair<MenuController, Parent> createMenu() {
-        return FXML.load(MenuController.class, "/client/menu.fxml");
+    public static Pair<StartingMenuController, Parent> createStartingMenu() {
+        return FXML.load(StartingMenuController.class, "/client/startingMenu.fxml");
+    }
+
+    public static Pair<ClientMenuController, Parent> createClientMenu() {
+        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml");
     }
 
     public static Pair<AddBoardController, Parent> createAddBoard() {
@@ -29,6 +33,10 @@ public class ViewFactory {
 
     public static Pair<StartingController, Parent> createStarting() {
         return FXML.load(StartingController.class, "/client/starting.fxml");
+    }
+
+    public static Pair<ClientOverviewController,Parent> createClientOverview(Long boardId) {
+        return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", boardId);
     }
 
     public static Pair<TaskListController, Parent> createTaskList(Long id) {
