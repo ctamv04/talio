@@ -25,6 +25,7 @@ public class MainCtrl {
 
     private Stage primaryStage;
     private Stage secondaryStage;
+    private Stage cardStage;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -70,9 +71,13 @@ public class MainCtrl {
 
     public void showCard(Long card_id) {
         var card= ViewFactory.createCard(card_id);
-        primaryStage.setScene(new Scene(card.getValue()));
-        primaryStage.setTitle("Card");
-        primaryStage.show();
+        cardStage.setScene(new Scene(card.getValue()));
+        cardStage.setTitle("Card Details");
+        cardStage.show();
+    }
+
+    public void closeCard() {
+        cardStage.close();
     }
 
     public void showClientOverview(Long boardId){
