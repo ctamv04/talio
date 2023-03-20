@@ -34,13 +34,13 @@ public class H2MemConfig {
             boardRepository.saveAll(List.of(board1,board2,board3));
             taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
 
-            board1.setTaskLists(List.of(taskList1,taskList2));
-            board2.setTaskLists(List.of(taskList3));
+            board1.getTaskLists().addAll(List.of(taskList1,taskList2));
+            board2.getTaskLists().add(taskList3);
             boardRepository.saveAll(List.of(board1,board2,board3));
 
             taskCardRepository.saveAll(List.of(taskCard1,taskCard2,taskCard3,taskCard4,taskCard5));
-            taskList1.setTaskCards(List.of(taskCard1,taskCard2,taskCard3));
-            taskList2.setTaskCards(List.of(taskCard4,taskCard5));
+            taskList1.getTaskCards().addAll(List.of(taskCard1,taskCard2,taskCard3));
+            taskList2.getTaskCards().addAll(List.of(taskCard4,taskCard5));
             taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
         };
     }

@@ -16,9 +16,9 @@
          <Font size="18.0" />
       </font>
     </Button>
-    <HBox alignment="CENTER" prefHeight="60.0" prefWidth="316.0" spacing="10.0">
+    <HBox alignment="CENTER" prefHeight="60.0" prefWidth="367.0" spacing="10.0">
         <FontAwesomeIconView glyphName="CHILD" size="30" />
-      <TextField fx:id="board_title" editable="false" prefHeight="40.0" prefWidth="241.0" styleClass="board_title" text="Talio | Board X (#00000000)">
+      <TextField fx:id="board_title" editable="false" prefHeight="40.0" prefWidth="303.0" styleClass="board_title" text="Talio | Board X (#00000000)">
          <font>
             <Font size="18.0" />
          </font>
