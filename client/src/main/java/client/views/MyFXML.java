@@ -18,11 +18,7 @@ package client.views;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import client.controllers.BoardController;
-import client.controllers.ExtendedCardController;
-import client.controllers.ClientOverviewController;
-import client.controllers.MainCtrl;
-import client.controllers.TaskListController;
+import client.controllers.*;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
 
@@ -85,6 +81,10 @@ public class MyFXML {
 
             if(type == ExtendedCardController.class)
                 return new ExtendedCardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+
+            if(type== MinimizedCardController.class)
+                return new MinimizedCardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             return injector.getInstance(type);

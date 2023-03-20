@@ -19,12 +19,8 @@ public class ViewFactory {
         return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml");
     }
 
-    public static Pair<AddFirstBoardController, Parent> createAddFirstBoard() {
-        return FXML.load(AddFirstBoardController.class, "/client/addFirstBoard.fxml");
-    }
-
-    public static Pair<StartingController, Parent> createStarting() {
-        return FXML.load(StartingController.class, "/client/starting.fxml");
+    public static Pair<AddBoardController, Parent> createAddBoard() {
+        return FXML.load(AddBoardController.class, "/client/addBoard.fxml");
     }
 
     public static Pair<ExtendedCardController, Parent> createLogin() {
@@ -45,5 +41,9 @@ public class ViewFactory {
 
     public static Pair<ExtendedCardController, Parent> createCard(Long card_id) {
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
+    }
+
+    public static Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id){
+        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id);
     }
 }
