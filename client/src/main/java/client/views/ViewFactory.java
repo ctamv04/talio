@@ -31,8 +31,16 @@ public class ViewFactory {
         return FXML.load(AddBoardController.class, "/client/addBoard.fxml");
     }
 
+    public static Pair<AddFirstBoardController, Parent> createAddFirstBoard() {
+        return FXML.load(AddFirstBoardController.class, "/client/addFirstBoard.fxml");
+    }
+
     public static Pair<StartingController, Parent> createStarting() {
         return FXML.load(StartingController.class, "/client/starting.fxml");
+    }
+
+    public static Pair<ExtendedCardController, Parent> createLogin(){
+        return FXML.load(ExtendedCardController.class, "/client/loginPage.fxml");
     }
 
     public static Pair<ClientOverviewController,Parent> createClientOverview(Long boardId) {
