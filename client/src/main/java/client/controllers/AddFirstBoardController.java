@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import models.Board;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,6 +15,7 @@ public class AddFirstBoardController implements Initializable {
     private final MainCtrl mainCtrl;
     public TextField board_name;
     public Button done_button;
+    public Button back_button;
 
     @Inject
     public AddFirstBoardController(ServerUtils serverUtils, MainCtrl mainCtrl) {
@@ -23,6 +25,23 @@ public class AddFirstBoardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        done_button.setOnMouseClicked(event -> mainCtrl.showStarting());
+        done_button.setOnMouseClicked(event -> save());
+        back_button.setOnMouseClicked(event -> back());
+    }
+
+    public void back() {
+        mainCtrl.closeSecondStage();
+    }
+
+    public void save() {
+        Board board;
+        if (!board_name.getText().isBlank()) {
+            board = new Board(board_name.getText());
+        } else {
+            board = new Board();
+        }
+
+        serverUtils.addBoard(board);
+        back();
     }
 }

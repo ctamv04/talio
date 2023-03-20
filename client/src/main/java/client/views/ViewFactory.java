@@ -1,9 +1,5 @@
 package client.views;
 
-import client.controllers.BoardController;
-import client.controllers.ExtendedCardController;
-import client.controllers.MainCtrl;
-import client.controllers.StartingController;
 import client.controllers.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
@@ -19,16 +15,8 @@ public class ViewFactory {
         return FXML.load(BoardController.class, "/client/board.fxml", boardId);
     }
 
-    public static Pair<StartingMenuController, Parent> createStartingMenu() {
-        return FXML.load(StartingMenuController.class, "/client/startingMenu.fxml");
-    }
-
     public static Pair<ClientMenuController, Parent> createClientMenu() {
         return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml");
-    }
-
-    public static Pair<AddBoardController, Parent> createAddBoard() {
-        return FXML.load(AddBoardController.class, "/client/addBoard.fxml");
     }
 
     public static Pair<AddFirstBoardController, Parent> createAddFirstBoard() {
@@ -39,11 +27,11 @@ public class ViewFactory {
         return FXML.load(StartingController.class, "/client/starting.fxml");
     }
 
-    public static Pair<ExtendedCardController, Parent> createLogin(){
+    public static Pair<ExtendedCardController, Parent> createLogin() {
         return FXML.load(ExtendedCardController.class, "/client/loginPage.fxml");
     }
 
-    public static Pair<ClientOverviewController,Parent> createClientOverview(Long boardId) {
+    public static Pair<ClientOverviewController, Parent> createClientOverview(Long boardId) {
         return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", boardId);
     }
 
@@ -55,7 +43,7 @@ public class ViewFactory {
         return INJECTOR.getInstance(MainCtrl.class);
     }
 
-    public static Pair<ExtendedCardController, Parent> createCard(Long card_id){
+    public static Pair<ExtendedCardController, Parent> createCard(Long card_id) {
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
     }
 }

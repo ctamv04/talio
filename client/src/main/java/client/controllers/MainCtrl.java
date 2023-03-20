@@ -48,7 +48,7 @@ public class MainCtrl {
     }
 
     public void showTaskList(TaskList selectedItem) {
-        var taskList= ViewFactory.createTaskList(selectedItem.getId());
+        var taskList = ViewFactory.createTaskList(selectedItem.getId());
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
@@ -56,25 +56,12 @@ public class MainCtrl {
 
 
     public void showBoard(Board selectedItem) {
-        var board= ViewFactory.createBoard(selectedItem.getId());
+        var board = ViewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
     }
-
-    public void showStartingMenu() {
-        var menu = ViewFactory.createStartingMenu();
-        secondaryStage.setScene(new Scene(menu.getValue()));
-        secondaryStage.setTitle("Menu");
-        secondaryStage.show();
-    }
-
-    public void showAddBoardPage() {
-        var menu = ViewFactory.createAddBoard();
-        secondaryStage.setScene(new Scene(menu.getValue()));
-        secondaryStage.setTitle("Add board");
-        secondaryStage.show();
-    }
+    
 
     public void showAddFirstBoardPage() {
         var page = ViewFactory.createAddFirstBoard();
@@ -84,7 +71,7 @@ public class MainCtrl {
     }
 
     public void showCard(Long card_id) {
-        var card= ViewFactory.createCard(card_id);
+        var card = ViewFactory.createCard(card_id);
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.show();
@@ -94,10 +81,14 @@ public class MainCtrl {
         cardStage.close();
     }
 
-    public void showClientOverview(Long boardId){
-        var clientOverview=ViewFactory.createClientOverview(boardId);
+    public void showClientOverview(Long boardId) {
+        var clientOverview = ViewFactory.createClientOverview(boardId);
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
         primaryStage.show();
+    }
+
+    public void closeSecondStage() {
+        secondaryStage.close();
     }
 }

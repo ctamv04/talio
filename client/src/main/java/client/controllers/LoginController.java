@@ -4,7 +4,6 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,7 +22,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        join_board_button.setOnAction(event -> mainCtrl.showAddFirstBoardPage());
+        join_board_button.setOnAction(event -> mainCtrl.showStarting());
         new_board_button.setOnAction(event -> mainCtrl.showAddFirstBoardPage());
     }
 }

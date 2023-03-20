@@ -15,7 +15,6 @@
  */
 package client.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -40,8 +39,8 @@ public class ServerUtils {
                 .get(new GenericType<>() {
                 });
     }
-    
-    public TaskCard getTaskCard(Long taskId){
+
+    public TaskCard getTaskCard(Long taskId) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + taskId) //
                 .request(APPLICATION_JSON) //
@@ -50,7 +49,7 @@ public class ServerUtils {
                 });
     }
 
-    public void updateTaskCard(Long taskId, TaskCard updated){
+    public void updateTaskCard(Long taskId, TaskCard updated) {
 
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskId)
@@ -75,5 +74,11 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
                 });
+    }
+
+    public void addBoard(Board board) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards")
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).post(Entity.json(board));
     }
 }
