@@ -30,7 +30,14 @@ public class MainCtrl {
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
         secondaryStage = new Stage();
-        showStarting();
+        showLoginPage();
+    }
+
+    public void showLoginPage() {
+        var loginPage = ViewFactory.createLogin();
+        primaryStage.setScene(new Scene(loginPage.getValue()));
+        primaryStage.setTitle("Login Page");
+        primaryStage.show();
     }
 
     public void showStarting() {
@@ -65,6 +72,13 @@ public class MainCtrl {
     public void showAddBoardPage() {
         var menu = ViewFactory.createAddBoard();
         secondaryStage.setScene(new Scene(menu.getValue()));
+        secondaryStage.setTitle("Add board");
+        secondaryStage.show();
+    }
+
+    public void showAddFirstBoardPage() {
+        var page = ViewFactory.createAddFirstBoard();
+        secondaryStage.setScene(new Scene(page.getValue()));
         secondaryStage.setTitle("Add board");
         secondaryStage.show();
     }

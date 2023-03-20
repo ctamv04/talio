@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane prefHeight="68.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.controllers.LoginController">
+    <Button fx:id="join_board_button" layoutX="22.0" layoutY="22.0" mnemonicParsing="false"
+            text="Join an existing board"/>
+    <Button fx:id="new_board_button" layoutX="200.0" layoutY="22.0" mnemonicParsing="false"
+            text="Create a new board"/>
+
+</AnchorPane>
