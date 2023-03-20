@@ -2,16 +2,26 @@
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="68.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.controllers.ClientMenuController">
-    <Text layoutX="28.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Our Logo | Board X (#00000000)"/>
-    <Button fx:id="home_button" layoutX="513.0" layoutY="22.0" mnemonicParsing="false" text="Home">
+<AnchorPane prefHeight="60.0" prefWidth="600.0" styleClass="layout" stylesheets="@../styles/clientMenu.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ClientMenuController">
+    <Button fx:id="home_button" layoutX="492.0" layoutY="10.0" mnemonicParsing="false" text="Home" AnchorPane.rightAnchor="14.399999999999977">
         <graphic>
-          <FontAwesomeIconView glyphName="HOME"/>
+          <FontAwesomeIconView glyphName="HOME" />
         </graphic>
+      <font>
+         <Font size="18.0" />
+      </font>
     </Button>
+    <HBox alignment="CENTER" prefHeight="60.0" prefWidth="316.0" spacing="10.0">
+        <FontAwesomeIconView glyphName="CHILD" size="30" />
+      <TextField fx:id="board_title" editable="false" prefHeight="40.0" prefWidth="241.0" styleClass="board_title" text="Talio | Board X (#00000000)">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextField>
+    </HBox>
 </AnchorPane>

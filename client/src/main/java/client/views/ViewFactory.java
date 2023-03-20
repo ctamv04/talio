@@ -50,4 +50,8 @@ public class ViewFactory {
     public static Pair<ExtendedCardController, Parent> createCard(Long card_id){
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
     }
+
+    public static Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id){
+        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id);
+    }
 }

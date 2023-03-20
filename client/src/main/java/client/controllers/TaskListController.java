@@ -1,32 +1,37 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
+import client.views.ViewFactory;
 import jakarta.inject.Inject;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 import models.TaskCard;
+import models.TaskList;
 
+import javax.swing.text.View;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class TaskListController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long taskListId;
-
+    private Map<Long, Parent> cache;
+    private Timer timer;
     @FXML
-    public Label name;
-
-    private StringProperty nameProperty;
-
+    private Label taskList_name;
+    @FXML
     public ListView<TaskCard> taskCards;
+    private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
 
     @Inject
     public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, long taskListId) {
@@ -37,15 +42,14 @@ public class TaskListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        //after pooling
-//        nameProperty = new SimpleStringProperty();
-//
-//        name.textProperty().bind(nameProperty);
-
-
-        taskCards.setItems(FXCollections.observableArrayList(serverUtils.getTaskCards(taskListId)));
-
+        cache=new HashMap<>();
+        timer=new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                update();
+            }
+        },0,500);
         taskCards.setCellFactory(new Callback<>() {
             @Override
             public ListCell<TaskCard> call(ListView<TaskCard> param) {
@@ -58,14 +62,37 @@ public class TaskListController implements Initializable {
                             setGraphic(null);
                             return;
                         }
-                        setGraphic(new Label(item.getName()));
+                        if(!cache.containsKey(item.getId())){
+                            var taskCardPair=ViewFactory.createMinimizedCard(item.getId());
+                            cache.put(item.getId(),taskCardPair.getValue());
+                            taskCardControllers.add(taskCardPair.getKey());
+                        }
+                        setGraphic(cache.get(item.getId()));
                     }
                 };
             }
         });
 
         taskCards.setOnMouseClicked(event -> {
-            mainCtrl.showCard((taskCards.getSelectionModel().getSelectedItem().getId()));
+            Long id=taskCards.getSelectionModel().getSelectedItem().getId();
+            taskCards.getSelectionModel().clearSelection();
+            mainCtrl.showCard(id);
         });
+    }
+
+    public void update(){
+        TaskList updatedTaskList=serverUtils.getTaskList(taskListId);
+        System.out.println(updatedTaskList);
+        Platform.runLater(()->{
+            taskList_name.setText(updatedTaskList.getName());
+            taskCards.setItems(FXCollections.observableArrayList(updatedTaskList.getTaskCards()));
+        });
+    }
+
+    public void closePolling(){
+        timer.cancel();
+        for(MinimizedCardController cardController: taskCardControllers)
+            if(cardController!=null)
+                cardController.closePolling();
     }
 }

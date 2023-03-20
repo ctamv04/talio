@@ -17,6 +17,7 @@ package client.controllers;
 
 import client.views.ViewFactory;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Board;
 import models.TaskList;
@@ -29,7 +30,7 @@ public class MainCtrl {
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        secondaryStage = new Stage();
+        this.secondaryStage = new Stage();
         showStarting();
     }
 
@@ -44,14 +45,6 @@ public class MainCtrl {
         var taskList= ViewFactory.createTaskList(selectedItem.getId());
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
-        primaryStage.show();
-    }
-
-
-    public void showBoard(Board selectedItem) {
-        var board= ViewFactory.createBoard(selectedItem.getId());
-        primaryStage.setScene(new Scene(board.getValue()));
-        primaryStage.setTitle("Board");
         primaryStage.show();
     }
 
@@ -70,20 +63,27 @@ public class MainCtrl {
     }
 
     public void showCard(Long card_id) {
+        cardStage=new Stage();
         var card= ViewFactory.createCard(card_id);
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
-        cardStage.show();
+        cardStage.initModality(Modality.APPLICATION_MODAL);
+        cardStage.showAndWait();
     }
 
     public void closeCard() {
-        cardStage.close();
+        if(cardStage!=null)
+            cardStage.close();
     }
 
     public void showClientOverview(Long boardId){
         var clientOverview=ViewFactory.createClientOverview(boardId);
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
+        primaryStage.setOnCloseRequest(event -> {
+            if(clientOverview.getKey()!=null)
+                clientOverview.getKey().closePolling();
+        });
         primaryStage.show();
     }
 }

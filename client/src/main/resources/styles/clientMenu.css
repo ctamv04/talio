@@ -1,0 +1,8 @@
+.layout{
+    -fx-background-color: #e3d7b6;
+}
+
+.board_title, .board_title:focused{
+    -fx-background-color: transparent;
+    -fx-background-insets: 0px;
+}

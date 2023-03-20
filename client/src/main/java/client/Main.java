@@ -36,15 +36,5 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         ViewFactory.createMainCtrl().initialize(primaryStage);
-
-//        try{
-//            Parent root = FXMLLoader.load(getClass().getResource("starting.fxml"));
-//            Scene scene = new Scene(root);
-//            primaryStage.setScene(scene);
-//            primaryStage.show();
-//
-//        } catch(Exception e){
-//            e.printStackTrace();
-//        }
     }
 }

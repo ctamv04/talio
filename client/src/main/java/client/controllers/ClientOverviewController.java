@@ -3,6 +3,7 @@ package client.controllers;
 import client.utils.ServerUtils;
 import client.views.ViewFactory;
 import com.google.inject.Inject;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
@@ -14,12 +15,10 @@ public class ClientOverviewController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long boardId;
-
+    private ClientMenuController clientMenuController;
+    private BoardController boardController;
     @FXML
     public BorderPane layout;
-
-    private StartingMenuController menuController;
-    private BoardController boardController;
 
     @Inject
     public ClientOverviewController(ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
@@ -35,5 +34,19 @@ public class ClientOverviewController implements Initializable {
 
         layout.setTop(menu.getValue());
         layout.setCenter(board.getValue());
+
+        clientMenuController=menu.getKey();
+        boardController=board.getKey();
+
+        clientMenuController.getBoard_title().textProperty().bind(Bindings.concat("Talio | ",
+                boardController.namePropertyProperty()," (#",boardId,")"));
+        clientMenuController.getHome_button().setOnAction(event -> {
+            boardController.closePolling();
+            mainCtrl.showStarting();
+        });
+    }
+
+    public void closePolling(){
+        boardController.closePolling();
     }
 }

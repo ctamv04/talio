@@ -40,6 +40,24 @@ public class ServerUtils {
                 .get(new GenericType<>() {
                 });
     }
+
+    public Board getBoard(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/"+id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public TaskList getTaskList(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasklists/"+id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
     
     public TaskCard getTaskCard(Long taskId){
         return ClientBuilder.newClient(new ClientConfig()) //
