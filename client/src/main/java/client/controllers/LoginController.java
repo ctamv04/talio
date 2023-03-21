@@ -6,6 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import models.Board;
@@ -26,6 +30,14 @@ public class LoginController implements Initializable {
     private TextField code_input;
     @FXML
     private ListView<Board> boards;
+    @FXML
+    private Button delBoard;
+    @FXML
+    private Button enterBoard;
+    @FXML
+    private VBox buttonBox;
+    @FXML
+    private AnchorPane window;
 
     @Inject
     public LoginController(ServerUtils serverUtils, MainCtrl mainCtrl) {
@@ -35,6 +47,9 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        buttonBox.setOpacity(0L);
+
         invalid_text.setVisible(false);
         boards.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
         boards.setCellFactory(new Callback<>() {
@@ -55,9 +70,23 @@ public class LoginController implements Initializable {
             }
         });
         boards.setOnMouseClicked(event -> {
+
             Long clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
-            mainCtrl.showClientOverview(clickedBoardID);
+
+                if (event.getClickCount() == 2) {
+                    mainCtrl.showClientOverview(clickedBoardID);
+                }
+
+                buttonBox.setOpacity(1L);
+                enterBoard.setOnMouseClicked(event2 -> {
+                    mainCtrl.showClientOverview(clickedBoardID);
+                });
+
+                delBoard.setOnMouseClicked(event2 -> {
+                    serverUtils.deleteBoard(clickedBoardID);
+                });
         });
+
         join_board_button.setOnAction(event -> {
             try {
                 Long id = Long.parseLong(code_input.getText());
@@ -69,7 +98,15 @@ public class LoginController implements Initializable {
                 invalid_text.setVisible(true);
             }
         });
+
         new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
+
+        window.setOnMouseClicked(event -> {
+
+            if(event.getTarget() != buttonBox && event.getTarget() != boards){
+                buttonBox.setOpacity(0L);
+            }
+        });
     }
 }
 
