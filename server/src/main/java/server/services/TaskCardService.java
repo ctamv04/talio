@@ -41,6 +41,7 @@ public class TaskCardService {
         return taskCardRepository.findById(id).map(task -> {
             task.setName(newTaskCard.getName());
             task.setDescription(newTaskCard.getDescription());
+            task.setPosition(newTaskCard.getPosition());
             return ResponseEntity.ok(taskCardRepository.save(task));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }

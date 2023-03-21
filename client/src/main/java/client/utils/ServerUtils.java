@@ -42,7 +42,7 @@ public class ServerUtils {
                 });
     }
 
-    public Board getBoard(Long id) {
+    public Board getBoard(Long id) throws WebApplicationException{
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/"+id) //
                 .request(APPLICATION_JSON) //
@@ -69,7 +69,7 @@ public class ServerUtils {
                 });
     }
     
-    public TaskCard getTaskCard(Long taskId){
+    public TaskCard getTaskCard(Long taskId) throws WebApplicationException{
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + taskId) //
                 .request(APPLICATION_JSON) //
@@ -125,5 +125,23 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .delete(TaskList.class);
+    }
+
+    public List<Long> getTaskListsId(Long boardId) throws WebApplicationException{
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/"+boardId+"/tasklists")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
+    }
+
+    public List<Long> getTaskCardsId(Long listId) throws WebApplicationException{
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/"+listId+"/taskcards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 }

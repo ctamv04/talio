@@ -25,9 +25,9 @@ public class H2MemConfig {
             TaskList taskList1=new TaskList("In Progress",board1);
             TaskList taskList2=new TaskList("Done",board1);
             TaskList taskList3=new TaskList("Unfinished",board2);
-            TaskCard taskCard1=new TaskCard("Prepare",taskList1);
-            TaskCard taskCard2=new TaskCard("Study",taskList1);
-            TaskCard taskCard3=new TaskCard("Read",taskList1);
+            TaskCard taskCard1=new TaskCard("Prepare",taskList1,2L);
+            TaskCard taskCard2=new TaskCard("Study",taskList1,3L);
+            TaskCard taskCard3=new TaskCard("Read",taskList1,1L);
             TaskCard taskCard4=new TaskCard("Exercise",taskList2);
             TaskCard taskCard5=new TaskCard("Dunno",taskList2);
 

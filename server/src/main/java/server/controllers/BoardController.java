@@ -8,6 +8,7 @@ import models.Board;
 import server.repositories.BoardRepository;
 import server.services.BoardService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,22 @@ public class BoardController {
         Optional<Board> board=repo.findById(id);
         return board.map(ResponseEntity::ok).
                         orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    /**
+     * Get task lists ids of the board
+     * @param id The id of the board containing the task lists
+     * @return A list of the task lists belonging to the board
+     */
+    @GetMapping("/{id}/tasklists")
+    public ResponseEntity<List<Long>> getTaskListsId(@PathVariable Long id){
+        Optional<Board> board=repo.findById(id);
+        if(board.isEmpty())
+            return ResponseEntity.badRequest().build();
+        List<Long> lists=new ArrayList<>();
+        for(var x: board.get().getTaskLists())
+            lists.add(x.getId());
+        return ResponseEntity.ok(lists);
     }
 
     /**

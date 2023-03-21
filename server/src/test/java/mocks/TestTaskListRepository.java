@@ -197,5 +197,10 @@ public class TestTaskListRepository implements TaskListRepository {
     public <S extends TaskList, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
+
+    @Override
+    public List<Long> getTaskCardsId(Long id) {
+        return null;
+    }
 }
 

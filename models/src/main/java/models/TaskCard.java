@@ -9,8 +9,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 
-import java.io.Serializable;
-
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
@@ -20,19 +18,17 @@ public class TaskCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String description;
+    private String name="Untitled";
+    private String description="Fill the description";
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private TaskList taskList;
-
+    private Long position=0L;
     /**
      * Constructor function for the Task Card object with an empty name & description
      * @param taskList the task list where the card is located
      */
     public TaskCard(TaskList taskList) {
-        this.name = "";
-        this.description = "";
         this.taskList = taskList;
     }
 
@@ -43,7 +39,6 @@ public class TaskCard {
      */
     public TaskCard(String name, TaskList taskList) {
         this.name = name;
-        this.description = "";
         this.taskList = taskList;
     }
 
@@ -57,6 +52,40 @@ public class TaskCard {
         this.name = name;
         this.description = description;
         this.taskList = taskList;
+    }
+
+    /**
+     * Constructor Method
+     * @param position The position of the object
+     */
+    public TaskCard(Long position) {
+        this.position = position;
+    }
+
+    /**
+     * Constructor Method
+     * @param name The name of the object
+     * @param description The description of the object
+     * @param taskList The taskList of the object
+     * @param position The position of the object
+     */
+    public TaskCard(String name, String description, TaskList taskList, Long position) {
+        this.name = name;
+        this.description = description;
+        this.taskList = taskList;
+        this.position = position;
+    }
+
+    /**
+     * Constructor Method
+     * @param name The name of the object
+     * @param taskList The taskList of the object
+     * @param position The position of the object
+     */
+    public TaskCard(String name, TaskList taskList, Long position) {
+        this.name = name;
+        this.taskList = taskList;
+        this.position = position;
     }
 
     /**

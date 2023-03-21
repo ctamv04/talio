@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -21,12 +22,13 @@ public class Board {
     @GenericGenerator(name = "sequence_board_id", strategy = "generators.BoardIdGenerator")
     @GeneratedValue(generator = "sequence_board_id")
     private Long id;
-    private String name;
+    private String name="Untitled";
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<TaskList> taskLists = new ArrayList<>();
 
     /**
