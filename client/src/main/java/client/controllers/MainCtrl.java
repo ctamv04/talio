@@ -17,6 +17,7 @@ package client.controllers;
 
 import client.views.ViewFactory;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Board;
 import models.TaskList;
@@ -24,66 +25,71 @@ import models.TaskList;
 public class MainCtrl {
 
     private Stage primaryStage;
-    private Stage secondaryStage;
+    private Stage addBoardStage;
     private Stage cardStage;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        secondaryStage = new Stage();
-        showStarting();
+        showLoginPage();
     }
 
-    public void showStarting() {
-        var starting = ViewFactory.createStarting();
-        primaryStage.setScene(new Scene(starting.getValue()));
-        primaryStage.setTitle("Starting Page");
+    public void showLoginPage() {
+        var loginPage = ViewFactory.createLogin();
+        primaryStage.setScene(new Scene(loginPage.getValue()));
+        primaryStage.setTitle("Login Page");
         primaryStage.show();
     }
 
     public void showTaskList(TaskList selectedItem) {
-        var taskList= ViewFactory.createTaskList(selectedItem.getId());
+        var taskList = ViewFactory.createTaskList(selectedItem.getId());
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
     }
 
+    public void showAddBoardPage() {
+        var addBoard = ViewFactory.createAddBoard();
+        addBoardStage = new Stage();
+        addBoardStage.setScene(new Scene(addBoard.getValue()));
+        addBoardStage.setTitle("Add Board");
+        addBoardStage.initModality(Modality.APPLICATION_MODAL);
+        addBoardStage.showAndWait();
+    }
 
     public void showBoard(Board selectedItem) {
-        var board= ViewFactory.createBoard(selectedItem.getId());
+        var board = ViewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
     }
 
-    public void showStartingMenu() {
-        var menu = ViewFactory.createStartingMenu();
-        secondaryStage.setScene(new Scene(menu.getValue()));
-        secondaryStage.setTitle("Menu");
-        secondaryStage.show();
-    }
-
-    public void showAddBoardPage() {
-        var menu = ViewFactory.createAddBoard();
-        secondaryStage.setScene(new Scene(menu.getValue()));
-        secondaryStage.setTitle("Add board");
-        secondaryStage.show();
-    }
-
     public void showCard(Long card_id) {
         var card= ViewFactory.createCard(card_id);
+        cardStage=new Stage();
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
-        cardStage.show();
+        cardStage.initModality(Modality.APPLICATION_MODAL);
+        cardStage.showAndWait();
     }
 
     public void closeCard() {
-        cardStage.close();
+        if(cardStage!=null)
+            cardStage.close();
     }
 
-    public void showClientOverview(Long boardId){
-        var clientOverview=ViewFactory.createClientOverview(boardId);
+    public void showClientOverview(Long boardId) {
+        var clientOverview = ViewFactory.createClientOverview(boardId);
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
+        primaryStage.setOnCloseRequest(event -> {
+            if(clientOverview.getKey()!=null)
+                clientOverview.getKey().closePolling();
+        });
         primaryStage.show();
+    }
+
+    public void closeAddBoard() {
+        if(addBoardStage!=null)
+            addBoardStage.close();
     }
 }

@@ -15,10 +15,10 @@
  */
 package client.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
@@ -40,6 +40,33 @@ public class ServerUtils {
                 .get(new GenericType<>() {
                 });
     }
+
+    public Board getBoard(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/"+id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public boolean existsBoardById(Long id) {
+        Response response=ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/"+id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get();
+        return response.getStatus()==200;
+    }
+
+    public TaskList getTaskList(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasklists/"+id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
     
     public TaskCard getTaskCard(Long taskId){
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -50,15 +77,13 @@ public class ServerUtils {
                 });
     }
 
-    public void updateTaskCard(Long taskId, TaskCard updated){
-
+    public void updateTaskCard(Long taskId, TaskCard updated) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
     public List<TaskList> getTaskLists(Long boardId) {
-
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/taskLists/" + boardId)
                 .request(APPLICATION_JSON)
@@ -68,12 +93,20 @@ public class ServerUtils {
     }
 
     public List<TaskCard> getTaskCards(Long taskListId) {
-
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/taskCards/" + taskListId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
                 });
+    }
+
+    @SuppressWarnings("all")
+    public Board addBoard(Board board) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(board,APPLICATION_JSON), Board.class);
     }
 }

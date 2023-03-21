@@ -26,16 +26,21 @@ public class H2MemConfig {
             TaskList taskList2=new TaskList("Done",board1);
             TaskList taskList3=new TaskList("Unfinished",board2);
             TaskCard taskCard1=new TaskCard("Prepare",taskList1);
+            TaskCard taskCard2=new TaskCard("Study",taskList1);
+            TaskCard taskCard3=new TaskCard("Read",taskList1);
+            TaskCard taskCard4=new TaskCard("Exercise",taskList2);
+            TaskCard taskCard5=new TaskCard("Dunno",taskList2);
 
             boardRepository.saveAll(List.of(board1,board2,board3));
             taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
 
-            board1.setTaskLists(List.of(taskList1,taskList2));
-            board2.setTaskLists(List.of(taskList3));
+            board1.getTaskLists().addAll(List.of(taskList1,taskList2));
+            board2.getTaskLists().add(taskList3);
             boardRepository.saveAll(List.of(board1,board2,board3));
 
-            taskCardRepository.saveAll(List.of(taskCard1));
-            taskList1.setTaskCards(List.of(taskCard1));
+            taskCardRepository.saveAll(List.of(taskCard1,taskCard2,taskCard3,taskCard4,taskCard5));
+            taskList1.getTaskCards().addAll(List.of(taskCard1,taskCard2,taskCard3));
+            taskList2.getTaskCards().addAll(List.of(taskCard4,taskCard5));
             taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
         };
     }
