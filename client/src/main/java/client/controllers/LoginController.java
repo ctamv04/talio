@@ -55,8 +55,11 @@ public class LoginController implements Initializable {
             }
         });
         boards.setOnMouseClicked(event -> {
-            Long clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
-            mainCtrl.showClientOverview(clickedBoardID);
+            Board board = boards.getSelectionModel().getSelectedItem();
+            if (board != null) {
+                Long clickedBoardID = board.getId();
+                mainCtrl.showClientOverview(clickedBoardID);
+            }
         });
         join_board_button.setOnAction(event -> {
             try {
