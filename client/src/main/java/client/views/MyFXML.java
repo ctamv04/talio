@@ -91,7 +91,6 @@ public class MyFXML {
                 return new AddTaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-
             return injector.getInstance(type);
         }
     }

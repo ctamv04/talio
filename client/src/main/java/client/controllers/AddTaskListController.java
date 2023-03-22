@@ -15,13 +15,13 @@ import java.util.ResourceBundle;
 public class AddTaskListController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    private final Long boardId;
     @FXML
     private TextField tasklist_name;
     @FXML
     private Button done_button;
     @FXML
     private Button back_button;
-    private final Long boardId;
 
     @Inject
     public AddTaskListController (ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
