@@ -41,8 +41,8 @@ public class AddTaskListController implements Initializable {
         if (!tasklist_name.getText().isBlank()) {
             name = tasklist_name.getText();
         }
-        TaskList taskList = new TaskList(name, serverUtils.getBoard(53250844L));
-        taskList = serverUtils.addTaskList(taskList, 53250844);
+        TaskList taskList = new TaskList(name, serverUtils.getBoard(19424756L));
+        serverUtils.addTaskList(taskList, 19424756L);
         back();
     }
 
