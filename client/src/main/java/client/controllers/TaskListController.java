@@ -12,12 +12,19 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
 
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class TaskListController implements Initializable {
     private final ServerUtils serverUtils;
@@ -28,7 +35,7 @@ public class TaskListController implements Initializable {
     @FXML
     private Label taskList_name;
     @FXML
-    public ListView<TaskCard> taskCards;
+    public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
 
     @Inject
@@ -61,34 +68,63 @@ public class TaskListController implements Initializable {
         },0,500);
         taskCards.setCellFactory(new Callback<>() {
             @Override
-            public ListCell<TaskCard> call(ListView<TaskCard> param) {
+            public ListCell<Long> call(ListView<Long> param) {
                 return new ListCell<>() {
                     @Override
-                    protected void updateItem(TaskCard item, boolean empty) {
+                    protected void updateItem(Long item, boolean empty) {
                         super.updateItem(item, empty);
                         if(item==null||empty){
                             setText(null);
                             setGraphic(null);
                             return;
                         }
-                        if(!cache.containsKey(item.getId())){
-                            var taskCardPair=ViewFactory.createMinimizedCard(item.getId());
-                            cache.put(item.getId(),taskCardPair.getValue());
+                        if(!cache.containsKey(item)){
+                            var taskCardPair=ViewFactory.createMinimizedCard(item);
+                            cache.put(item,taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
                         }
-                        setGraphic(cache.get(item.getId()));
+                        setGraphic(cache.get(item));
                     }
                 };
             }
         });
 
         taskCards.setOnMouseClicked(event -> {
-            TaskCard card = taskCards.getSelectionModel().getSelectedItem();
-            if (card != null) {
-                Long id = taskCards.getSelectionModel().getSelectedItem().getId();
+            Long cardId = taskCards.getSelectionModel().getSelectedItem();
+            if (cardId != null) {
                 taskCards.getSelectionModel().clearSelection();
-                mainCtrl.showCard(id);
+                mainCtrl.showCard(cardId);
             }
+        });
+
+        taskCards.setOnDragDetected(event -> {
+            Dragboard dragboard = taskCards.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(taskCards.getSelectionModel().getSelectedItem().toString()+" "+taskListId);
+            dragboard.setContent(content);
+            event.consume();
+        });
+
+        taskCards.setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        taskCards.setOnDragDropped(event -> {
+            Dragboard dragboard = event.getDragboard();
+            boolean success = false;
+            if (dragboard.hasString()) {
+                String item = dragboard.getString();
+                Long id=Long.parseLong(item.split(" ")[0]);
+                Long list1=Long.parseLong(item.split(" ")[1]);
+                serverUtils.swapBetweenLists(id, 0,list1,taskListId);
+                System.out.println(id+" "+list1+" "+taskListId);
+                success = true;
+            }
+            event.setDropCompleted(success);
+            event.consume();
         });
     }
 
@@ -98,11 +134,15 @@ public class TaskListController implements Initializable {
     public void update(){
         try {
             TaskList updatedTaskList=serverUtils.getTaskList(taskListId);
-            System.out.println(updatedTaskList);
+            List<Long> taskCardsId=serverUtils.getTaskCardsId(taskListId);
+
+//            System.out.println(updatedTaskList);
+//            System.out.println(taskCardsId);
+
             Platform.runLater(()->{
                 taskList_name.setText(updatedTaskList.getName());
                 taskCards.setItems(FXCollections.
-                                    observableArrayList(updatedTaskList.getTaskCards()));
+                                    observableArrayList(taskCardsId));
             });
         } catch (WebApplicationException e) {
             closePolling();

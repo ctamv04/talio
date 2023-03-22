@@ -72,6 +72,12 @@ public class TaskCardController {
         return service.update(id, newTaskCard);
     }
 
+    @PutMapping("/swap/{id}/{pos}")
+    public ResponseEntity<TaskCard> swapBetweenLists(@PathVariable("id") Long id, @PathVariable("pos") int pos,
+                                           @PathParam("list1") Long list1, @PathParam("list2") Long list2) {
+        return service.swapBetweenLists(id,pos,list1,list2);
+    }
+
     /**
      * Delete an existing taskCard
      * @param id The current taskCard
