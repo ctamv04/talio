@@ -3,9 +3,8 @@ package client.controllers;
 import client.utils.ServerUtils;
 import client.views.ViewFactory;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,7 +16,6 @@ import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
 
-import javax.swing.text.View;
 import java.net.URL;
 import java.util.*;
 
@@ -40,6 +38,17 @@ public class TaskListController implements Initializable {
         this.taskListId = taskListId;
     }
 
+
+    /**
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cache=new HashMap<>();
@@ -74,25 +83,55 @@ public class TaskListController implements Initializable {
         });
 
         taskCards.setOnMouseClicked(event -> {
-            Long id=taskCards.getSelectionModel().getSelectedItem().getId();
-            taskCards.getSelectionModel().clearSelection();
-            mainCtrl.showCard(id);
+            TaskCard card = taskCards.getSelectionModel().getSelectedItem();
+            if (card != null) {
+                Long id = taskCards.getSelectionModel().getSelectedItem().getId();
+                taskCards.getSelectionModel().clearSelection();
+                mainCtrl.showCard(id);
+            }
         });
     }
 
+    /**
+     * Update the task cards in the list using pooling.
+     */
     public void update(){
-        TaskList updatedTaskList=serverUtils.getTaskList(taskListId);
-        System.out.println(updatedTaskList);
-        Platform.runLater(()->{
-            taskList_name.setText(updatedTaskList.getName());
-            taskCards.setItems(FXCollections.observableArrayList(updatedTaskList.getTaskCards()));
-        });
+        try {
+            TaskList updatedTaskList=serverUtils.getTaskList(taskListId);
+            System.out.println(updatedTaskList);
+            Platform.runLater(()->{
+                taskList_name.setText(updatedTaskList.getName());
+                taskCards.setItems(FXCollections.
+                                    observableArrayList(updatedTaskList.getTaskCards()));
+            });
+        } catch (WebApplicationException e) {
+            closePolling();
+        }
     }
 
+    /**
+     * Stops the pooling after closing the scene.
+     */
     public void closePolling(){
         timer.cancel();
         for(MinimizedCardController cardController: taskCardControllers)
             if(cardController!=null)
                 cardController.closePolling();
+    }
+
+    /**
+     * Adds a new task card.
+     */
+    public void addTaskCard () {
+        TaskCard card = new TaskCard();
+        mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
+    }
+
+    /**
+     * Removes a task list.
+     */
+    public void removeTaskList () {
+        closePolling();
+        serverUtils.removeTaskList(taskListId);
     }
 }

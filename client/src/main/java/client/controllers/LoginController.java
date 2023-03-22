@@ -70,6 +70,11 @@ public class LoginController implements Initializable {
             }
         });
         boards.setOnMouseClicked(event -> {
+            Board board = boards.getSelectionModel().getSelectedItem();
+            if (board != null) {
+                Long clickedBoardID = board.getId();
+                mainCtrl.showClientOverview(clickedBoardID);
+            }
 
             Long clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
 

@@ -51,6 +51,8 @@ public class BoardController implements Initializable {
                 update();
             }
         },0,500);
+
+        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(boardId));
     }
 
     private void update(){
@@ -59,7 +61,7 @@ public class BoardController implements Initializable {
 
         nameProperty.set(board.getName());
 
-        List<Parent> list=new ArrayList<>();
+        List<Parent> list = new ArrayList<>();
         for(TaskList taskList: board.getTaskLists()){
             if(!cache.containsKey(taskList.getId())){
                 var taskListPair=ViewFactory.createTaskList(taskList.getId());
