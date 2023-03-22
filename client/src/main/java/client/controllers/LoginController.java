@@ -74,7 +74,7 @@ public class LoginController implements Initializable {
             Board board = boards.getSelectionModel().getSelectedItem();
 
             if (board != null) {
-                Long clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
+                Long clickedBoardID = board.getId();
 
                 if (event.getClickCount() == 2) {
                     mainCtrl.showClientOverview(clickedBoardID);
