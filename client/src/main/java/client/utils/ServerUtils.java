@@ -15,6 +15,7 @@
  */
 package client.utils;
 
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -65,7 +66,7 @@ public class ServerUtils {
         return response.getStatus()==200;
     }
 
-    public TaskList getTaskList(Long id) {
+    public TaskList getTaskList(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasklists/"+id) //
                 .request(APPLICATION_JSON) //
@@ -120,5 +121,32 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(board,APPLICATION_JSON), Board.class);
+    }
+
+
+    public TaskCard addTaskCard(TaskCard card, Long taskListId) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/").queryParam("taskListId", taskListId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(card, APPLICATION_JSON), TaskCard.class);
+    }
+
+    public TaskList removeTaskList(Long taskListId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/" + taskListId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete(TaskList.class);
+    }
+
+    public TaskList addTaskList(TaskList taskList, Long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/")
+                .queryParam("boardId", boardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(taskList,APPLICATION_JSON), TaskList.class);
     }
 }
