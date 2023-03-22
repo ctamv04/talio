@@ -37,11 +37,11 @@ public class AddTaskListController implements Initializable {
     }
 
     public void save() {
-        String name = "Untitled Task List";
+        TaskList taskList = new TaskList();
         if (!tasklist_name.getText().isBlank()) {
-            name = tasklist_name.getText();
+            String name = tasklist_name.getText();
+            taskList.setName(name);
         }
-        TaskList taskList = new TaskList(name, serverUtils.getBoard(boardId));
         serverUtils.addTaskList(taskList, boardId);
         back();
     }
