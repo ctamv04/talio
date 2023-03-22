@@ -26,6 +26,7 @@ public class MainCtrl {
 
     private Stage primaryStage;
     private Stage addBoardStage;
+    private Stage addTaskListStage;
     private Stage cardStage;
 
     public void initialize(Stage primaryStage) {
@@ -91,5 +92,18 @@ public class MainCtrl {
     public void closeAddBoard() {
         if(addBoardStage!=null)
             addBoardStage.close();
+    }
+    public void showAddTaskListPage(Long boardId) {
+        var addTaskList = ViewFactory.createAddTaskList(boardId);
+        addTaskListStage = new Stage();
+        addTaskListStage.setScene(new Scene(addTaskList.getValue()));
+        addTaskListStage.setTitle("Add Task List");
+        addTaskListStage.initModality(Modality.APPLICATION_MODAL);
+        addTaskListStage.showAndWait();
+    }
+
+    public void closeAddTaskListPage() {
+        if(addTaskListStage!=null)
+            addTaskListStage.close();
     }
 }

@@ -12,7 +12,7 @@
          <Font size="18.0" />
       </font>
    </Text>
-   <Button fx:id="close_button" mnemonicParsing="false" prefHeight="14.0" prefWidth="17.0" styleClass="close-button" StackPane.alignment="TOP_RIGHT">
+   <Button fx:id="close_button" mnemonicParsing="false" prefHeight="14.0" prefWidth="17.0" styleClass="close-button" onAction="#delete" StackPane.alignment="TOP_RIGHT">
       <graphic>
          <FontAwesomeIconView glyphName="TIMES" size="10" />
       </graphic>
