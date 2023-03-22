@@ -51,6 +51,12 @@ public class ServerUtils {
                 });
     }
 
+    public void deleteBoard(Long boardId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + boardId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
+    }
+
     public boolean existsBoardById(Long id) {
         Response response=ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/"+id) //
@@ -82,6 +88,12 @@ public class ServerUtils {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
+    public void deleteMinimizedCard(Long taskId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/" + taskId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
     public List<TaskList> getTaskLists(Long boardId) {
