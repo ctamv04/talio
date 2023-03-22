@@ -51,6 +51,8 @@ public class BoardController implements Initializable {
                 update();
             }
         },0,500);
+
+        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(boardId));
     }
 
     private void update(){
