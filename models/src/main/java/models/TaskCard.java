@@ -23,7 +23,7 @@ public class TaskCard {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private TaskList taskList;
-    private Long position=0L;
+    private int position=0;
     /**
      * Constructor function for the Task Card object with an empty name & description
      * @param taskList the task list where the card is located
@@ -58,7 +58,7 @@ public class TaskCard {
      * Constructor Method
      * @param position The position of the object
      */
-    public TaskCard(Long position) {
+    public TaskCard(int position) {
         this.position = position;
     }
 
@@ -69,7 +69,7 @@ public class TaskCard {
      * @param taskList The taskList of the object
      * @param position The position of the object
      */
-    public TaskCard(String name, String description, TaskList taskList, Long position) {
+    public TaskCard(String name, String description, TaskList taskList, int position) {
         this.name = name;
         this.description = description;
         this.taskList = taskList;
@@ -82,7 +82,7 @@ public class TaskCard {
      * @param taskList The taskList of the object
      * @param position The position of the object
      */
-    public TaskCard(String name, TaskList taskList, Long position) {
+    public TaskCard(String name, TaskList taskList, int position) {
         this.name = name;
         this.taskList = taskList;
         this.position = position;

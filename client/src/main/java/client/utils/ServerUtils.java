@@ -84,6 +84,14 @@ public class ServerUtils {
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
+    public void swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/swap/"+id+"/"+pos)
+                .queryParam("list1",idList1)
+                .queryParam("list2",idList2)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(new Board()));
+    }
+
     public List<TaskList> getTaskLists(Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/taskLists/" + boardId)

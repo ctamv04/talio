@@ -49,9 +49,8 @@ public class MinimizedCardController implements Initializable {
         try{
             TaskCard updatedTaskCard=serverUtils.getTaskCard(taskCardId);
 
-            System.out.println(updatedTaskCard);
+//            System.out.println(updatedTaskCard);
 
-            System.out.println(updatedTaskCard);
             Platform.runLater(()->{
                 card_name.setText(updatedTaskCard.getName());
             });

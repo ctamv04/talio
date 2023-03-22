@@ -58,8 +58,8 @@ public class BoardController implements Initializable {
             Board board=serverUtils.getBoard(boardId);
             List<Long> taskListsId=serverUtils.getTaskListsId(boardId);
 
-            System.out.println(board);
-            System.out.println(taskListsId);
+//            System.out.println(board);
+//            System.out.println(taskListsId);
 
             nameProperty.set(board.getName());
 
