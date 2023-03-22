@@ -111,8 +111,7 @@ public class ServerUtils {
                 .post(Entity.entity(board,APPLICATION_JSON), Board.class);
     }
 
-<<<<<<< HEAD
-=======
+
     public TaskCard addTaskCard(TaskCard card, Long taskListId) {
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -130,7 +129,6 @@ public class ServerUtils {
                 .delete(TaskList.class);
     }
 
->>>>>>> addTaskList
     public TaskList addTaskList(TaskList taskList, Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/")
