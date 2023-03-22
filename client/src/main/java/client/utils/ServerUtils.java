@@ -51,6 +51,12 @@ public class ServerUtils {
                 });
     }
 
+    public void deleteBoard(Long boardId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + boardId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
+    }
+
     public boolean existsBoardById(Long id) {
         Response response=ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/"+id) //
@@ -86,10 +92,16 @@ public class ServerUtils {
 
     public void swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tasks/swap/"+id+"/"+pos)
-                .queryParam("list1",idList1)
-                .queryParam("list2",idList2)
+                .target(SERVER).path("api/tasks/swap/" + id + "/" + pos)
+                .queryParam("list1", idList1)
+                .queryParam("list2", idList2)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(new Board()));
+    }
+
+    public void deleteMinimizedCard(Long taskId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/" + taskId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
     public List<TaskList> getTaskLists(Long boardId) {
@@ -119,7 +131,9 @@ public class ServerUtils {
                 .post(Entity.entity(board,APPLICATION_JSON), Board.class);
     }
 
+
     public TaskCard addTaskCard(TaskCard card, Long taskListId) {
+
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/").queryParam("taskListId", taskListId)
                 .request(APPLICATION_JSON)
@@ -144,12 +158,20 @@ public class ServerUtils {
                 });
     }
 
-    public List<Long> getTaskCardsId(Long listId) throws WebApplicationException{
+    public List<Long> getTaskCardsId(Long listId) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tasklists/"+listId+"/taskcards")
+                .target(SERVER).path("api/tasklists/" + listId + "/taskcards")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
                 });
+    }
+    public TaskList addTaskList(TaskList taskList, Long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/")
+                .queryParam("boardId", boardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(taskList,APPLICATION_JSON), TaskList.class);
     }
 }

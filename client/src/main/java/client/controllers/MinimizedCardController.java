@@ -63,4 +63,8 @@ public class MinimizedCardController implements Initializable {
     public void closePolling(){
         timer.cancel();
     }
+
+    public void delete() {
+        serverUtils.deleteMinimizedCard(this.taskCardId);
+    }
 }
