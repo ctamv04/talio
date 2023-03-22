@@ -87,6 +87,10 @@ public class MyFXML {
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
+            if(type== AddTaskListController.class)
+                return new AddTaskListController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+
 
             return injector.getInstance(type);
         }

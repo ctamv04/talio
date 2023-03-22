@@ -21,13 +21,13 @@ public class AddTaskListController implements Initializable {
     private Button done_button;
     @FXML
     private Button back_button;
-    @FXML
-    private Button button;
+    private final Long boardId;
 
     @Inject
-    public AddTaskListController (ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public AddTaskListController (ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
+        this.boardId = boardId;
     }
 
     @Override
@@ -41,8 +41,8 @@ public class AddTaskListController implements Initializable {
         if (!tasklist_name.getText().isBlank()) {
             name = tasklist_name.getText();
         }
-        TaskList taskList = new TaskList(name, serverUtils.getBoard(19424756L));
-        serverUtils.addTaskList(taskList, 19424756L);
+        TaskList taskList = new TaskList(name, serverUtils.getBoard(boardId));
+        serverUtils.addTaskList(taskList, boardId);
         back();
     }
 
