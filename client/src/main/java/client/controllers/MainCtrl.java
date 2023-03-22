@@ -94,7 +94,7 @@ public class MainCtrl {
             addBoardStage.close();
     }
     public void showAddTaskListPage(Long boardId) {
-        var addTaskList = ViewFactory.addTaskList(boardId);
+        var addTaskList = ViewFactory.createAddTaskList(boardId);
         addTaskListStage = new Stage();
         addTaskListStage.setScene(new Scene(addTaskList.getValue()));
         addTaskListStage.setTitle("Add Task List");

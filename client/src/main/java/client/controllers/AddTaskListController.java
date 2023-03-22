@@ -46,7 +46,6 @@ public class AddTaskListController implements Initializable {
         }
         serverUtils.addTaskList(taskList, boardId);
         back();
-
     }
 
     public void back() {
