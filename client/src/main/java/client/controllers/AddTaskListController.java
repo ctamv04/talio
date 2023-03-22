@@ -22,8 +22,6 @@ public class AddTaskListController implements Initializable {
     private Button done_button;
     @FXML
     private Button back_button;
-    @FXML
-    private Button button;
 
     @Inject
     public AddTaskListController (ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
