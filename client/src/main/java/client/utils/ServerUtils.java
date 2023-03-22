@@ -20,6 +20,7 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+import javafx.concurrent.Task;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
@@ -125,5 +126,14 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .delete(TaskList.class);
+    }
+
+    public TaskList addTaskList(TaskList taskList, Long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/")
+                .queryParam("boardId", boardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(taskList,APPLICATION_JSON), TaskList.class);
     }
 }

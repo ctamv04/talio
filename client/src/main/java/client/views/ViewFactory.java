@@ -46,4 +46,8 @@ public class ViewFactory {
     public static Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id){
         return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id);
     }
+
+    public static Pair<AddTaskListController, Parent> addTaskList(Long taskList_id) {
+        return FXML.load(AddTaskListController.class, "/client/addTaskList.fxml", taskList_id);
+    }
 }
