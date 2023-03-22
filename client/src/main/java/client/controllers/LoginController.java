@@ -69,14 +69,12 @@ public class LoginController implements Initializable {
                 };
             }
         });
+
         boards.setOnMouseClicked(event -> {
             Board board = boards.getSelectionModel().getSelectedItem();
-            if (board != null) {
-                Long clickedBoardID = board.getId();
-                mainCtrl.showClientOverview(clickedBoardID);
-            }
 
-            Long clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
+            if (board != null) {
+                Long clickedBoardID = boards.getSelectionModel().getSelectedItem().getId();
 
                 if (event.getClickCount() == 2) {
                     mainCtrl.showClientOverview(clickedBoardID);
@@ -90,6 +88,7 @@ public class LoginController implements Initializable {
                 delBoard.setOnMouseClicked(event2 -> {
                     serverUtils.deleteBoard(clickedBoardID);
                 });
+            }
         });
 
         join_board_button.setOnAction(event -> {
