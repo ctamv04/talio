@@ -112,7 +112,8 @@ public class ServerUtils {
 
     public TaskList addTaskList(TaskList taskList, Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/taskLists/" + boardId)
+                .target(SERVER).path("api/tasklists/")
+                .queryParam("boardId", boardId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(taskList,APPLICATION_JSON), TaskList.class);
