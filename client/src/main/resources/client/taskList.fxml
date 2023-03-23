@@ -4,11 +4,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="329.0" prefWidth="243.0" spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController">
+<VBox alignment="CENTER" prefWidth="243.0" spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController">
     <HBox>
     <Label fx:id="taskList_name" text="Label">
         <font>
@@ -21,6 +22,8 @@
         </graphic>
     </Button>
     </HBox>
-    <ListView fx:id="taskCards" prefHeight="256.0" prefWidth="234.0"/>
+    <ScrollPane fx:id="scrollPane" vbarPolicy="ALWAYS" prefHeight="300.0" prefWidth="243.0">
+        <ListView fx:id="taskCards" />
+    </ScrollPane>
    <Button mnemonicParsing="false" onAction="#addTaskCard" text="Add " />
 </VBox>

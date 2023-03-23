@@ -1,7 +1,6 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import client.views.ViewFactory;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
@@ -40,8 +39,8 @@ public class BoardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        board_parent.setHgap(10);
-        board_parent.setVgap(10);
+        board_parent.setHgap(30);
+        board_parent.setVgap(30);
 
         cache=new HashMap<>();
         timer=new Timer();
@@ -59,9 +58,6 @@ public class BoardController implements Initializable {
         try{
             Board board=serverUtils.getBoard(boardId);
             List<Long> taskListsId=serverUtils.getTaskListsId(boardId);
-
-//            System.out.println(board);
-//            System.out.println(taskListsId);
 
             nameProperty.set(board.getName());
 
