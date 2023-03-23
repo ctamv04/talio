@@ -39,21 +39,26 @@ public class StartingPageController implements Initializable {
         test_button.setOnMouseClicked(event -> healthCheck());
     }
 
-    public void validate() {
+    public String getPort() {
         if (port_input.getText().isBlank()) {
-            mainCtrl.showLoginPage("8080");
+            return "8080";
+        }
+        return port_input.getText();
+    }
+
+    public void validate() {
+        String port = getPort();
+
+        if (serverUtils.healthCheck(port)) {
+            mainCtrl.showLoginPage(port);
         } else {
-            mainCtrl.showLoginPage(port_input.getText());
+            fail_message.setVisible(true);
+            success_message.setVisible(false);
         }
     }
 
     public void healthCheck() {
-        String port;
-        if (port_input.getText().isBlank()) {
-            port = "8080";
-        } else {
-            port = port_input.getText();
-        }
+        String port = getPort();
 
         if (serverUtils.healthCheck(port)) {
             success_message.setVisible(true);

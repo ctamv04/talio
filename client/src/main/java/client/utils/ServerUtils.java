@@ -52,14 +52,13 @@ public class ServerUtils {
         return port;
     }
 
-    public static boolean healthCheck(String port) {
+    public boolean healthCheck(String port) {
         StringBuilder sb = new StringBuilder();
         sb.append("http://localhost:");
         sb.append(port);
         sb.append("/");
         String tmp = sb.toString();
         try {
-            System.out.println("health check");
             ClientBuilder.newClient(new ClientConfig())
                     .target(tmp).path("api/boards") //
                     .request(APPLICATION_JSON) //
