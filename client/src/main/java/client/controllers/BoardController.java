@@ -39,8 +39,8 @@ public class BoardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        board_parent.setHgap(10);
-        board_parent.setVgap(10);
+        board_parent.setHgap(30);
+        board_parent.setVgap(30);
 
         cache = new HashMap<>();
         timer = new Timer();
