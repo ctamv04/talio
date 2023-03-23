@@ -11,15 +11,15 @@ public class TaskCardTest {
 	@Test
 	public void checkConstructorOnlyTaskList() {
 		var t = new TaskCard(new TaskList());
-		assertEquals("", t.getName());
-		assertEquals("", t.getDescription());
+		assertEquals("Untitled", t.getName());
+		assertEquals("Fill the description", t.getDescription());
 	}
 
 	@Test
 	public void checkConstructorNameAndTaskList() {
 		var t = new TaskCard("name", new TaskList());
 		assertEquals("name", t.getName());
-		assertEquals("", t.getDescription());
+		assertEquals("Fill the description", t.getDescription());
 	}
 
 	@Test

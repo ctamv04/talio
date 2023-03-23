@@ -20,12 +20,13 @@ public class TaskList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String name="Untitled";
     @OneToMany(
             mappedBy = "taskList",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<TaskCard> taskCards = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore

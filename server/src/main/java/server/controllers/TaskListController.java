@@ -55,6 +55,19 @@ public class TaskListController {
     }
 
     /**
+     * Get task cards ids of the task list
+     * @param id The id of the task list containing the task cards
+     * @return A list of the task cards belonging to the list
+     */
+    @GetMapping("/{id}/taskcards")
+    public ResponseEntity<List<Long>> getTaskCardsId(@PathVariable Long id){
+        Optional<TaskList> taskList=taskListRepository.findById(id);
+        if(taskList.isEmpty())
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(taskListRepository.getTaskCardsId(id));
+    }
+
+    /**
      * Get task cards of the task list
      *
      * @param id The id of the task list containing the task cards

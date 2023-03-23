@@ -109,14 +109,26 @@ public class ServerUtils {
      *
      * @param id id of the board
      * @return board
+     * @throws WebApplicationException
      */
-    public Board getBoard(Long id) {
+    public Board getBoard(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
                 });
+    }
+
+    /**
+     * Removes the board with a given id
+     *
+     * @param boardId id of the board
+     */
+    public void deleteBoard(Long boardId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + boardId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
     /**
@@ -155,8 +167,9 @@ public class ServerUtils {
      *
      * @param taskId id of the taskcard
      * @return taskcard
+     * @throws WebApplicationException
      */
-    public TaskCard getTaskCard(Long taskId) {
+    public TaskCard getTaskCard(Long taskId) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + taskId) //
                 .request(APPLICATION_JSON) //
@@ -175,6 +188,20 @@ public class ServerUtils {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
+    public void swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/swap/" + id + "/" + pos)
+                .queryParam("list1", idList1)
+                .queryParam("list2", idList2)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(new Board()));
+    }
+
+    public void deleteMinimizedCard(Long taskId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasks/" + taskId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
     /**
@@ -250,6 +277,38 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .delete(TaskList.class);
+    }
+
+    /**
+     * Returns ids of the tasklists in a specified board
+     *
+     * @param boardId id of the board
+     * @return list of ids
+     * @throws WebApplicationException
+     */
+    public List<Long> getTaskListsId(Long boardId) throws WebApplicationException {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + boardId + "/tasklists")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
+    }
+
+    /**
+     * Returns ids of the taskcards in a specified tasklist
+     *
+     * @param listId id of the tasklist
+     * @return list of ids
+     * @throws WebApplicationException
+     */
+    public List<Long> getTaskCardsId(Long listId) throws WebApplicationException {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/" + listId + "/taskcards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     /**
