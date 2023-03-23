@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -17,10 +18,12 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -33,16 +36,18 @@ public class TaskListController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskListId;
     @FXML
+    public Pane indicator_pane;
+    @FXML
     private ScrollPane scrollPane;
     private Map<Long, Parent> cache;
     private Timer timer;
     @FXML
     private Label taskList_name;
     @FXML
-
     public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
     private double scrolledY=0;
+    Label rectangle=new Label("Sorin");
 
 
     @Inject
@@ -69,6 +74,7 @@ public class TaskListController implements Initializable {
             }
         }, 0, 500);
 
+        indicator_pane.prefHeightProperty().bind(taskCards.heightProperty());
         taskCards.setFixedCellSize(60);
         taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
         scrollPane.setFitToWidth(true);
@@ -119,6 +125,8 @@ public class TaskListController implements Initializable {
 
         scrollPane.setOnDragOver(this::onDragOver);
         scrollPane.setOnDragDropped(this::onDragDropped);
+
+        indicator_pane.getChildren().add(rectangle);
     }
 
     private void onDragDetected(MouseEvent event){
@@ -134,6 +142,9 @@ public class TaskListController implements Initializable {
             event.acceptTransferModes(TransferMode.MOVE);
             int index=findIndex(event);
             System.out.println(index);
+            rectangle.setLayoutX(event.getX());
+            rectangle.setLayoutY(findY(index));
+            System.out.println(event.getSceneX());
         }
         event.consume();
     }
@@ -163,13 +174,18 @@ public class TaskListController implements Initializable {
 
     private int findIndex(DragEvent event) {
         double dropY = event.getSceneY();
-        double listViewY = taskCards.localToScene(taskCards.getBoundsInLocal()).getMinY();
+        double listViewY = taskCards.localToScene(scrollPane.getBoundsInLocal()).getMinY();
         double cellHeight = taskCards.getFixedCellSize();
-        double poz = (dropY - listViewY) / cellHeight;
+        System.out.println(dropY+" "+scrolledY+" "+listViewY+" "+cellHeight);
+        double poz = (dropY + scrolledY - listViewY) / cellHeight;
         int index = (int) poz;
         if (((int) (poz * 10)) % 10 >= 5)
             index++;
         return min(index, taskCards.getItems().size());
+    }
+
+    private double findY(int index){
+        return index*taskCards.getFixedCellSize()-scrolledY;
     }
 
     /**
