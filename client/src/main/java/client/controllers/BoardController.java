@@ -51,7 +51,7 @@ public class BoardController implements Initializable {
             }
         }, 0, 500);
 
-        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(serverUtils.getServer(), boardId));
+        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(boardId));
     }
 
     private void update() {
@@ -65,7 +65,7 @@ public class BoardController implements Initializable {
 
             for (var id : taskListsId) {
                 if (!cache.containsKey(id)) {
-                    var taskListPair = mainCtrl.createTaskList(serverUtils.getServer(), id);
+                    var taskListPair = mainCtrl.createTaskList(id);
 
                     taskListControllers.add(taskListPair.getKey());
                     cache.put(id, taskListPair.getValue());
@@ -76,7 +76,7 @@ public class BoardController implements Initializable {
         } catch (WebApplicationException e) {
             closePolling();
 
-            Platform.runLater(() -> mainCtrl.showLoginPage(serverUtils.getServer()));
+            Platform.runLater(mainCtrl::showLoginPage);
         }
     }
 

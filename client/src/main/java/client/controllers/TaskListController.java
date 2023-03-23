@@ -94,7 +94,7 @@ public class TaskListController implements Initializable {
 
                         if (!cache.containsKey(item)) {
                             Random random = new Random();
-                            var taskCardPair = mainCtrl.createMinimizedCard(serverUtils.getServer(), item);
+                            var taskCardPair = mainCtrl.createMinimizedCard(item);
                             taskCardPair.getValue().setStyle("-fx-background-color: rgb(" +
                                     random.nextInt(256) + "," + random.nextInt(256) + "," + random.nextInt(256) + ")");
                             cache.put(item, taskCardPair.getValue());
@@ -110,7 +110,7 @@ public class TaskListController implements Initializable {
             Long cardId = taskCards.getSelectionModel().getSelectedItem();
             if (cardId != null) {
                 taskCards.getSelectionModel().clearSelection();
-                mainCtrl.showCard(serverUtils.getServer(), cardId);
+                mainCtrl.showCard(cardId);
             }
         });
 
@@ -205,7 +205,7 @@ public class TaskListController implements Initializable {
      */
     public void addTaskCard() {
         TaskCard card = new TaskCard();
-        mainCtrl.showCard(serverUtils.getServer(), serverUtils.addTaskCard(card, taskListId).getId());
+        mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
     }
 
     /**

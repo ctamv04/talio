@@ -66,47 +66,31 @@ public class MyFXML {
 
         @Override
         public Object call(Class<?> type) {
-            if (type == AddBoardController.class)
-                return new AddBoardController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class));
 
             if (type == AddTaskListController.class)
-                return new AddTaskListController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class), (Long) params[1]);
+                return new AddTaskListController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             if (type == BoardController.class)
-                return new BoardController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class), (Long) params[1]);
-
-            if (type == ClientMenuController.class)
-                return new ClientMenuController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class));
+                return new BoardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             if (type == ClientOverviewController.class)
-                return new ClientOverviewController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class), (Long) params[1]);
+                return new ClientOverviewController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             if (type == ExtendedCardController.class)
-                return new ExtendedCardController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class), (Long) params[1]);
-
-            if (type == LoginController.class)
-                return new LoginController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class));
+                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
 
             if (type == MinimizedCardController.class)
-                return new MinimizedCardController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class), (Long) params[1]);
-
-
-            if (type == StartingPageController.class)
-                return new StartingPageController(new ServerUtils(),
-                        injector.getInstance(MainCtrl.class));
+                return new MinimizedCardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             if (type == TaskListController.class)
-                return new TaskListController(new ServerUtils((String) params[0]),
-                        injector.getInstance(MainCtrl.class), (Long) params[1]);
+                return new TaskListController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             return injector.getInstance(type);
         }

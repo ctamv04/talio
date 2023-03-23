@@ -76,12 +76,12 @@ public class LoginController implements Initializable {
                 Long clickedBoardID = board.getId();
 
                 if (event.getClickCount() == 2) {
-                    mainCtrl.showClientOverview(serverUtils.getServer(), clickedBoardID);
+                    mainCtrl.showClientOverview(clickedBoardID);
                 }
 
                 buttonBox.setOpacity(1L);
                 enterBoard.setOnMouseClicked(event2 -> {
-                    mainCtrl.showClientOverview(serverUtils.getServer(), clickedBoardID);
+                    mainCtrl.showClientOverview(clickedBoardID);
                 });
 
                 delBoard.setOnMouseClicked(event2 -> {
@@ -94,14 +94,14 @@ public class LoginController implements Initializable {
             try {
                 Long id = Long.parseLong(code_input.getText());
                 Board board = serverUtils.getBoard(id);
-                mainCtrl.showClientOverview(serverUtils.getServer(), serverUtils.getBoard(id).getId());
+                mainCtrl.showClientOverview(serverUtils.getBoard(id).getId());
             } catch (NumberFormatException | WebApplicationException e) {
 
                 invalid_text.setVisible(true);
             }
         });
 
-        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage(serverUtils.getServer()));
+        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
 
         window.setOnMouseClicked(event -> {
 

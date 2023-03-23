@@ -50,7 +50,8 @@ public class StartingPageController implements Initializable {
         String port = getServer();
 
         if (serverUtils.healthCheck(port)) {
-            mainCtrl.showLoginPage(port);
+            serverUtils.setServer(port);
+            mainCtrl.showLoginPage();
         } else {
             fail_message.setVisible(true);
             success_message.setVisible(false);

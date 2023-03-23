@@ -40,21 +40,10 @@ public class ServerUtils {
     }
 
     /**
-     * Constructor for server utils. Sets specified value to the port
-     *
-     * @param server port to use in requests
+     * Sets the server url
      */
-    public ServerUtils(String server) {
+    public void setServer(String server) {
         SERVER = server;
-    }
-
-    /**
-     * Returns the server url
-     *
-     * @return server
-     */
-    public String getServer() {
-        return SERVER;
     }
 
     /**

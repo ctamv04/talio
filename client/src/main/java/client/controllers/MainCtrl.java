@@ -37,8 +37,8 @@ public class MainCtrl {
         showStartingPage();
     }
 
-    public void showLoginPage(String port) {
-        var loginPage = viewFactory.createLogin(port);
+    public void showLoginPage() {
+        var loginPage = viewFactory.createLogin();
         primaryStage.setScene(new Scene(loginPage.getValue()));
         primaryStage.setTitle("Login Page");
         primaryStage.show();
@@ -52,15 +52,15 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public void showTaskList(String port, TaskList selectedItem) {
-        var taskList = viewFactory.createTaskList(port, selectedItem.getId());
+    public void showTaskList(TaskList selectedItem) {
+        var taskList = viewFactory.createTaskList(selectedItem.getId());
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
     }
 
-    public void showAddBoardPage(String port) {
-        var addBoard = viewFactory.createAddBoard(port);
+    public void showAddBoardPage() {
+        var addBoard = viewFactory.createAddBoard();
         addBoardStage = new Stage();
         addBoardStage.setScene(new Scene(addBoard.getValue()));
         addBoardStage.setTitle("Add Board");
@@ -68,15 +68,15 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
-    public void showBoard(String port, Board selectedItem) {
-        var board = viewFactory.createBoard(port, selectedItem.getId());
+    public void showBoard(Board selectedItem) {
+        var board = viewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
     }
 
-    public void showCard(String port, Long card_id) {
-        var card = viewFactory.createCard(port, card_id);
+    public void showCard(Long card_id) {
+        var card = viewFactory.createCard(card_id);
         cardStage = new Stage();
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
@@ -89,8 +89,8 @@ public class MainCtrl {
             cardStage.close();
     }
 
-    public void showClientOverview(String port, Long boardId) {
-        var clientOverview = viewFactory.createClientOverview(port, boardId);
+    public void showClientOverview(Long boardId) {
+        var clientOverview = viewFactory.createClientOverview(boardId);
 
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
@@ -106,8 +106,8 @@ public class MainCtrl {
             addBoardStage.close();
     }
 
-    public void showAddTaskListPage(String port, Long boardId) {
-        var addTaskList = viewFactory.createAddTaskList(port, boardId);
+    public void showAddTaskListPage(Long boardId) {
+        var addTaskList = viewFactory.createAddTaskList(boardId);
         addTaskListStage = new Stage();
         addTaskListStage.setScene(new Scene(addTaskList.getValue()));
         addTaskListStage.setTitle("Add Task List");
@@ -120,19 +120,19 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu(String port) {
-        return viewFactory.createClientMenu(port);
+    public Pair<ClientMenuController, Parent> createClientMenu() {
+        return viewFactory.createClientMenu();
     }
 
-    public Pair<BoardController, Parent> createBoard(String port, Long boardId) {
-        return viewFactory.createBoard(port, boardId);
+    public Pair<BoardController, Parent> createBoard(Long boardId) {
+        return viewFactory.createBoard(boardId);
     }
 
-    public Pair<TaskListController, Parent> createTaskList(String port, Long id) {
-        return viewFactory.createTaskList(port, id);
+    public Pair<TaskListController, Parent> createTaskList(Long id) {
+        return viewFactory.createTaskList(id);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(String port, Long card_id) {
-        return viewFactory.createMinimizedCard(port, card_id);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
+        return viewFactory.createMinimizedCard(card_id);
     }
 }
