@@ -15,7 +15,7 @@ public class StartingPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     @FXML
-    private TextField port_input;
+    private TextField url_input;
     @FXML
     private Button done_button;
     @FXML
@@ -40,17 +40,17 @@ public class StartingPageController implements Initializable {
     }
 
     public String getServer() {
-        if (port_input.getText().isBlank()) {
+        if (url_input.getText().isBlank()) {
             return "http://localhost:8080/";
         }
-        return port_input.getText();
+        return url_input.getText();
     }
 
     public void validate() {
-        String port = getServer();
+        String url = getServer();
 
-        if (serverUtils.healthCheck(port)) {
-            serverUtils.setServer(port);
+        if (serverUtils.healthCheck(url)) {
+            serverUtils.setServer(url);
             mainCtrl.showLoginPage();
         } else {
             fail_message.setVisible(true);
@@ -59,9 +59,9 @@ public class StartingPageController implements Initializable {
     }
 
     public void healthCheck() {
-        String port = getServer();
+        String url = getServer();
 
-        if (serverUtils.healthCheck(port)) {
+        if (serverUtils.healthCheck(url)) {
             success_message.setVisible(true);
             fail_message.setVisible(false);
         } else {
