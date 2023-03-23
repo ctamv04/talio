@@ -34,11 +34,19 @@ public class ServerUtils {
     private static String SERVER;
     private final String port;
 
+    /**
+     * Constructor for server utils with no parameters. Port is set to default 8080
+     */
     public ServerUtils() {
         SERVER = "http://localhost:8080/";
         port = "8080";
     }
 
+    /**
+     * Constructor for server utils. Sets specified value to the port
+     *
+     * @param port port to use in requests
+     */
     public ServerUtils(String port) {
         StringBuilder sb = new StringBuilder();
         sb.append("http://localhost:");
@@ -48,10 +56,21 @@ public class ServerUtils {
         this.port = port;
     }
 
+    /**
+     * Returns the port
+     *
+     * @return port
+     */
     public String getPort() {
         return port;
     }
 
+    /**
+     * Tests if the connection can be established for a given port
+     *
+     * @param port port
+     * @return true if connection can be established false otherwise
+     */
     public boolean healthCheck(String port) {
         StringBuilder sb = new StringBuilder();
         sb.append("http://localhost:");
@@ -71,6 +90,11 @@ public class ServerUtils {
         return true;
     }
 
+    /**
+     * Returns all the boards in the current workspace
+     *
+     * @return list of boards
+     */
     public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards") //
@@ -80,6 +104,12 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Returns the board with a given id
+     *
+     * @param id id of the board
+     * @return board
+     */
     public Board getBoard(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/" + id) //
@@ -89,6 +119,12 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Checks if the board with a given id exists
+     *
+     * @param id id of the board
+     * @return true if board with given id is found false otherwise
+     */
     public boolean existsBoardById(Long id) {
         Response response = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/" + id) //
@@ -98,6 +134,13 @@ public class ServerUtils {
         return response.getStatus() == 200;
     }
 
+    /**
+     * Returns the tasklist with a given id
+     *
+     * @param id id of the tasklist
+     * @return tasklist
+     * @throws WebApplicationException
+     */
     public TaskList getTaskList(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasklists/" + id) //
@@ -107,6 +150,12 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Returns the taskcard with a given id
+     *
+     * @param taskId id of the taskcard
+     * @return taskcard
+     */
     public TaskCard getTaskCard(Long taskId) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + taskId) //
@@ -116,12 +165,24 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Updates the taskcard with a specified id
+     *
+     * @param taskId  id of the taskcard
+     * @param updated updated taskcard
+     */
     public void updateTaskCard(Long taskId, TaskCard updated) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
+    /**
+     * Returns tasklists for a given board
+     *
+     * @param boardId id of the board
+     * @return list of tasklists
+     */
     public List<TaskList> getTaskLists(Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/taskLists/" + boardId)
@@ -131,6 +192,12 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Returns taskcards for a given tasklist
+     *
+     * @param taskListId id of the tasklist
+     * @return list of taskcards
+     */
     public List<TaskCard> getTaskCards(Long taskListId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/taskCards/" + taskListId)
@@ -140,6 +207,12 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Creates a new board
+     *
+     * @param board new board
+     * @return board
+     */
     @SuppressWarnings("all")
     public Board addBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -149,7 +222,13 @@ public class ServerUtils {
                 .post(Entity.entity(board, APPLICATION_JSON), Board.class);
     }
 
-
+    /**
+     * Creates a new taskcard in a given tasklist
+     *
+     * @param card       new taskcard
+     * @param taskListId id of the tasklist
+     * @return taskcard
+     */
     public TaskCard addTaskCard(TaskCard card, Long taskListId) {
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -159,6 +238,12 @@ public class ServerUtils {
                 .post(Entity.entity(card, APPLICATION_JSON), TaskCard.class);
     }
 
+    /**
+     * Removes tasklist wth a given id
+     *
+     * @param taskListId id of the tasklist
+     * @return removed tasklist
+     */
     public TaskList removeTaskList(Long taskListId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/" + taskListId)
@@ -167,6 +252,13 @@ public class ServerUtils {
                 .delete(TaskList.class);
     }
 
+    /**
+     * Creates a new tasklist in a given board
+     *
+     * @param taskList new tasklist
+     * @param boardId  id of the board
+     * @return tasklist
+     */
     public TaskList addTaskList(TaskList taskList, Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/")
