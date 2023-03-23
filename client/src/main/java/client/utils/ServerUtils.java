@@ -31,55 +31,43 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
-    private static String SERVER;
-    private final String port;
+    private String SERVER;
 
     /**
      * Constructor for server utils with no parameters. Port is set to default 8080
      */
     public ServerUtils() {
         SERVER = "http://localhost:8080/";
-        port = "8080";
     }
 
     /**
      * Constructor for server utils. Sets specified value to the port
      *
-     * @param port port to use in requests
+     * @param server port to use in requests
      */
-    public ServerUtils(String port) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("http://localhost:");
-        sb.append(port);
-        sb.append("/");
-        SERVER = sb.toString();
-        this.port = port;
+    public ServerUtils(String server) {
+        SERVER = server;
     }
 
     /**
-     * Returns the port
+     * Returns the server url
      *
-     * @return port
+     * @return server
      */
-    public String getPort() {
-        return port;
+    public String getServer() {
+        return SERVER;
     }
 
     /**
-     * Tests if the connection can be established for a given port
+     * Tests if the connection can be established for a given url
      *
-     * @param port port
+     * @param server server url
      * @return true if connection can be established false otherwise
      */
-    public boolean healthCheck(String port) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("http://localhost:");
-        sb.append(port);
-        sb.append("/");
-        String tmp = sb.toString();
+    public boolean healthCheck(String server) {
         try {
             ClientBuilder.newClient(new ClientConfig())
-                    .target(tmp).path("api/boards") //
+                    .target(server).path("api/boards") //
                     .request(APPLICATION_JSON) //
                     .accept(APPLICATION_JSON) //
                     .get();

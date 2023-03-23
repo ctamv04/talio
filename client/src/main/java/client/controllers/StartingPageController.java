@@ -39,15 +39,15 @@ public class StartingPageController implements Initializable {
         test_button.setOnMouseClicked(event -> healthCheck());
     }
 
-    public String getPort() {
+    public String getServer() {
         if (port_input.getText().isBlank()) {
-            return "8080";
+            return "http://localhost:8080/";
         }
         return port_input.getText();
     }
 
     public void validate() {
-        String port = getPort();
+        String port = getServer();
 
         if (serverUtils.healthCheck(port)) {
             mainCtrl.showLoginPage(port);
@@ -58,7 +58,7 @@ public class StartingPageController implements Initializable {
     }
 
     public void healthCheck() {
-        String port = getPort();
+        String port = getServer();
 
         if (serverUtils.healthCheck(port)) {
             success_message.setVisible(true);

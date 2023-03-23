@@ -52,7 +52,7 @@ public class BoardController implements Initializable {
             }
         }, 0, 500);
 
-        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(serverUtils.getPort(), boardId));
+        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(serverUtils.getServer(), boardId));
     }
 
     private void update() {
@@ -65,7 +65,7 @@ public class BoardController implements Initializable {
             List<Parent> list = new ArrayList<>();
             for (var id : taskListsId) {
                 if (!cache.containsKey(id)) {
-                    var taskListPair = ViewFactory.createTaskList(serverUtils.getPort(), id);
+                    var taskListPair = ViewFactory.createTaskList(serverUtils.getServer(), id);
                     taskListControllers.add(taskListPair.getKey());
                     cache.put(id, taskListPair.getValue());
                 }
@@ -74,7 +74,7 @@ public class BoardController implements Initializable {
             Platform.runLater(() -> board_parent.getChildren().setAll(list));
         } catch (WebApplicationException e) {
             closePolling();
-            mainCtrl.showLoginPage(serverUtils.getPort());
+            mainCtrl.showLoginPage(serverUtils.getServer());
         }
     }
 

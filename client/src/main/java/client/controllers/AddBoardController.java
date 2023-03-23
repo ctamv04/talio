@@ -45,6 +45,6 @@ public class AddBoardController implements Initializable {
 
         board = serverUtils.addBoard(board);
         back();
-        mainCtrl.showClientOverview(serverUtils.getPort(), board.getId());
+        mainCtrl.showClientOverview(serverUtils.getServer(), board.getId());
     }
 }

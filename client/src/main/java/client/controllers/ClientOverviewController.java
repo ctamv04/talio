@@ -28,8 +28,8 @@ public class ClientOverviewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menu = ViewFactory.createClientMenu(serverUtils.getPort());
-        var board = ViewFactory.createBoard(serverUtils.getPort(), boardId);
+        var menu = ViewFactory.createClientMenu(serverUtils.getServer());
+        var board = ViewFactory.createBoard(serverUtils.getServer(), boardId);
 
         layout.setTop(menu.getValue());
         layout.setCenter(board.getValue());
@@ -41,7 +41,7 @@ public class ClientOverviewController implements Initializable {
                 boardController.namePropertyProperty(), " (#", boardId, ")"));
         clientMenuController.getHome_button().setOnAction(event -> {
             boardController.closePolling();
-            mainCtrl.showLoginPage(serverUtils.getPort());
+            mainCtrl.showLoginPage(serverUtils.getServer());
         });
     }
 

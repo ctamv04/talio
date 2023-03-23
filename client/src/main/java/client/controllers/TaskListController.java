@@ -74,7 +74,7 @@ public class TaskListController implements Initializable {
                         }
 
                         if (!cache.containsKey(item)) {
-                            var taskCardPair = ViewFactory.createMinimizedCard(serverUtils.getPort(), item);
+                            var taskCardPair = ViewFactory.createMinimizedCard(serverUtils.getServer(), item);
                             cache.put(item, taskCardPair.getValue());
 
                             taskCardControllers.add(taskCardPair.getKey());
@@ -89,7 +89,7 @@ public class TaskListController implements Initializable {
             Long cardId = taskCards.getSelectionModel().getSelectedItem();
             if (cardId != null) {
                 taskCards.getSelectionModel().clearSelection();
-                mainCtrl.showCard(serverUtils.getPort(), cardId);
+                mainCtrl.showCard(serverUtils.getServer(), cardId);
             }
         });
 
@@ -160,7 +160,7 @@ public class TaskListController implements Initializable {
      */
     public void addTaskCard() {
         TaskCard card = new TaskCard();
-        mainCtrl.showCard(serverUtils.getPort(), serverUtils.addTaskCard(card, taskListId).getId());
+        mainCtrl.showCard(serverUtils.getServer(), serverUtils.addTaskCard(card, taskListId).getId());
     }
 
     /**

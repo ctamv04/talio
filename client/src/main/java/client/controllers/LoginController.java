@@ -75,12 +75,12 @@ public class LoginController implements Initializable {
                 Long clickedBoardID = board.getId();
 
                 if (event.getClickCount() == 2) {
-                    mainCtrl.showClientOverview(serverUtils.getPort(), clickedBoardID);
+                    mainCtrl.showClientOverview(serverUtils.getServer(), clickedBoardID);
                 }
 
                 buttonBox.setOpacity(1L);
                 enterBoard.setOnMouseClicked(event2 -> {
-                    mainCtrl.showClientOverview(serverUtils.getPort(), clickedBoardID);
+                    mainCtrl.showClientOverview(serverUtils.getServer(), clickedBoardID);
                 });
 
                 delBoard.setOnMouseClicked(event2 -> {
@@ -95,13 +95,13 @@ public class LoginController implements Initializable {
                 if (!serverUtils.existsBoardById(id))
                     invalid_text.setVisible(true);
                 else
-                    mainCtrl.showClientOverview(serverUtils.getPort(), serverUtils.getBoard(id).getId());
+                    mainCtrl.showClientOverview(serverUtils.getServer(), serverUtils.getBoard(id).getId());
             } catch (NumberFormatException e) {
                 invalid_text.setVisible(true);
             }
         });
 
-        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage(serverUtils.getPort()));
+        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage(serverUtils.getServer()));
 
         window.setOnMouseClicked(event -> {
 
