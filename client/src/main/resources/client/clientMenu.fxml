@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="60.0" prefWidth="600.0" styleClass="layout" stylesheets="@../styles/clientMenu.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ClientMenuController">
-    <Button fx:id="home_button" layoutX="492.0" layoutY="10.0" mnemonicParsing="false" text="Home" AnchorPane.rightAnchor="14.399999999999977">
+    <Button fx:id="home_button" layoutX="492.0" layoutY="10.0" mnemonicParsing="false" text="Home" AnchorPane.rightAnchor="20.0">
         <graphic>
           <FontAwesomeIconView glyphName="HOME" />
         </graphic>

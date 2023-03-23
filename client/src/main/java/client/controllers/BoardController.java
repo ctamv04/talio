@@ -8,19 +8,25 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import models.Board;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class BoardController implements Initializable {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long boardId;
+    @FXML
+    public ScrollPane scrollPane;
     private Map<Long, Parent> cache;
     private Timer timer;
     private final List<TaskListController> taskListControllers = new ArrayList<>();
@@ -42,6 +48,9 @@ public class BoardController implements Initializable {
         board_parent.setHgap(30);
         board_parent.setVgap(30);
 
+        board_parent.prefWidthProperty().bind(scrollPane.widthProperty());
+
+        System.out.println(scrollPane.getWidth()+" "+scrollPane.getHeight());
         cache = new HashMap<>();
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
