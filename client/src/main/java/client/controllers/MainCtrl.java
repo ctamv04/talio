@@ -16,40 +16,43 @@
 package client.controllers;
 
 import client.views.ViewFactory;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import models.Board;
 import models.TaskList;
 
 public class MainCtrl {
-
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
     private Stage cardStage;
+    private ViewFactory viewFactory;
 
-    public void initialize(Stage primaryStage) {
+    public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
+        this.viewFactory = viewFactory;
         showLoginPage();
     }
 
     public void showLoginPage() {
-        var loginPage = ViewFactory.createLogin();
+        var loginPage = viewFactory.createLogin();
         primaryStage.setScene(new Scene(loginPage.getValue()));
         primaryStage.setTitle("Login Page");
         primaryStage.show();
     }
 
     public void showTaskList(TaskList selectedItem) {
-        var taskList = ViewFactory.createTaskList(selectedItem.getId());
+        var taskList = viewFactory.createTaskList(selectedItem.getId());
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
     }
 
     public void showAddBoardPage() {
-        var addBoard = ViewFactory.createAddBoard();
+        var addBoard = viewFactory.createAddBoard();
         addBoardStage = new Stage();
         addBoardStage.setScene(new Scene(addBoard.getValue()));
         addBoardStage.setTitle("Add Board");
@@ -58,14 +61,14 @@ public class MainCtrl {
     }
 
     public void showBoard(Board selectedItem) {
-        var board = ViewFactory.createBoard(selectedItem.getId());
+        var board = viewFactory.createBoard(selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
     }
 
     public void showCard(Long card_id) {
-        var card= ViewFactory.createCard(card_id);
+        var card= viewFactory.createCard(card_id);
         cardStage=new Stage();
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
@@ -79,7 +82,7 @@ public class MainCtrl {
     }
 
     public void showClientOverview(Long boardId) {
-        var clientOverview = ViewFactory.createClientOverview(boardId);
+        var clientOverview = viewFactory.createClientOverview(boardId);
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
         primaryStage.setOnCloseRequest(event -> {
@@ -94,7 +97,7 @@ public class MainCtrl {
             addBoardStage.close();
     }
     public void showAddTaskListPage(Long boardId) {
-        var addTaskList = ViewFactory.createAddTaskList(boardId);
+        var addTaskList = viewFactory.createAddTaskList(boardId);
         addTaskListStage = new Stage();
         addTaskListStage.setScene(new Scene(addTaskList.getValue()));
         addTaskListStage.setTitle("Add Task List");
@@ -105,5 +108,21 @@ public class MainCtrl {
     public void closeAddTaskListPage() {
         if(addTaskListStage!=null)
             addTaskListStage.close();
+    }
+
+    public Pair<ClientMenuController, Parent> createClientMenu() {
+        return viewFactory.createClientMenu();
+    }
+
+    public Pair<BoardController, Parent> createBoard(Long boardId) {
+        return viewFactory.createBoard(boardId);
+    }
+
+    public Pair<TaskListController, Parent> createTaskList(Long id) {
+        return viewFactory.createTaskList(id);
+    }
+
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id){
+        return viewFactory.createMinimizedCard(card_id);
     }
 }

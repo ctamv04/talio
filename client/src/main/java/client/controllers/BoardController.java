@@ -68,7 +68,7 @@ public class BoardController implements Initializable {
             List<Parent> list = new ArrayList<>();
             for(var id: taskListsId){
                 if(!cache.containsKey(id)){
-                    var taskListPair=ViewFactory.createTaskList(id);
+                    var taskListPair=mainCtrl.createTaskList(id);
                     taskListControllers.add(taskListPair.getKey());
                     cache.put(id,taskListPair.getValue());
                 }
@@ -77,7 +77,7 @@ public class BoardController implements Initializable {
             Platform.runLater(()->board_parent.getChildren().setAll(list));
         }catch (WebApplicationException e){
             closePolling();
-            mainCtrl.showLoginPage();
+            Platform.runLater(mainCtrl::showLoginPage);
         }
     }
 

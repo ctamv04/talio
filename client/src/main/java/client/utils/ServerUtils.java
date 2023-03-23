@@ -57,15 +57,6 @@ public class ServerUtils {
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
-    public boolean existsBoardById(Long id) {
-        Response response=ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/"+id) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get();
-        return response.getStatus()==200;
-    }
-
     public TaskList getTaskList(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasklists/"+id) //

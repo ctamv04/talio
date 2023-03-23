@@ -85,9 +85,6 @@ public class TaskCardController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskCard> delete(@PathVariable("id") Long id) {
-        if (!repo.existsById(id))
-            return ResponseEntity.badRequest().build();
-        repo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return service.delete(id);
     }
 }
