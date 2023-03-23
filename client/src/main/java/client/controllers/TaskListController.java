@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.*;
 import javafx.scene.control.Label;
@@ -19,12 +18,16 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
+import org.w3c.dom.css.Rect;
 
-import java.awt.*;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -46,8 +49,7 @@ public class TaskListController implements Initializable {
     @FXML
     public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
-    private double scrolledY=0;
-    Label rectangle=new Label("Sorin");
+    Line line=new Line();
 
 
     @Inject
@@ -79,10 +81,6 @@ public class TaskListController implements Initializable {
         taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(300);
-        scrollPane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
-            scrolledY=newValue.doubleValue()*(taskCards.getItems().size()*taskCards.getFixedCellSize()-300);
-            System.out.println(scrolledY);
-        });
 
         taskCards.setCellFactory(new Callback<>() {
             @Override
@@ -126,7 +124,15 @@ public class TaskListController implements Initializable {
         scrollPane.setOnDragOver(this::onDragOver);
         scrollPane.setOnDragDropped(this::onDragDropped);
 
-        indicator_pane.getChildren().add(rectangle);
+        taskCards.setOnDragExited(event -> line.setVisible(false));
+        taskCards.setOnDragEntered(event -> line.setVisible(true));
+        scrollPane.setOnDragExited(event -> line.setVisible(false));
+        scrollPane.setOnDragEntered(event -> line.setVisible(true));
+
+        indicator_pane.getChildren().add(line);
+        line.setStroke(Color.BLACK);
+        line.getStrokeDashArray().addAll(10d,10d);
+        line.setVisible(false);
     }
 
     private void onDragDetected(MouseEvent event){
@@ -141,10 +147,11 @@ public class TaskListController implements Initializable {
         if (event.getDragboard().hasString()) {
             event.acceptTransferModes(TransferMode.MOVE);
             int index=findIndex(event);
-            System.out.println(index);
-            rectangle.setLayoutX(event.getX());
-            rectangle.setLayoutY(findY(index));
-            System.out.println(event.getSceneX());
+            line.setStartX(event.getX()-100);
+            line.setEndX(event.getX()+100);
+            double y=findY(index);
+            line.setStartY(y);
+            line.setEndY(y);
         }
         event.consume();
     }
@@ -167,25 +174,31 @@ public class TaskListController implements Initializable {
             success = true;
             taskCards.getSelectionModel().clearSelection();
             taskList_name.getParent().requestFocus();
+            line.setVisible(false);
         }
         event.setDropCompleted(success);
         event.consume();
     }
 
-    private int findIndex(DragEvent event) {
-        double dropY = event.getSceneY();
-        double listViewY = taskCards.localToScene(scrollPane.getBoundsInLocal()).getMinY();
-        double cellHeight = taskCards.getFixedCellSize();
-        System.out.println(dropY+" "+scrolledY+" "+listViewY+" "+cellHeight);
-        double poz = (dropY + scrolledY - listViewY) / cellHeight;
-        int index = (int) poz;
-        if (((int) (poz * 10)) % 10 >= 5)
+    private int findIndex(DragEvent event){
+        double dropY=event.getSceneY();
+        double listViewY=scrollPane.localToScene(scrollPane.getBoundsInLocal()).getMinY();
+        double cellHeight=taskCards.getFixedCellSize();
+        double poz= (dropY + findScrolledY() - listViewY) /cellHeight;
+        int index=(int)poz;
+        if(((int)(poz*10))%10>=5)
             index++;
-        return min(index, taskCards.getItems().size());
+        return min(index,taskCards.getItems().size());
     }
 
+
     private double findY(int index){
-        return index*taskCards.getFixedCellSize()-scrolledY;
+        return index*taskCards.getFixedCellSize();
+    }
+
+    private double findScrolledY(){
+        double ratio=scrollPane.getVvalue();
+        return ratio*(taskCards.getItems().size()*taskCards.getFixedCellSize()-300);
     }
 
     /**
