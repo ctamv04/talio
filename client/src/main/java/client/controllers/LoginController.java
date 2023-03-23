@@ -2,6 +2,7 @@ package client.controllers;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -94,11 +95,9 @@ public class LoginController implements Initializable {
         join_board_button.setOnAction(event -> {
             try {
                 Long id = Long.parseLong(code_input.getText());
-                if(!serverUtils.existsBoardById(id))
-                    invalid_text.setVisible(true);
-                else
-                    mainCtrl.showClientOverview(serverUtils.getBoard(id).getId());
-            }catch (NumberFormatException e){
+                Board board=serverUtils.getBoard(id);
+                mainCtrl.showClientOverview(serverUtils.getBoard(id).getId());
+            }catch (NumberFormatException | WebApplicationException e){
                 invalid_text.setVisible(true);
             }
         });

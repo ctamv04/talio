@@ -28,8 +28,8 @@ public class ClientOverviewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menu = ViewFactory.createClientMenu();
-        var board = ViewFactory.createBoard(boardId);
+        var menu = mainCtrl.createClientMenu();
+        var board = mainCtrl.createBoard(boardId);
 
         layout.setTop(menu.getValue());
         layout.setCenter(board.getValue());

@@ -1,5 +1,6 @@
 package mocks;
 
+import models.TaskCard;
 import models.TaskList;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -199,7 +200,7 @@ public class TestTaskListRepository implements TaskListRepository {
     }
 
     @Override
-    public List<Long> getTaskCardsId(Long id) {
+    public List<TaskCard> getTaskCardsId(Long id) {
         return null;
     }
 }
