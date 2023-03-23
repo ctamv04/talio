@@ -1,7 +1,6 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import client.views.ViewFactory;
 import com.google.inject.Inject;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -35,17 +34,17 @@ public class ClientOverviewController implements Initializable {
         layout.setCenter(board.getValue());
 
         ClientMenuController clientMenuController = menu.getKey();
-        boardController=board.getKey();
+        boardController = board.getKey();
 
         clientMenuController.getBoard_title().textProperty().bind(Bindings.concat("Talio | ",
-                boardController.namePropertyProperty()," (#",boardId,")"));
+                boardController.namePropertyProperty(), " (#", boardId, ")"));
         clientMenuController.getHome_button().setOnAction(event -> {
             boardController.closePolling();
             mainCtrl.showLoginPage();
         });
     }
 
-    public void closePolling(){
+    public void closePolling() {
         boardController.closePolling();
     }
 }

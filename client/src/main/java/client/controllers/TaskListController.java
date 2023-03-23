@@ -10,6 +10,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
@@ -32,9 +39,11 @@ public class TaskListController implements Initializable {
     @FXML
     private Label taskList_name;
     @FXML
+
     public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
     private double scrolledY=0;
+
 
     @Inject
     public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, long taskListId) {
@@ -44,25 +53,21 @@ public class TaskListController implements Initializable {
     }
 
     /**
-     *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cache=new HashMap<>();
-        timer=new Timer();
+        cache = new HashMap<>();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 update();
             }
-        },0,500);
+        }, 0, 500);
 
         taskCards.setFixedCellSize(60);
         taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
@@ -80,17 +85,18 @@ public class TaskListController implements Initializable {
                     @Override
                     protected void updateItem(Long item, boolean empty) {
                         super.updateItem(item, empty);
-                        if(item==null||empty){
+                        if (item == null || empty) {
                             setText(null);
                             setGraphic(null);
                             return;
                         }
-                        if(!cache.containsKey(item)){
-                            Random random=new Random();
-                            var taskCardPair=mainCtrl.createMinimizedCard(item);
-                            taskCardPair.getValue().setStyle("-fx-background-color: rgb("+
-                                    random.nextInt(256)+","+random.nextInt(256)+","+random.nextInt(256)+")");
-                            cache.put(item,taskCardPair.getValue());
+
+                        if (!cache.containsKey(item)) {
+                            Random random = new Random();
+                            var taskCardPair = mainCtrl.createMinimizedCard(item);
+                            taskCardPair.getValue().setStyle("-fx-background-color: rgb(" +
+                                    random.nextInt(256) + "," + random.nextInt(256) + "," + random.nextInt(256) + ")");
+                            cache.put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
                         }
                         setGraphic(cache.get(item));
@@ -155,25 +161,24 @@ public class TaskListController implements Initializable {
         event.consume();
     }
 
-    private int findIndex(DragEvent event){
-        double dropY=event.getSceneY();
-        double listViewY=scrollPane.localToScene(scrollPane.getBoundsInLocal()).getMinY();
-        double cellHeight=taskCards.getFixedCellSize();
-        System.out.println(dropY+" "+scrolledY+" "+listViewY+" "+cellHeight);
-        double poz= (dropY + scrolledY - listViewY) /cellHeight;
-        int index=(int)poz;
-        if(((int)(poz*10))%10>=5)
+    private int findIndex(DragEvent event) {
+        double dropY = event.getSceneY();
+        double listViewY = taskCards.localToScene(taskCards.getBoundsInLocal()).getMinY();
+        double cellHeight = taskCards.getFixedCellSize();
+        double poz = (dropY - listViewY) / cellHeight;
+        int index = (int) poz;
+        if (((int) (poz * 10)) % 10 >= 5)
             index++;
-        return min(index,taskCards.getItems().size());
+        return min(index, taskCards.getItems().size());
     }
 
     /**
      * Update the task cards in the list using pooling.
      */
-    public void update(){
+    public void update() {
         try {
-            TaskList updatedTaskList=serverUtils.getTaskList(taskListId);
-            List<Long> taskCardsId=serverUtils.getTaskCardsId(taskListId);
+            TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
+            List<Long> taskCardsId = serverUtils.getTaskCardsId(taskListId);
 
             Platform.runLater(()->{
                 taskList_name.setText(updatedTaskList.getName());
@@ -190,17 +195,17 @@ public class TaskListController implements Initializable {
     /**
      * Stops the pooling after closing the scene.
      */
-    public void closePolling(){
+    public void closePolling() {
         timer.cancel();
-        for(MinimizedCardController cardController: taskCardControllers)
-            if(cardController!=null)
+        for (MinimizedCardController cardController : taskCardControllers)
+            if (cardController != null)
                 cardController.closePolling();
     }
 
     /**
      * Adds a new task card.
      */
-    public void addTaskCard () {
+    public void addTaskCard() {
         TaskCard card = new TaskCard();
         mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
     }
@@ -208,7 +213,7 @@ public class TaskListController implements Initializable {
     /**
      * Removes a task list.
      */
-    public void removeTaskList () {
+    public void removeTaskList() {
         closePolling();
         serverUtils.removeTaskList(taskListId);
     }

@@ -34,13 +34,21 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
         this.viewFactory = viewFactory;
-        showLoginPage();
+        showStartingPage();
     }
 
     public void showLoginPage() {
         var loginPage = viewFactory.createLogin();
         primaryStage.setScene(new Scene(loginPage.getValue()));
         primaryStage.setTitle("Login Page");
+        primaryStage.show();
+    }
+
+
+    public void showStartingPage() {
+        var startingPage = viewFactory.createStartingPage();
+        primaryStage.setScene(new Scene(startingPage.getValue()));
+        primaryStage.setTitle("Starting Page");
         primaryStage.show();
     }
 
@@ -68,8 +76,8 @@ public class MainCtrl {
     }
 
     public void showCard(Long card_id) {
-        var card= viewFactory.createCard(card_id);
-        cardStage=new Stage();
+        var card = viewFactory.createCard(card_id);
+        cardStage = new Stage();
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
@@ -77,25 +85,27 @@ public class MainCtrl {
     }
 
     public void closeCard() {
-        if(cardStage!=null)
+        if (cardStage != null)
             cardStage.close();
     }
 
     public void showClientOverview(Long boardId) {
         var clientOverview = viewFactory.createClientOverview(boardId);
+
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
         primaryStage.setOnCloseRequest(event -> {
-            if(clientOverview.getKey()!=null)
+            if (clientOverview.getKey() != null)
                 clientOverview.getKey().closePolling();
         });
         primaryStage.show();
     }
 
     public void closeAddBoard() {
-        if(addBoardStage!=null)
+        if (addBoardStage != null)
             addBoardStage.close();
     }
+
     public void showAddTaskListPage(Long boardId) {
         var addTaskList = viewFactory.createAddTaskList(boardId);
         addTaskListStage = new Stage();
@@ -106,7 +116,7 @@ public class MainCtrl {
     }
 
     public void closeAddTaskListPage() {
-        if(addTaskListStage!=null)
+        if (addTaskListStage != null)
             addTaskListStage.close();
     }
 
@@ -122,7 +132,7 @@ public class MainCtrl {
         return viewFactory.createTaskList(id);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id){
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
         return viewFactory.createMinimizedCard(card_id);
     }
 }
