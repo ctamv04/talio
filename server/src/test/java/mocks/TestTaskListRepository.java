@@ -1,5 +1,6 @@
 package mocks;
 
+import models.TaskCard;
 import models.TaskList;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -195,6 +196,11 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public <S extends TaskList, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public List<TaskCard> getTaskCardsId(Long id) {
         return null;
     }
 }

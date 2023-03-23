@@ -3,6 +3,7 @@ package client.controllers;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -45,12 +46,18 @@ public class MinimizedCardController implements Initializable {
     }
 
     public void update(){
-        TaskCard updatedTaskCard=serverUtils.getTaskCard(taskCardId);
-        System.out.println(updatedTaskCard);
-        Platform.runLater(()->{
-            card_name.setText(updatedTaskCard.getName());
-        });
+        try{
+            TaskCard updatedTaskCard=serverUtils.getTaskCard(taskCardId);
 
+//            System.out.println(updatedTaskCard);
+
+            Platform.runLater(()->{
+                card_name.setText(updatedTaskCard.getName());
+            });
+
+        }catch (WebApplicationException e){
+            closePolling();
+        }
     }
 
     public void closePolling(){

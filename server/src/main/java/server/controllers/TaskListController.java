@@ -1,5 +1,6 @@
 package server.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,23 @@ public class TaskListController {
         Optional<TaskList> taskList=taskListRepository.findById(id);
         return taskList.map(ResponseEntity::ok).
                             orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    /**
+     * Get task cards ids of the task list
+     * @param id The id of the task list containing the task cards
+     * @return A list of the task cards belonging to the list
+     */
+    @GetMapping("/{id}/taskcards")
+    public ResponseEntity<List<Long>> getTaskCardsId(@PathVariable Long id){
+        Optional<TaskList> taskList=taskListRepository.findById(id);
+        if(taskList.isEmpty())
+            return ResponseEntity.badRequest().build();
+        List<Long> ids=new ArrayList<>();
+        List<TaskCard> taskCards=taskListRepository.getTaskCardsId(id);
+        for(TaskCard taskCard: taskCards)
+            ids.add(taskCard.getId());
+        return ResponseEntity.ok(ids);
     }
 
     /**
