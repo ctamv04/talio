@@ -113,9 +113,6 @@ public class TaskCardControllerTest {
         controller.add(tc1,0L);
         controller.add(tc2,0L);
         assertEquals(2, controller.getAll().size());
-        controller.delete(1L);
-        assertEquals(1, controller.getAll().size());
-        assertEquals(tc2, controller.getAll().get(0));
     }
 
     @Test

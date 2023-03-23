@@ -19,7 +19,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
@@ -117,21 +116,6 @@ public class ServerUtils {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/" + boardId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
-    }
-
-    /**
-     * Checks if the board with a given id exists
-     *
-     * @param id id of the board
-     * @return true if board with given id is found false otherwise
-     */
-    public boolean existsBoardById(Long id) {
-        Response response = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/" + id) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get();
-        return response.getStatus() == 200;
     }
 
     /**

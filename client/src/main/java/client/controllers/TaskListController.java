@@ -1,18 +1,22 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import client.views.ViewFactory;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.util.Callback;
@@ -21,6 +25,8 @@ import models.TaskList;
 
 import java.net.URL;
 import java.util.*;
+
+import static java.lang.Math.min;
 
 public class TaskListController implements Initializable {
     private final ServerUtils serverUtils;
@@ -43,7 +49,6 @@ public class TaskListController implements Initializable {
         this.taskListId = taskListId;
     }
 
-
     /**
      * @param location  The location used to resolve relative paths for the root object, or
      *                  {@code null} if the location is not known.
@@ -59,7 +64,21 @@ public class TaskListController implements Initializable {
             public void run() {
                 update();
             }
+
         }, 0, 500);
+
+        for (Node node : taskCards.lookupAll(".scroll-bar")) {
+            if (node instanceof ScrollBar) {
+                final ScrollBar bar = (ScrollBar) node;
+                bar.valueProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> value, Number oldValue, Number newValue) {
+                        System.out.println(bar.getOrientation() + " " + newValue);
+                    }
+                });
+            }
+        }
+
         taskCards.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Long> call(ListView<Long> param) {
@@ -74,9 +93,11 @@ public class TaskListController implements Initializable {
                         }
 
                         if (!cache.containsKey(item)) {
-                            var taskCardPair = ViewFactory.createMinimizedCard(serverUtils.getServer(), item);
+                            Random random = new Random();
+                            var taskCardPair = mainCtrl.createMinimizedCard(serverUtils.getServer(), item);
+                            taskCardPair.getValue().setStyle("-fx-background-color: rgb(" +
+                                    random.nextInt(256) + "," + random.nextInt(256) + "," + random.nextInt(256) + ")");
                             cache.put(item, taskCardPair.getValue());
-
                             taskCardControllers.add(taskCardPair.getKey());
                         }
                         setGraphic(cache.get(item));
@@ -104,6 +125,8 @@ public class TaskListController implements Initializable {
         taskCards.setOnDragOver(event -> {
             if (event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
+                int index = findIndex(event);
+                System.out.println(index);
             }
             event.consume();
         });
@@ -115,13 +138,35 @@ public class TaskListController implements Initializable {
                 String item = dragboard.getString();
                 Long id = Long.parseLong(item.split(" ")[0]);
                 Long list1 = Long.parseLong(item.split(" ")[1]);
-                serverUtils.swapBetweenLists(id, 0, list1, taskListId);
-                System.out.println(id + " " + list1 + " " + taskListId);
+                int index = findIndex(event);
+                if (taskListId.equals(list1)) {
+                    int initialPos = serverUtils.getTaskCard(id).getPosition();
+                    if (index > initialPos)
+                        index--;
+                }
+                serverUtils.swapBetweenLists(id, index, list1, taskListId);
+                System.out.println(id + " " + list1 + " " + taskListId + " " + index + " ");
+
                 success = true;
+                taskCards.getSelectionModel().clearSelection();
+                taskList_name.getParent().requestFocus();
             }
             event.setDropCompleted(success);
             event.consume();
         });
+
+        taskCards.setFixedCellSize(60);
+    }
+
+    private int findIndex(DragEvent event) {
+        double dropY = event.getSceneY();
+        double listViewY = taskCards.localToScene(taskCards.getBoundsInLocal()).getMinY();
+        double cellHeight = taskCards.getFixedCellSize();
+        double poz = (dropY - listViewY) / cellHeight;
+        int index = (int) poz;
+        if (((int) (poz * 10)) % 10 >= 5)
+            index++;
+        return min(index, taskCards.getItems().size());
     }
 
     /**

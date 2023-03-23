@@ -17,24 +17,25 @@ package client;
 
 import static com.google.inject.Guice.createInjector;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
+import client.controllers.MainCtrl;
+import client.views.MyModule;
 import client.views.ViewFactory;
 
+import com.google.inject.Injector;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    private final Injector injector=createInjector(new MyModule());
+
+    public static void main(String[] args){
         launch();
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        ViewFactory.createMainCtrl().initialize(primaryStage);
+    public void start(Stage primaryStage){
+        MainCtrl mainCtrl=injector.getInstance(MainCtrl.class);
+        ViewFactory viewFactory=new ViewFactory(injector);
+        mainCtrl.initialize(primaryStage,viewFactory);
     }
 }

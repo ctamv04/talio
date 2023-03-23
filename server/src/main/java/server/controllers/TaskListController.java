@@ -1,5 +1,6 @@
 package server.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,11 @@ public class TaskListController {
         Optional<TaskList> taskList=taskListRepository.findById(id);
         if(taskList.isEmpty())
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(taskListRepository.getTaskCardsId(id));
+        List<Long> ids=new ArrayList<>();
+        List<TaskCard> taskCards=taskListRepository.getTaskCardsId(id);
+        for(TaskCard taskCard: taskCards)
+            ids.add(taskCard.getId());
+        return ResponseEntity.ok(ids);
     }
 
     /**

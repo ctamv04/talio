@@ -1,7 +1,6 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import client.views.ViewFactory;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
@@ -63,9 +62,11 @@ public class BoardController implements Initializable {
             nameProperty.set(board.getName());
 
             List<Parent> list = new ArrayList<>();
+
             for (var id : taskListsId) {
                 if (!cache.containsKey(id)) {
-                    var taskListPair = ViewFactory.createTaskList(serverUtils.getServer(), id);
+                    var taskListPair = mainCtrl.createTaskList(serverUtils.getServer(), id);
+
                     taskListControllers.add(taskListPair.getKey());
                     cache.put(id, taskListPair.getValue());
                 }
@@ -74,7 +75,8 @@ public class BoardController implements Initializable {
             Platform.runLater(() -> board_parent.getChildren().setAll(list));
         } catch (WebApplicationException e) {
             closePolling();
-            mainCtrl.showLoginPage(serverUtils.getServer());
+
+            Platform.runLater(() -> mainCtrl.showLoginPage(serverUtils.getServer()));
         }
     }
 

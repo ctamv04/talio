@@ -1,7 +1,6 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import client.views.ViewFactory;
 import com.google.inject.Inject;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -28,8 +27,8 @@ public class ClientOverviewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menu = ViewFactory.createClientMenu(serverUtils.getServer());
-        var board = ViewFactory.createBoard(serverUtils.getServer(), boardId);
+        var menu = mainCtrl.createClientMenu(serverUtils.getServer());
+        var board = mainCtrl.createBoard(serverUtils.getServer(), boardId);
 
         layout.setTop(menu.getValue());
         layout.setCenter(board.getValue());
