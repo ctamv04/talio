@@ -15,19 +15,18 @@
  */
 package client.views;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import client.controllers.*;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 import javafx.util.Callback;
 import javafx.util.Pair;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class MyFXML {
 
@@ -40,10 +39,10 @@ public class MyFXML {
     public <T> Pair<T, Parent> load(Class<T> c, String url, Object... params) {
         try {
             var loader = new FXMLLoader(getClass().getResource(url),
-                        null,
-                        null,
-                        new MyFactory(params),
-                        StandardCharsets.UTF_8);
+                    null,
+                    null,
+                    new MyFactory(params),
+                    StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
@@ -67,28 +66,30 @@ public class MyFXML {
 
         @Override
         public Object call(Class<?> type) {
-            if(type== BoardController.class)
+
+            if (type == AddTaskListController.class)
+                return new AddTaskListController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+
+            if (type == BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class),(Long) params[0]);
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-            if(type== ClientOverviewController.class)
+            if (type == ClientOverviewController.class)
                 return new ClientOverviewController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class),(Long)params[0]);
+                        injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-            if(type== TaskListController.class)
-                return new TaskListController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class),(Long) params[0]);
-
-            if(type == ExtendedCardController.class)
+            if (type == ExtendedCardController.class)
                 return new ExtendedCardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-            if(type== MinimizedCardController.class)
+
+            if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-            if(type== AddTaskListController.class)
-                return new AddTaskListController(injector.getInstance(ServerUtils.class),
+            if (type == TaskListController.class)
+                return new TaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
             return injector.getInstance(type);

@@ -9,11 +9,15 @@ public class ViewFactory {
     private final MyFXML FXML;
 
     public ViewFactory(Injector injector) {
-        FXML=new MyFXML(injector);
+        FXML = new MyFXML(injector);
     }
 
     public Pair<BoardController, Parent> createBoard(Long boardId) {
         return FXML.load(BoardController.class, "/client/board.fxml", boardId);
+    }
+
+    public Pair<StartingPageController, Parent> createStartingPage() {
+        return FXML.load(StartingPageController.class, "/client/startingPage.fxml");
     }
 
     public Pair<ClientMenuController, Parent> createClientMenu() {
@@ -40,7 +44,7 @@ public class ViewFactory {
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id){
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
         return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id);
     }
 

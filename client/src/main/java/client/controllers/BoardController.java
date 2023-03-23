@@ -1,7 +1,6 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import client.views.ViewFactory;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
@@ -24,8 +23,8 @@ public class BoardController implements Initializable {
     private final Long boardId;
     private Map<Long, Parent> cache;
     private Timer timer;
-    private final List<TaskListController> taskListControllers=new ArrayList<>();
-    private final StringProperty nameProperty=new SimpleStringProperty();
+    private final List<TaskListController> taskListControllers = new ArrayList<>();
+    private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
     private FlowPane board_parent;
     @FXML
@@ -43,48 +42,48 @@ public class BoardController implements Initializable {
         board_parent.setHgap(10);
         board_parent.setVgap(10);
 
-        cache=new HashMap<>();
-        timer=new Timer();
+        cache = new HashMap<>();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 update();
             }
-        },0,500);
+        }, 0, 500);
 
         addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(boardId));
     }
 
-    private void update(){
-        try{
-            Board board=serverUtils.getBoard(boardId);
-            List<Long> taskListsId=serverUtils.getTaskListsId(boardId);
-
-//            System.out.println(board);
-//            System.out.println(taskListsId);
+    private void update() {
+        try {
+            Board board = serverUtils.getBoard(boardId);
+            List<Long> taskListsId = serverUtils.getTaskListsId(boardId);
 
             nameProperty.set(board.getName());
 
             List<Parent> list = new ArrayList<>();
-            for(var id: taskListsId){
-                if(!cache.containsKey(id)){
-                    var taskListPair=mainCtrl.createTaskList(id);
+
+            for (var id : taskListsId) {
+                if (!cache.containsKey(id)) {
+                    var taskListPair = mainCtrl.createTaskList(id);
+
                     taskListControllers.add(taskListPair.getKey());
-                    cache.put(id,taskListPair.getValue());
+                    cache.put(id, taskListPair.getValue());
                 }
                 list.add(cache.get(id));
             }
-            Platform.runLater(()->board_parent.getChildren().setAll(list));
-        }catch (WebApplicationException e){
+            Platform.runLater(() -> board_parent.getChildren().setAll(list));
+        } catch (WebApplicationException e) {
             closePolling();
+
             Platform.runLater(mainCtrl::showLoginPage);
         }
     }
 
-    public void closePolling(){
+    public void closePolling() {
         timer.cancel();
-        for(TaskListController taskListController: taskListControllers)
-            if(taskListController!=null)
+        for (TaskListController taskListController : taskListControllers)
+            if (taskListController != null)
                 taskListController.closePolling();
     }
 
