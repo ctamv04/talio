@@ -58,21 +58,21 @@ public class LoginController implements Initializable {
             Board board = boards.getSelectionModel().getSelectedItem();
             if (board != null) {
                 Long clickedBoardID = board.getId();
-                mainCtrl.showClientOverview(clickedBoardID);
+                mainCtrl.showClientOverview(serverUtils.getPort(), clickedBoardID);
             }
         });
         join_board_button.setOnAction(event -> {
             try {
                 Long id = Long.parseLong(code_input.getText());
-                if(!serverUtils.existsBoardById(id))
+                if (!serverUtils.existsBoardById(id))
                     invalid_text.setVisible(true);
                 else
-                    mainCtrl.showClientOverview(serverUtils.getBoard(id).getId());
-            }catch (NumberFormatException e){
+                    mainCtrl.showClientOverview(serverUtils.getPort(), serverUtils.getBoard(id).getId());
+            } catch (NumberFormatException e) {
                 invalid_text.setVisible(true);
             }
         });
-        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
+        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage(serverUtils.getPort()));
     }
 }
 

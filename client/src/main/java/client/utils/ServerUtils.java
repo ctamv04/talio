@@ -31,7 +31,46 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private static String SERVER;
+    private final String port;
+
+    public ServerUtils() {
+        SERVER = "http://localhost:8080/";
+        port = "8080";
+    }
+
+    public ServerUtils(String port) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://localhost:");
+        sb.append(port);
+        sb.append("/");
+        SERVER = sb.toString();
+        this.port = port;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public static boolean healthCheck(String port) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://localhost:");
+        sb.append(port);
+        sb.append("/");
+        String tmp = sb.toString();
+        try {
+            System.out.println("health check");
+            ClientBuilder.newClient(new ClientConfig())
+                    .target(tmp).path("api/boards") //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .get();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
 
     public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -44,7 +83,7 @@ public class ServerUtils {
 
     public Board getBoard(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/"+id) //
+                .target(SERVER).path("api/boards/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
@@ -52,24 +91,24 @@ public class ServerUtils {
     }
 
     public boolean existsBoardById(Long id) {
-        Response response=ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/"+id) //
+        Response response = ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get();
-        return response.getStatus()==200;
+        return response.getStatus() == 200;
     }
 
     public TaskList getTaskList(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasklists/"+id) //
+                .target(SERVER).path("api/tasklists/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
                 });
     }
-    
-    public TaskCard getTaskCard(Long taskId){
+
+    public TaskCard getTaskCard(Long taskId) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + taskId) //
                 .request(APPLICATION_JSON) //
@@ -108,7 +147,7 @@ public class ServerUtils {
                 .target(SERVER).path("api/boards")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(board,APPLICATION_JSON), Board.class);
+                .post(Entity.entity(board, APPLICATION_JSON), Board.class);
     }
 
 
@@ -135,6 +174,6 @@ public class ServerUtils {
                 .queryParam("boardId", boardId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(taskList,APPLICATION_JSON), TaskList.class);
+                .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 }

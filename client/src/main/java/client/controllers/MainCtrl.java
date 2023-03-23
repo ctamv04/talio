@@ -31,25 +31,32 @@ public class MainCtrl {
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        showLoginPage();
+        showStartingPage();
     }
 
-    public void showLoginPage() {
-        var loginPage = ViewFactory.createLogin();
+    public void showLoginPage(String port) {
+        var loginPage = ViewFactory.createLogin(port);
         primaryStage.setScene(new Scene(loginPage.getValue()));
         primaryStage.setTitle("Login Page");
         primaryStage.show();
     }
 
-    public void showTaskList(TaskList selectedItem) {
-        var taskList = ViewFactory.createTaskList(selectedItem.getId());
+    public void showStartingPage() {
+        var startingPage = ViewFactory.createStartingPage();
+        primaryStage.setScene(new Scene(startingPage.getValue()));
+        primaryStage.setTitle("Starting Page");
+        primaryStage.show();
+    }
+
+    public void showTaskList(String port, TaskList selectedItem) {
+        var taskList = ViewFactory.createTaskList(port, selectedItem.getId());
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
     }
 
-    public void showAddBoardPage() {
-        var addBoard = ViewFactory.createAddBoard();
+    public void showAddBoardPage(String port) {
+        var addBoard = ViewFactory.createAddBoard(port);
         addBoardStage = new Stage();
         addBoardStage.setScene(new Scene(addBoard.getValue()));
         addBoardStage.setTitle("Add Board");
@@ -57,16 +64,16 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
-    public void showBoard(Board selectedItem) {
-        var board = ViewFactory.createBoard(selectedItem.getId());
+    public void showBoard(String port, Board selectedItem) {
+        var board = ViewFactory.createBoard(port, selectedItem.getId());
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
     }
 
-    public void showCard(Long card_id) {
-        var card= ViewFactory.createCard(card_id);
-        cardStage=new Stage();
+    public void showCard(String port, Long card_id) {
+        var card = ViewFactory.createCard(port, card_id);
+        cardStage = new Stage();
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
@@ -74,27 +81,28 @@ public class MainCtrl {
     }
 
     public void closeCard() {
-        if(cardStage!=null)
+        if (cardStage != null)
             cardStage.close();
     }
 
-    public void showClientOverview(Long boardId) {
-        var clientOverview = ViewFactory.createClientOverview(boardId);
+    public void showClientOverview(String port, Long boardId) {
+        var clientOverview = ViewFactory.createClientOverview(port, boardId);
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
         primaryStage.setOnCloseRequest(event -> {
-            if(clientOverview.getKey()!=null)
+            if (clientOverview.getKey() != null)
                 clientOverview.getKey().closePolling();
         });
         primaryStage.show();
     }
 
     public void closeAddBoard() {
-        if(addBoardStage!=null)
+        if (addBoardStage != null)
             addBoardStage.close();
     }
-    public void showAddTaskListPage(Long boardId) {
-        var addTaskList = ViewFactory.createAddTaskList(boardId);
+
+    public void showAddTaskListPage(String port, Long boardId) {
+        var addTaskList = ViewFactory.createAddTaskList(port, boardId);
         addTaskListStage = new Stage();
         addTaskListStage.setScene(new Scene(addTaskList.getValue()));
         addTaskListStage.setTitle("Add Task List");
@@ -103,7 +111,7 @@ public class MainCtrl {
     }
 
     public void closeAddTaskListPage() {
-        if(addTaskListStage!=null)
+        if (addTaskListStage != null)
             addTaskListStage.close();
     }
 }

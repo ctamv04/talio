@@ -24,8 +24,8 @@ public class BoardController implements Initializable {
     private final Long boardId;
     private Map<Long, Parent> cache;
     private Timer timer;
-    private final List<TaskListController> taskListControllers=new ArrayList<>();
-    private final StringProperty nameProperty=new SimpleStringProperty();
+    private final List<TaskListController> taskListControllers = new ArrayList<>();
+    private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
     private FlowPane board_parent;
     @FXML
@@ -43,40 +43,40 @@ public class BoardController implements Initializable {
         board_parent.setHgap(10);
         board_parent.setVgap(10);
 
-        cache=new HashMap<>();
-        timer=new Timer();
+        cache = new HashMap<>();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 update();
             }
-        },0,500);
+        }, 0, 500);
 
-        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(boardId));
+        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(serverUtils.getPort(), boardId));
     }
 
-    private void update(){
-        Board board=serverUtils.getBoard(boardId);
+    private void update() {
+        Board board = serverUtils.getBoard(boardId);
         System.out.println(board);
 
         nameProperty.set(board.getName());
 
         List<Parent> list = new ArrayList<>();
-        for(TaskList taskList: board.getTaskLists()){
-            if(!cache.containsKey(taskList.getId())){
-                var taskListPair=ViewFactory.createTaskList(taskList.getId());
+        for (TaskList taskList : board.getTaskLists()) {
+            if (!cache.containsKey(taskList.getId())) {
+                var taskListPair = ViewFactory.createTaskList(serverUtils.getPort(), taskList.getId());
                 taskListControllers.add(taskListPair.getKey());
-                cache.put(taskList.getId(),taskListPair.getValue());
+                cache.put(taskList.getId(), taskListPair.getValue());
             }
             list.add(cache.get(taskList.getId()));
         }
-        Platform.runLater(()->board_parent.getChildren().setAll(list));
+        Platform.runLater(() -> board_parent.getChildren().setAll(list));
     }
 
-    public void closePolling(){
+    public void closePolling() {
         timer.cancel();
-        for(TaskListController taskListController: taskListControllers)
-            if(taskListController!=null)
+        for (TaskListController taskListController : taskListControllers)
+            if (taskListController != null)
                 taskListController.closePolling();
     }
 

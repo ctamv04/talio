@@ -29,7 +29,7 @@ public class TaskListController implements Initializable {
     private Label taskList_name;
     @FXML
     public ListView<TaskCard> taskCards;
-    private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
+    private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
 
     @Inject
     public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, long taskListId) {
@@ -40,25 +40,21 @@ public class TaskListController implements Initializable {
 
 
     /**
-     *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cache=new HashMap<>();
-        timer=new Timer();
+        cache = new HashMap<>();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 update();
             }
-        },0,500);
+        }, 0, 500);
         taskCards.setCellFactory(new Callback<>() {
             @Override
             public ListCell<TaskCard> call(ListView<TaskCard> param) {
@@ -66,14 +62,14 @@ public class TaskListController implements Initializable {
                     @Override
                     protected void updateItem(TaskCard item, boolean empty) {
                         super.updateItem(item, empty);
-                        if(item==null||empty){
+                        if (item == null || empty) {
                             setText(null);
                             setGraphic(null);
                             return;
                         }
-                        if(!cache.containsKey(item.getId())){
-                            var taskCardPair=ViewFactory.createMinimizedCard(item.getId());
-                            cache.put(item.getId(),taskCardPair.getValue());
+                        if (!cache.containsKey(item.getId())) {
+                            var taskCardPair = ViewFactory.createMinimizedCard(serverUtils.getPort(), item.getId());
+                            cache.put(item.getId(), taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
                         }
                         setGraphic(cache.get(item.getId()));
@@ -87,7 +83,7 @@ public class TaskListController implements Initializable {
             if (card != null) {
                 Long id = taskCards.getSelectionModel().getSelectedItem().getId();
                 taskCards.getSelectionModel().clearSelection();
-                mainCtrl.showCard(id);
+                mainCtrl.showCard(serverUtils.getPort(), id);
             }
         });
     }
@@ -95,14 +91,14 @@ public class TaskListController implements Initializable {
     /**
      * Update the task cards in the list using pooling.
      */
-    public void update(){
+    public void update() {
         try {
-            TaskList updatedTaskList=serverUtils.getTaskList(taskListId);
+            TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
             System.out.println(updatedTaskList);
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 taskList_name.setText(updatedTaskList.getName());
                 taskCards.setItems(FXCollections.
-                                    observableArrayList(updatedTaskList.getTaskCards()));
+                        observableArrayList(updatedTaskList.getTaskCards()));
             });
         } catch (WebApplicationException e) {
             closePolling();
@@ -112,25 +108,25 @@ public class TaskListController implements Initializable {
     /**
      * Stops the pooling after closing the scene.
      */
-    public void closePolling(){
+    public void closePolling() {
         timer.cancel();
-        for(MinimizedCardController cardController: taskCardControllers)
-            if(cardController!=null)
+        for (MinimizedCardController cardController : taskCardControllers)
+            if (cardController != null)
                 cardController.closePolling();
     }
 
     /**
      * Adds a new task card.
      */
-    public void addTaskCard () {
+    public void addTaskCard() {
         TaskCard card = new TaskCard();
-        mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
+        mainCtrl.showCard(serverUtils.getPort(), serverUtils.addTaskCard(card, taskListId).getId());
     }
 
     /**
      * Removes a task list.
      */
-    public void removeTaskList () {
+    public void removeTaskList() {
         closePolling();
         serverUtils.removeTaskList(taskListId);
     }
