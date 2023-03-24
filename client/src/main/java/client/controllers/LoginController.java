@@ -41,6 +41,11 @@ public class LoginController implements Initializable {
     @FXML
     private AnchorPane window;
 
+    /***
+     * Constructor for LoginController
+     * @param serverUtils contains the server and related methods
+     * @param mainCtrl the main controller
+     */
     @Inject
     public LoginController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
@@ -82,13 +87,9 @@ public class LoginController implements Initializable {
             }
         });
 
-        boards.setOnMouseClicked(event -> {
-            boardClicked(event);
-        });
+        boards.setOnMouseClicked(event -> boardClicked(event));
 
-        join_board_button.setOnAction(event -> {
-            joinButtonClicked();
-        });
+        join_board_button.setOnAction(event -> joinButtonClicked());
 
         new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
 
@@ -102,11 +103,11 @@ public class LoginController implements Initializable {
             if (event.getTarget() != buttonBox && event.getTarget() != boards) {
                 buttonBox.setOpacity(0L);
             }
-        }); //window.setOnMouseClicked
+        });
     } // initialize
 
     /***
-     * This function is called when something happens with the board.
+     * This is called when a mouse event happens to a board.
      * @param event the mouse event that happened: clicked/clicked twice/...
      */
     public void boardClicked (MouseEvent event) {
@@ -139,10 +140,8 @@ public class LoginController implements Initializable {
             Board board = serverUtils.getBoard(id);
             mainCtrl.showClientOverview(serverUtils.getBoard(id).getId());
         } catch (NumberFormatException | WebApplicationException e) {
-
             invalid_text.setVisible(true);
         }
     } // joinButtonClicked
-
 } // LoginController
 
