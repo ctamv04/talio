@@ -20,14 +20,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
-import org.w3c.dom.css.Rect;
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -49,8 +46,8 @@ public class TaskListController implements Initializable {
     @FXML
     public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
-    Line line=new Line();
-
+    private final Line line=new Line();
+    private int entries=0;
 
     @Inject
     public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, long taskListId) {
@@ -124,15 +121,21 @@ public class TaskListController implements Initializable {
         scrollPane.setOnDragOver(this::onDragOver);
         scrollPane.setOnDragDropped(this::onDragDropped);
 
-        taskCards.setOnDragExited(event -> line.setVisible(false));
-        taskCards.setOnDragEntered(event -> line.setVisible(true));
-        scrollPane.setOnDragExited(event -> line.setVisible(false));
-        scrollPane.setOnDragEntered(event -> line.setVisible(true));
+        taskCards.setOnDragExited(event -> increment(1));
+        taskCards.setOnDragEntered(event -> increment(-1));
+        scrollPane.setOnDragExited(event -> increment(2));
+        scrollPane.setOnDragEntered(event -> increment(-2));
 
         indicator_pane.getChildren().add(line);
         line.setStroke(Color.BLACK);
         line.getStrokeDashArray().addAll(10d,10d);
         line.setVisible(false);
+    }
+
+    private void increment(int offset){
+        entries=entries+offset;
+        line.setVisible(entries != 0);
+        System.out.println(taskListId+" "+offset+" "+entries);
     }
 
     private void onDragDetected(MouseEvent event){
@@ -174,7 +177,6 @@ public class TaskListController implements Initializable {
             success = true;
             taskCards.getSelectionModel().clearSelection();
             taskList_name.getParent().requestFocus();
-            line.setVisible(false);
         }
         event.setDropCompleted(success);
         event.consume();
