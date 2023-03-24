@@ -6,6 +6,7 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
+import models.Board;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,31 +14,31 @@ import java.util.ResourceBundle;
 public class ClientOverviewController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
-    private final Long boardId;
+    private final Board board;
     private BoardController boardController;
     @FXML
     public BorderPane layout;
 
     @Inject
-    public ClientOverviewController(ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
+    public ClientOverviewController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
-        this.boardId = boardId;
+        this.board = board;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menu = mainCtrl.createClientMenu();
-        var board = mainCtrl.createBoard(boardId);
+        var menuPair = mainCtrl.createClientMenu();
+        var boardPair = mainCtrl.createBoard(board);
 
-        layout.setTop(menu.getValue());
-        layout.setCenter(board.getValue());
+        layout.setTop(menuPair.getValue());
+        layout.setCenter(boardPair.getValue());
 
-        ClientMenuController clientMenuController = menu.getKey();
-        boardController = board.getKey();
+        ClientMenuController clientMenuController = menuPair.getKey();
+        boardController = boardPair.getKey();
 
         clientMenuController.getBoard_title().textProperty().bind(Bindings.concat("Talio | ",
-                boardController.namePropertyProperty(), " (#", boardId, ")"));
+                boardController.namePropertyProperty(), " (#", board.getId(), ")"));
         clientMenuController.getHome_button().setOnAction(event -> {
             boardController.closePolling();
             mainCtrl.showLoginPage();

@@ -25,7 +25,7 @@ public class BoardController implements Initializable {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
-    private final Long boardId;
+    private Board board;
     @FXML
     public ScrollPane scrollPane;
     @FXML
@@ -42,23 +42,23 @@ public class BoardController implements Initializable {
     private AnchorPane overlay;
 
     @Inject
-    public BoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
+    public BoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
-        this.boardId = boardId;
+        this.board = board;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         overlay.setVisible(false);
 
         board_parent.setHgap(30);
         board_parent.setVgap(30);
 
+        nameProperty.set(board.getName());
+
         anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
 
-        System.out.println(scrollPane.getWidth()+" "+scrollPane.getHeight());
         cache = new HashMap<>();
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -74,15 +74,15 @@ public class BoardController implements Initializable {
             overlay.setPrefWidth(bounds.getWidth());
             overlay.setPrefHeight(bounds.getHeight());
             overlay.setVisible(true);
-            mainCtrl.showAddTaskListPage(boardId);
+            mainCtrl.showAddTaskListPage(board.getId());
             overlay.setVisible(false);
         });
     }
 
     private void update() {
         try {
-            Board board = serverUtils.getBoard(boardId);
-            List<Long> taskListsId = serverUtils.getTaskListsId(boardId);
+            board = serverUtils.getBoard(board.getId());
+            List<Long> taskListsId = serverUtils.getTaskListsId(board.getId());
 
             nameProperty.set(board.getName());
 
