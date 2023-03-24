@@ -53,11 +53,11 @@ public class MainCtrl {
         primaryStage.setScene(new Scene(startingPage.getValue()));
         primaryStage.setTitle("Starting Page");
 
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
-        primaryStage.setMaximized(true);
+//        Screen screen = Screen.getPrimary();
+//        Rectangle2D bounds = screen.getVisualBounds();
+//        primaryStage.setWidth(bounds.getWidth());
+//        primaryStage.setHeight(bounds.getHeight());
+//        primaryStage.setMaximized(true);
 
         primaryStage.show();
     }
