@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -22,8 +23,10 @@
         </graphic>
     </Button>
     </HBox>
-    <ScrollPane fx:id="scrollPane" vbarPolicy="ALWAYS" prefHeight="300.0" prefWidth="243.0">
-        <ListView fx:id="taskCards" />
+    <ScrollPane fx:id="scrollPane" prefHeight="300.0" prefWidth="243.0" vbarPolicy="ALWAYS">
+        <Pane fx:id="indicator_pane" prefHeight="302.0" prefWidth="230.0">
+            <ListView fx:id="taskCards" prefHeight="400.0" prefWidth="228.0" />
+        </Pane>
     </ScrollPane>
    <Button mnemonicParsing="false" onAction="#addTaskCard" text="Add " />
 </VBox>
