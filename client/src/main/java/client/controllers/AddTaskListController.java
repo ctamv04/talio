@@ -23,6 +23,12 @@ public class AddTaskListController implements Initializable {
     @FXML
     private Button back_button;
 
+    /**
+     * Constructor for the AddTaskListController
+     * @param serverUtils serverUtils
+     * @param mainCtrl the main Controller
+     * @param boardId the ID of the board were the TL will be added
+     */
     @Inject
     public AddTaskListController (ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
         this.serverUtils = serverUtils;
@@ -30,12 +36,25 @@ public class AddTaskListController implements Initializable {
         this.boardId = boardId;
     }
 
+    /**
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         done_button.setOnMouseClicked(event -> save());
         back_button.setOnMouseClicked(event -> back());
     }
 
+    /**
+     * Function that adds the TL to the board
+     */
     public void save() {
         TaskList taskList = new TaskList();
         if (!tasklist_name.getText().isBlank()) {
@@ -46,6 +65,9 @@ public class AddTaskListController implements Initializable {
         back();
     }
 
+    /**
+     * Closes the add TL popup
+     */
     public void back() {
         mainCtrl.closeAddTaskListPage();
     }
