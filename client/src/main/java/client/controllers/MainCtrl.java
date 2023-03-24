@@ -16,10 +16,13 @@
 package client.controllers;
 
 import client.views.ViewFactory;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import models.Board;
 import models.TaskList;
@@ -49,6 +52,13 @@ public class MainCtrl {
         var startingPage = viewFactory.createStartingPage();
         primaryStage.setScene(new Scene(startingPage.getValue()));
         primaryStage.setTitle("Starting Page");
+
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
+        primaryStage.setMaximized(true);
+
         primaryStage.show();
     }
 
@@ -61,7 +71,7 @@ public class MainCtrl {
 
     public void showAddBoardPage() {
         var addBoard = viewFactory.createAddBoard();
-        addBoardStage = new Stage();
+        addBoardStage = new Stage(StageStyle.UNDECORATED);
         addBoardStage.setScene(new Scene(addBoard.getValue()));
         addBoardStage.setTitle("Add Board");
         addBoardStage.initModality(Modality.APPLICATION_MODAL);
@@ -77,7 +87,7 @@ public class MainCtrl {
 
     public void showCard(Long card_id) {
         var card = viewFactory.createCard(card_id);
-        cardStage = new Stage();
+        cardStage = new Stage(StageStyle.UNDECORATED);
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
@@ -108,7 +118,7 @@ public class MainCtrl {
 
     public void showAddTaskListPage(Long boardId) {
         var addTaskList = viewFactory.createAddTaskList(boardId);
-        addTaskListStage = new Stage();
+        addTaskListStage = new Stage(StageStyle.UNDECORATED);
         addTaskListStage.setScene(new Scene(addTaskList.getValue()));
         addTaskListStage.setTitle("Add Task List");
         addTaskListStage.initModality(Modality.APPLICATION_MODAL);
