@@ -8,14 +8,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Screen;
 import models.Board;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -27,6 +28,8 @@ public class BoardController implements Initializable {
     private final Long boardId;
     @FXML
     public ScrollPane scrollPane;
+    @FXML
+    public AnchorPane anchor_pane;
     private Map<Long, Parent> cache;
     private Timer timer;
     private final List<TaskListController> taskListControllers = new ArrayList<>();
@@ -35,6 +38,8 @@ public class BoardController implements Initializable {
     private FlowPane board_parent;
     @FXML
     private Button addList_button;
+    @FXML
+    private AnchorPane overlay;
 
     @Inject
     public BoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
@@ -45,10 +50,13 @@ public class BoardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        overlay.setVisible(false);
+
         board_parent.setHgap(30);
         board_parent.setVgap(30);
 
-        board_parent.prefWidthProperty().bind(scrollPane.widthProperty());
+        anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
 
         System.out.println(scrollPane.getWidth()+" "+scrollPane.getHeight());
         cache = new HashMap<>();
@@ -60,7 +68,15 @@ public class BoardController implements Initializable {
             }
         }, 0, 500);
 
-        addList_button.setOnMouseClicked(event -> mainCtrl.showAddTaskListPage(boardId));
+        addList_button.setOnMouseClicked(event -> {
+            Screen screen = Screen.getPrimary();
+            Rectangle2D bounds = screen.getVisualBounds();
+            overlay.setPrefWidth(bounds.getWidth());
+            overlay.setPrefHeight(bounds.getHeight());
+            overlay.setVisible(true);
+            mainCtrl.showAddTaskListPage(boardId);
+            overlay.setVisible(false);
+        });
     }
 
     private void update() {
