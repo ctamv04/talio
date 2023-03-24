@@ -11,6 +11,7 @@ import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 
 import java.util.List;
+import java.util.Random;
 
 @Configuration
 public class H2MemConfig {
@@ -22,26 +23,18 @@ public class H2MemConfig {
             Board board1=new Board("Board1");
             Board board2=new Board("Board2");
             Board board3=new Board("Board3");
-            TaskList taskList1=new TaskList("In Progress",board1);
-            TaskList taskList2=new TaskList("Done",board1);
-            TaskList taskList3=new TaskList("Unfinished",board2);
-            TaskCard taskCard1=new TaskCard("Prepare",taskList1,0);
-            TaskCard taskCard2=new TaskCard("Study",taskList1,1);
-            TaskCard taskCard3=new TaskCard("Read",taskList1,2);
-            TaskCard taskCard4=new TaskCard("Exercise",taskList2,0);
-            TaskCard taskCard5=new TaskCard("Dunno",taskList2,1);
-
             boardRepository.saveAll(List.of(board1,board2,board3));
-            taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
-
-            board1.getTaskLists().addAll(List.of(taskList1,taskList2));
-            board2.getTaskLists().add(taskList3);
-            boardRepository.saveAll(List.of(board1,board2,board3));
-
-            taskCardRepository.saveAll(List.of(taskCard1,taskCard2,taskCard3,taskCard4,taskCard5));
-            taskList1.getTaskCards().addAll(List.of(taskCard1,taskCard2,taskCard3));
-            taskList2.getTaskCards().addAll(List.of(taskCard4,taskCard5));
-            taskListRepository.saveAll(List.of(taskList1,taskList2,taskList3));
+            for(int i=0;i<6;i++){
+                Random random=new Random();
+                TaskList taskList=new TaskList(String.valueOf(random.nextInt(1000,9999)),board1);
+                board1.getTaskLists().add(taskList);
+                taskListRepository.save(taskList);
+                for(int j=0;j<5;j++){
+                    TaskCard taskCard=new TaskCard(String.valueOf(random.nextInt(1000,9999)),taskList,j);
+                    taskList.getTaskCards().add(taskCard);
+                    taskCardRepository.save(taskCard);
+                }
+            }
         };
     }
 }

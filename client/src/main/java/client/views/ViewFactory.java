@@ -4,6 +4,7 @@ import client.controllers.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
 import javafx.util.Pair;
+import models.Board;
 
 public class ViewFactory {
     private final MyFXML FXML;
@@ -12,8 +13,8 @@ public class ViewFactory {
         FXML = new MyFXML(injector);
     }
 
-    public Pair<BoardController, Parent> createBoard(Long boardId) {
-        return FXML.load(BoardController.class, "/client/board.fxml", boardId);
+    public Pair<BoardController, Parent> createBoard(Board board) {
+        return FXML.load(BoardController.class, "/client/board.fxml", board);
     }
 
     public Pair<StartingPageController, Parent> createStartingPage() {
@@ -32,8 +33,8 @@ public class ViewFactory {
         return FXML.load(ExtendedCardController.class, "/client/loginPage.fxml");
     }
 
-    public Pair<ClientOverviewController, Parent> createClientOverview(Long boardId) {
-        return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", boardId);
+    public Pair<ClientOverviewController, Parent> createClientOverview(Board board) {
+        return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", board);
     }
 
     public Pair<TaskListController, Parent> createTaskList(Long id) {

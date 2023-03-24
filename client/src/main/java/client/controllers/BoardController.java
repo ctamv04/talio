@@ -8,9 +8,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Screen;
@@ -18,12 +19,17 @@ import models.Board;
 
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class BoardController implements Initializable {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
-    private final Long boardId;
+    private Board board;
+    @FXML
+    public ScrollPane scrollPane;
+    @FXML
+    public AnchorPane anchor_pane;
     private Map<Long, Parent> cache;
     private Timer timer;
     private final List<TaskListController> taskListControllers = new ArrayList<>();
@@ -36,19 +42,22 @@ public class BoardController implements Initializable {
     private AnchorPane overlay;
 
     @Inject
-    public BoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long boardId) {
+    public BoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
-        this.boardId = boardId;
+        this.board = board;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         overlay.setVisible(false);
 
         board_parent.setHgap(30);
         board_parent.setVgap(30);
+
+        nameProperty.set(board.getName());
+
+        anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
 
         cache = new HashMap<>();
         timer = new Timer();
@@ -65,15 +74,15 @@ public class BoardController implements Initializable {
             overlay.setPrefWidth(bounds.getWidth());
             overlay.setPrefHeight(bounds.getHeight());
             overlay.setVisible(true);
-            mainCtrl.showAddTaskListPage(boardId);
+            mainCtrl.showAddTaskListPage(board.getId());
             overlay.setVisible(false);
         });
     }
 
     private void update() {
         try {
-            Board board = serverUtils.getBoard(boardId);
-            List<Long> taskListsId = serverUtils.getTaskListsId(boardId);
+            board = serverUtils.getBoard(board.getId());
+            List<Long> taskListsId = serverUtils.getTaskListsId(board.getId());
 
             nameProperty.set(board.getName());
 
