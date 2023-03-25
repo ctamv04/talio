@@ -1,0 +1,15 @@
+.layout {
+    -fx-background-color: white;
+
+}
+
+.button {
+    -fx-color: #383838;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+}
+
+.text-id {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 15px;
+}
