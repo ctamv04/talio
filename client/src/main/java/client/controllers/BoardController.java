@@ -1,8 +1,10 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.GenericType;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,9 +19,13 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Screen;
 import models.Board;
 
+import javax.swing.text.html.parser.Entity;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class BoardController implements Initializable {
 
@@ -31,7 +37,6 @@ public class BoardController implements Initializable {
     @FXML
     public AnchorPane anchor_pane;
     private Map<Long, Parent> cache;
-    private Timer timer;
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
@@ -60,13 +65,24 @@ public class BoardController implements Initializable {
         anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
 
         cache = new HashMap<>();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                update();
+        registerDetailsUpdates(updatedBoard -> {
+            board=updatedBoard;
+            Platform.runLater(() -> nameProperty.set(board.getName()));
+        });
+        registerTaskListIdsUpdates(ids -> {
+            if(ids==null)
+                return;
+            List<Parent> list = new ArrayList<>();
+            for(var id: ids){
+                if (!cache.containsKey(id)) {
+                    var taskListPair = mainCtrl.createTaskList(id);
+                    taskListControllers.add(taskListPair.getKey());
+                    cache.put(id, taskListPair.getValue());
+                }
+                list.add(cache.get(id));
             }
-        }, 0, 500);
+            Platform.runLater(()-> board_parent.getChildren().setAll(list));
+        });
 
         addList_button.setOnMouseClicked(event -> {
             Screen screen = Screen.getPrimary();
@@ -79,34 +95,46 @@ public class BoardController implements Initializable {
         });
     }
 
-    private void update() {
-        try {
-            board = serverUtils.getBoard(board.getId());
-            List<Long> taskListsId = serverUtils.getTaskListsId(board.getId());
+    private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
+    private final ExecutorService taskListIdsUpdatesExecutor=Executors.newSingleThreadExecutor();
 
-            nameProperty.set(board.getName());
-
-            List<Parent> list = new ArrayList<>();
-
-            for (var id : taskListsId) {
-                if (!cache.containsKey(id)) {
-                    var taskListPair = mainCtrl.createTaskList(id);
-
-                    taskListControllers.add(taskListPair.getKey());
-                    cache.put(id, taskListPair.getValue());
+    private void registerDetailsUpdates(Consumer<Board> consumer){
+        detailUpdatesExecutor.submit(()->{
+            while(!detailUpdatesExecutor.isShutdown()){
+                System.out.println("register for details updates...");
+                var response=serverUtils.getBoardUpdates(board.getId());
+                System.out.println(response.getStatus());
+                if(response.getStatus()==204)
+                    continue;
+                if(response.getStatus()==400){
+                    closePolling();
+                    Platform.runLater(mainCtrl::showLoginPage);
+                    return;
                 }
-                list.add(cache.get(id));
+                var board=response.readEntity(Board.class);
+                consumer.accept(board);
             }
-            Platform.runLater(() -> board_parent.getChildren().setAll(list));
-        } catch (WebApplicationException e) {
-            closePolling();
+        });
+    }
 
-            Platform.runLater(mainCtrl::showLoginPage);
-        }
+    @SuppressWarnings("all")
+    private void registerTaskListIdsUpdates(Consumer<List<Long>> consumer){
+        taskListIdsUpdatesExecutor.submit(()->{
+            while (!taskListIdsUpdatesExecutor.isShutdown()){
+                System.out.println("register for taskList ids updates...");
+                var response=serverUtils.getTaskListIdsUpdates(board.getId());
+                System.out.println(response.getStatus());
+                if(response.getStatus()==204)
+                    continue;
+                List<Long> ids=response.readEntity(new GenericType<List<Long>>(){});
+                consumer.accept(ids);
+            }
+        });
     }
 
     public void closePolling() {
-        timer.cancel();
+        detailUpdatesExecutor.shutdown();
+        taskListIdsUpdatesExecutor.shutdown();
         for (TaskListController taskListController : taskListControllers)
             if (taskListController != null)
                 taskListController.closePolling();
