@@ -38,6 +38,12 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private TextField editTitle2;
 
+    /**
+     *
+     * @param serverUtils
+     * @param mainCtrl
+     * @param task_id
+     */
     @Inject
     public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id) {
         this.serverUtils = serverUtils;
@@ -45,6 +51,16 @@ public class ExtendedCardController implements Initializable{
         this.task_id = task_id;
     }
 
+    /**
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -58,10 +74,16 @@ public class ExtendedCardController implements Initializable{
         desc_box.setText(card.getDescription());
     }
 
+    /**
+     *Closes the respective ExtendedTaskCard scene
+     */
     public void back() {
         mainCtrl.closeCard();
     }
 
+    /**
+     *Saves the new information in the TaskCard
+     */
     public void save() {
         if(!editTitle2.getText().isBlank())
             card.setName(editTitle2.getText());
@@ -74,12 +96,19 @@ public class ExtendedCardController implements Initializable{
         back();
     }
 
+    /**
+     *Allows the user to edit the title of the TaskCard by hovering on its title area
+     */
     public void titleHoverIn() {
         editTitle2.setText(taskName.getText());
         editTitle2.setOpacity(1);
         taskName.setOpacity(0);
     }
 
+
+    /**
+     *Saves the new title when the user hovers out of the TaskCard's title area
+     */
     public void titleHoverOut() {
         editTitle2.setOpacity(0);
         taskName.setOpacity(1);

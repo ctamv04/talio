@@ -85,17 +85,17 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public void showCard(Long card_id) {
-        var card = viewFactory.createCard(card_id);
+    public void showCard(Long cardID) {
+        var card = viewFactory.createCard(cardID);
         cardStage = new Stage(StageStyle.UNDECORATED);
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
-        cardStage.showAndWait();
+        cardStage.showAndWait() ;
     }
 
     public void closeCard() {
-        if (cardStage != null)
+        if (cardStage!=null)
             cardStage.close();
     }
 
