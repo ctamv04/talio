@@ -6,8 +6,12 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -24,6 +28,9 @@ public class TaskCard {
     @JsonIgnore
     private TaskList taskList;
     private int position=0;
+
+    private Pair<String, Boolean> subtasks;
+
     /**
      * Constructor function for the Task Card object with an empty name & description
      * @param taskList the task list where the card is located
