@@ -53,11 +53,11 @@ public class MainCtrl {
         primaryStage.setScene(new Scene(startingPage.getValue()));
         primaryStage.setTitle("Starting Page");
 
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
-        primaryStage.setMaximized(true);
+//        Screen screen = Screen.getPrimary();
+//        Rectangle2D bounds = screen.getVisualBounds();
+//        primaryStage.setWidth(bounds.getWidth());
+//        primaryStage.setHeight(bounds.getHeight());
+//        primaryStage.setMaximized(true);
 
         primaryStage.show();
     }
@@ -79,7 +79,7 @@ public class MainCtrl {
     }
 
     public void showBoard(Board selectedItem) {
-        var board = viewFactory.createBoard(selectedItem.getId());
+        var board = viewFactory.createBoard(selectedItem);
         primaryStage.setScene(new Scene(board.getValue()));
         primaryStage.setTitle("Board");
         primaryStage.show();
@@ -99,8 +99,8 @@ public class MainCtrl {
             cardStage.close();
     }
 
-    public void showClientOverview(Long boardId) {
-        var clientOverview = viewFactory.createClientOverview(boardId);
+    public void showClientOverview(Board board) {
+        var clientOverview = viewFactory.createClientOverview(board);
 
         primaryStage.setScene(new Scene(clientOverview.getValue()));
         primaryStage.setTitle("Client Overview");
@@ -134,8 +134,8 @@ public class MainCtrl {
         return viewFactory.createClientMenu();
     }
 
-    public Pair<BoardController, Parent> createBoard(Long boardId) {
-        return viewFactory.createBoard(boardId);
+    public Pair<BoardController, Parent> createBoard(Board board) {
+        return viewFactory.createBoard(board);
     }
 
     public Pair<TaskListController, Parent> createTaskList(Long id) {

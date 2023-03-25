@@ -87,7 +87,7 @@ public class LoginController implements Initializable {
             }
         });
 
-        boards.setOnMouseClicked(event -> boardClicked(event));
+        boards.setOnMouseClicked(this::boardClicked);
 
         join_board_button.setOnAction(event -> joinButtonClicked());
 
@@ -104,7 +104,16 @@ public class LoginController implements Initializable {
                 buttonBox.setOpacity(0L);
             }
         });
-    } // initialize
+    }
+
+    private void joinBoard(Long id){
+        try{
+            Board board=serverUtils.getBoard(id);
+            mainCtrl.showClientOverview(board);
+        }catch (WebApplicationException e){
+            invalid_text.setVisible(true);
+        }
+    }
 
     /***
      * This is called when a mouse event happens to a board.
@@ -117,19 +126,15 @@ public class LoginController implements Initializable {
             Long clickedBoardID = board.getId();
 
             if (event.getClickCount() == 2) {
-                mainCtrl.showClientOverview(clickedBoardID);
+                joinBoard(clickedBoardID);
             }
 
             buttonBox.setOpacity(1L);
-            enterBoard.setOnMouseClicked(event2 -> {
-                mainCtrl.showClientOverview(clickedBoardID);
-            });
+            enterBoard.setOnMouseClicked(event2 -> joinBoard(clickedBoardID));
 
-            delBoard.setOnMouseClicked(event2 -> {
-                serverUtils.deleteBoard(clickedBoardID);
-            });
+            delBoard.setOnMouseClicked(event2 -> serverUtils.deleteBoard(clickedBoardID));
         }
-    } // boardClicked
+    }
 
     /***
      * This is called when the join button is clicked.
@@ -138,10 +143,10 @@ public class LoginController implements Initializable {
         try {
             Long id = Long.parseLong(code_input.getText());
             Board board = serverUtils.getBoard(id);
-            mainCtrl.showClientOverview(serverUtils.getBoard(id).getId());
+            mainCtrl.showClientOverview(board);
         } catch (NumberFormatException | WebApplicationException e) {
             invalid_text.setVisible(true);
         }
-    } // joinButtonClicked
-} // LoginController
+    }
+}
 

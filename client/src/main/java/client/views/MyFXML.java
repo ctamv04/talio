@@ -24,6 +24,7 @@ import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import models.Board;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -73,11 +74,11 @@ public class MyFXML {
 
             if (type == BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+                        injector.getInstance(MainCtrl.class), (Board) params[0]);
 
             if (type == ClientOverviewController.class)
                 return new ClientOverviewController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+                        injector.getInstance(MainCtrl.class), (Board) params[0]);
 
             if (type == ExtendedCardController.class)
                 return new ExtendedCardController(injector.getInstance(ServerUtils.class),
