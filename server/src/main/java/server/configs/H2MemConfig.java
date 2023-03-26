@@ -10,7 +10,9 @@ import server.repositories.BoardRepository;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Configuration
@@ -32,6 +34,12 @@ public class H2MemConfig {
                 for(int j=0;j<5;j++){
                     TaskCard taskCard=new TaskCard(String.valueOf(random.nextInt(1000,9999)),taskList,j);
                     taskList.getTaskCards().add(taskCard);
+
+                    Map<String, Boolean> a = new HashMap<>();
+                    a.put("task 1", false);
+                    a.put("task 2", true);
+                    taskCard.setSubs(a);
+
                     taskCardRepository.save(taskCard);
                 }
             }
