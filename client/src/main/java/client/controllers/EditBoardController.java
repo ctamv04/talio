@@ -11,19 +11,19 @@ import models.Board;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ClientMenuController implements Initializable {
+public class EditBoardController implements Initializable{
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Board board;
     @FXML
-    private TextField board_title;
+    private TextField board_name;
     @FXML
-    private Button home_button;
+    private Button done_button;
     @FXML
-    private Button editButton;
+    private Button back_button;
 
     @Inject
-    public ClientMenuController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
+    public EditBoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.board = board;
@@ -33,16 +33,18 @@ public class ClientMenuController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     }
 
-    public void editBoard() {
-        mainCtrl.showEditBoardPage(board);
+    public void back() {
+        mainCtrl.closeEditBoard();
     }
 
+    public void save() {
+        String name = board.getName();
+        if (!board_name.getText().isBlank())
+            name = board_name.getText();
+        board.setName(name);
 
-    public TextField getBoard_title() {
-        return board_title;
-    }
+        serverUtils.updateBoard(board.getId(), board);
 
-    public Button getHome_button() {
-        return home_button;
+        back();
     }
 }

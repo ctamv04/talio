@@ -21,12 +21,16 @@ public class ViewFactory {
         return FXML.load(StartingPageController.class, "/client/startingPage.fxml");
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu() {
-        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml");
+    public Pair<ClientMenuController, Parent> createClientMenu(Board board) {
+        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml", board);
     }
 
     public Pair<AddBoardController, Parent> createAddBoard() {
         return FXML.load(AddBoardController.class, "/client/addBoard.fxml");
+    }
+
+    public Pair<EditBoardController, Parent> createEditBoard(Board board) {
+        return FXML.load(EditBoardController.class, "/client/editBoard.fxml", board);
     }
 
     public Pair<ExtendedCardController, Parent> createLogin() {
