@@ -6,12 +6,10 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.tuple.Pair;
-
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -28,8 +26,8 @@ public class TaskCard {
     @JsonIgnore
     private TaskList taskList;
     private int position=0;
-
-    private Pair<String, Boolean> subtasks;
+    @ElementCollection
+    private Map<String, Boolean> subs = new HashMap<>();
 
     /**
      * Constructor function for the Task Card object with an empty name & description
@@ -93,6 +91,14 @@ public class TaskCard {
         this.name = name;
         this.taskList = taskList;
         this.position = position;
+    }
+
+    public Map<String, Boolean> getSubs() {
+        return subs;
+    }
+
+    public void setSubs(Map<String, Boolean> subs) {
+        this.subs = subs;
     }
 
     /**
