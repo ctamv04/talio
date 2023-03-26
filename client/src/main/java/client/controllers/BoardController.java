@@ -1,7 +1,6 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.GenericType;
@@ -10,16 +9,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import models.Board;
 
-import javax.swing.text.html.parser.Entity;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -33,10 +32,10 @@ public class BoardController implements Initializable {
     private final MainCtrl mainCtrl;
     private Board board;
     @FXML
-    public ScrollPane scrollPane;
+    private ScrollPane scrollPane;
     @FXML
-    public AnchorPane anchor_pane;
-    private Map<Long, Parent> cache;
+    private AnchorPane anchor_pane;
+    private final Map<Long, Parent> cache=new HashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
@@ -55,34 +54,8 @@ public class BoardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        overlay.setVisible(false);
-
-        board_parent.setHgap(30);
-        board_parent.setVgap(30);
-
-        nameProperty.set(board.getName());
-
-        anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
-
-        cache = new HashMap<>();
-        registerDetailsUpdates(updatedBoard -> {
-            board=updatedBoard;
-            Platform.runLater(() -> nameProperty.set(board.getName()));
-        });
-        registerTaskListIdsUpdates(ids -> {
-            if(ids==null)
-                return;
-            List<Parent> list = new ArrayList<>();
-            for(var id: ids){
-                if (!cache.containsKey(id)) {
-                    var taskListPair = mainCtrl.createTaskList(id);
-                    taskListControllers.add(taskListPair.getKey());
-                    cache.put(id, taskListPair.getValue());
-                }
-                list.add(cache.get(id));
-            }
-            Platform.runLater(()-> board_parent.getChildren().setAll(list));
-        });
+        initialiseScene();
+        startLongPolling();
 
         addList_button.setOnMouseClicked(event -> {
             Screen screen = Screen.getPrimary();
@@ -92,6 +65,45 @@ public class BoardController implements Initializable {
             overlay.setVisible(true);
             mainCtrl.showAddTaskListPage(board.getId());
             overlay.setVisible(false);
+        });
+    }
+
+    private void initialiseScene(){
+        overlay.setVisible(false);
+        board_parent.setHgap(30);
+        board_parent.setVgap(30);
+
+        anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
+
+        nameProperty.set(board.getName());
+        anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
+                CornerRadii.EMPTY, Insets.EMPTY)));
+        try{
+            board=serverUtils.getBoard(board.getId());
+            nameProperty.set(board.getName());
+            anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
+                    CornerRadii.EMPTY, Insets.EMPTY)));
+            List<Long> ids=serverUtils.getTaskListsId(board.getId());
+            List<Parent> taskLists=convertScenesFromTaskListIds(ids);
+            board_parent.getChildren().setAll(taskLists);
+        }catch (WebApplicationException e){
+            closePolling();
+            mainCtrl.showLoginPage();
+        }
+    }
+
+    private void startLongPolling(){
+        registerDetailsUpdates(updatedBoard -> {
+            board=updatedBoard;
+            Platform.runLater(() -> {
+                nameProperty.set(board.getName());
+                anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
+                        CornerRadii.EMPTY, Insets.EMPTY)));
+            });
+        });
+        registerTaskListIdsUpdates(ids -> {
+            List<Parent> list = convertScenesFromTaskListIds(ids);
+            Platform.runLater(()-> board_parent.getChildren().setAll(list));
         });
     }
 
@@ -117,7 +129,6 @@ public class BoardController implements Initializable {
         });
     }
 
-    @SuppressWarnings("all")
     private void registerTaskListIdsUpdates(Consumer<List<Long>> consumer){
         taskListIdsUpdatesExecutor.submit(()->{
             while (!taskListIdsUpdatesExecutor.isShutdown()){
@@ -126,7 +137,7 @@ public class BoardController implements Initializable {
                 System.out.println(response.getStatus());
                 if(response.getStatus()==204)
                     continue;
-                List<Long> ids=response.readEntity(new GenericType<List<Long>>(){});
+                List<Long> ids=response.readEntity(new GenericType<>() {});
                 consumer.accept(ids);
             }
         });
@@ -142,5 +153,18 @@ public class BoardController implements Initializable {
 
     public StringProperty namePropertyProperty() {
         return nameProperty;
+    }
+
+    private List<Parent> convertScenesFromTaskListIds(List<Long> ids){
+        List<Parent> list=new ArrayList<>();
+        for(var id: ids){
+            if (!cache.containsKey(id)) {
+                var taskListPair = mainCtrl.createTaskList(id);
+                taskListControllers.add(taskListPair.getKey());
+                cache.put(id, taskListPair.getValue());
+            }
+            list.add(cache.get(id));
+        }
+        return list;
     }
 }

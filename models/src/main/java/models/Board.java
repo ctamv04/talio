@@ -30,7 +30,8 @@ public class Board {
     )
     @JsonIgnore
     private List<TaskList> taskLists = new ArrayList<>();
-
+    private String backgroundColor="#FFFFFF";
+    private String fontColor="#000000";
     /**
      * Constructor functions for the Board class
      * @param name name of the board
@@ -47,6 +48,20 @@ public class Board {
     public Board(String name, List<TaskList> taskLists) {
         this.name = name;
         this.taskLists = taskLists;
+    }
+
+    /**
+     * Constructor Method
+     * @param name The name of the object
+     * @param taskLists The taskLists of the object
+     * @param backgroundColor The backgroundColor of the object
+     * @param fontColor The fontColor of the object
+     */
+    public Board(String name, List<TaskList> taskLists, String backgroundColor, String fontColor) {
+        this.name = name;
+        this.taskLists = taskLists;
+        this.backgroundColor = backgroundColor;
+        this.fontColor = fontColor;
     }
 
     /**
