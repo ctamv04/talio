@@ -88,18 +88,13 @@ public class LoginController implements Initializable {
         });
 
         boards.setOnMouseClicked(this::boardClicked);
-
         join_board_button.setOnAction(event -> joinButtonClicked());
-
         new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
-
         back_button.setOnMouseClicked(event -> {
             serverUtils.setServer("http://localhost:8080/");
             mainCtrl.showStartingPage();
         });
-
         window.setOnMouseClicked(event -> {
-
             if (event.getTarget() != buttonBox && event.getTarget() != boards) {
                 buttonBox.setOpacity(0L);
             }
