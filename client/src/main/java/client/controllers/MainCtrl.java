@@ -43,7 +43,7 @@ public class MainCtrl {
     public void showLoginPage() {
         var loginPage = viewFactory.createLogin();
         primaryStage.setScene(new Scene(loginPage.getValue()));
-        primaryStage.setTitle("Login Page");
+        primaryStage.setTitle("Login");
         primaryStage.show();
     }
 
@@ -51,7 +51,7 @@ public class MainCtrl {
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
         primaryStage.setScene(new Scene(startingPage.getValue()));
-        primaryStage.setTitle("Starting Page");
+        primaryStage.setTitle("Starting");
 
 //        Screen screen = Screen.getPrimary();
 //        Rectangle2D bounds = screen.getVisualBounds();
