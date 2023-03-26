@@ -2,6 +2,7 @@ package client.controllers;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -46,6 +47,8 @@ public class ExtendedCardController implements Initializable{
     private HBox newSubBox;
     @FXML
     private Label cancelNew;
+    @FXML
+    private ListView subs;
 
     /**
      *
@@ -84,6 +87,16 @@ public class ExtendedCardController implements Initializable{
 
         newSubBox.toBack();
         tempSubs = card.getSubs();
+
+        if(tempSubs != null || tempSubs.isEmpty()){
+            List<CheckBox> graphic = new ArrayList<>();
+            tempSubs.forEach((a,b) -> {
+                graphic.add(new CheckBox(a));
+                graphic.get(graphic.size() -1).setSelected(b);
+            });
+
+            subs.setItems(FXCollections.observableArrayList(graphic));
+        }
 
         addSub.setOnMouseClicked(event -> {
             newSub.clear();
