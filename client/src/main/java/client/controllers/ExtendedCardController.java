@@ -84,6 +84,7 @@ public class ExtendedCardController implements Initializable{
     }
 
     /**
+     * Handles stage initialization, populating the Subtask, Tag lists, and serves most user actions
      *
      * @param location
      * The location used to resolve relative paths for the root object, or
@@ -247,6 +248,9 @@ public class ExtendedCardController implements Initializable{
         taskName.setText(editTitle2.getText());
     }
 
+    /**
+     * Changes the background colour of the ExtendedTaskCard
+     */
     public void backChange() {
 
         String color = colorConverter(color_back.getValue());
@@ -255,6 +259,9 @@ public class ExtendedCardController implements Initializable{
 
     }
 
+    /**
+     * Changes the font colour of the ExtendedTaskCard
+     */
     public void fontChange() {
 
         String color = colorConverter(color_font.getValue());
@@ -267,15 +274,15 @@ public class ExtendedCardController implements Initializable{
         card.setFontID(color);
     }
 
+    /**
+     * Method for converting Java Color classes to CSS compatible hex colour codes
+     *
+     * @param color input Color object
+     * @return String containing hex colour code
+     */
     public String colorConverter(Color color){
 
-//        Double red = color.getRed()*100;
-//        int rInt = red.intValue();
-//        Double green = color.getGreen()*100;
-//        int gInt = green.intValue();
-//        Double blue = color.getBlue()*100;
-//        int bInt = blue.intValue();
-//        return String.format("#%02X%02X%02X", rInt, gInt, bInt);
+        //credit: http://www.java2s.com/example/java/javafx/javafx-color-to-css-color.html
 
         return "rgba(" + Math.round(255 * color.getRed()) + ","
                 + Math.round(255 * color.getGreen()) + ","
