@@ -52,8 +52,10 @@ public class MainCtrl {
         var startingPage = viewFactory.createStartingPage();
         primaryScene=new Scene(startingPage.getValue());
         primaryStage.setScene(primaryScene);
-        primaryStage.setMaximized(true);
         primaryStage.setTitle("Starting Page");
+        primaryStage.setWidth(1000);
+        primaryStage.setHeight(750);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
