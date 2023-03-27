@@ -36,8 +36,8 @@ public class H2MemConfig {
                     taskList.getTaskCards().add(taskCard);
 
                     Map<String, Boolean> a = new HashMap<>();
-                    a.put("task 1", false);
-                    a.put("task 2", true);
+                    a.put("Task 1", false);
+                    a.put("Task 2", true);
                     taskCard.setSubs(a);
 
                     taskCardRepository.save(taskCard);
