@@ -30,6 +30,8 @@ public class BoardService {
     public ResponseEntity<Board> update(@PathVariable("id") Long id, @RequestBody Board newBoard) {
         return boardRepository.findById(id).map(board -> {
             board.setName(newBoard.getName());
+            board.setBackgroundColor(newBoard.getBackgroundColor());
+            board.setFontColor(newBoard.getFontColor());
             return ResponseEntity.ok(boardRepository.save(board));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }

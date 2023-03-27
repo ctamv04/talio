@@ -1,16 +1,21 @@
 package server.controllers;
 
 import models.TaskList;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import models.Board;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.repositories.BoardRepository;
 import server.services.BoardService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -96,7 +101,19 @@ public class BoardController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Board> update(@PathVariable("id") Long id, @RequestBody Board newBoard) {
-        return service.update(id,newBoard);
+        ResponseEntity<Board> response= service.update(id,newBoard);
+
+        if(response.getStatusCodeValue()!=200)
+            return response;
+
+        Map<Object,Consumer<Board>> listeners= detailsListener.get(id);
+        if(listeners!=null){
+            listeners.forEach((key,consumer)->{
+                consumer.accept(response.getBody());
+                listeners.remove(key);
+            });
+        }
+        return response;
     }
 
     /**
@@ -109,6 +126,38 @@ public class BoardController {
         if (!repo.existsById(id))
             return ResponseEntity.badRequest().build();
         repo.deleteById(id);
+
+        Map<Object,Consumer<Board>> listeners= detailsListener.get(id);
+        if(listeners!=null){
+            listeners.forEach((key,consumer)->{
+                consumer.accept(null);
+                listeners.remove(key);
+            });
+        }
+
         return ResponseEntity.ok().build();
+    }
+
+    private final Map<Long, Map<Object,Consumer<Board>>> detailsListener=new ConcurrentHashMap<>();
+
+    @GetMapping("/{id}/details-updates")
+    public DeferredResult<ResponseEntity<Board>> getDetailsUpdates(@PathVariable("id") Long id){
+        var noContent=ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var res=new DeferredResult<ResponseEntity<Board>>(10000L,noContent);
+
+        var key=new Object();
+        Map<Object,Consumer<Board>> listeners=detailsListener.get(id);
+        if(listeners==null){
+            listeners=new ConcurrentHashMap<>();
+            detailsListener.put(id,listeners);
+        }
+        listeners.put(key,board-> {
+            if(board==null)
+                res.setResult(ResponseEntity.badRequest().build());
+            res.setResult(ResponseEntity.ok(board));
+        });
+        res.onCompletion(()-> detailsListener.get(id).remove(key));
+
+        return res;
     }
 }

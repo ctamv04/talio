@@ -16,11 +16,9 @@
 package client.controllers;
 
 import client.views.ViewFactory;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
@@ -34,6 +32,7 @@ public class MainCtrl {
     private Stage editBoardStage;
     private Stage cardStage;
     private ViewFactory viewFactory;
+    private Scene primaryScene;
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -43,23 +42,18 @@ public class MainCtrl {
 
     public void showLoginPage() {
         var loginPage = viewFactory.createLogin();
-        primaryStage.setScene(new Scene(loginPage.getValue()));
-        primaryStage.setTitle("Login");
+        primaryScene.setRoot(loginPage.getValue());
+        primaryStage.setTitle("Login Page");
         primaryStage.show();
     }
 
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
-        primaryStage.setScene(new Scene(startingPage.getValue()));
-        primaryStage.setTitle("Starting");
-
-//        Screen screen = Screen.getPrimary();
-//        Rectangle2D bounds = screen.getVisualBounds();
-//        primaryStage.setWidth(bounds.getWidth());
-//        primaryStage.setHeight(bounds.getHeight());
-//        primaryStage.setMaximized(true);
-
+        primaryScene=new Scene(startingPage.getValue());
+        primaryStage.setScene(primaryScene);
+        primaryStage.setMaximized(true);
+        primaryStage.setTitle("Starting Page");
         primaryStage.show();
     }
 
@@ -111,8 +105,7 @@ public class MainCtrl {
 
     public void showClientOverview(Board board) {
         var clientOverview = viewFactory.createClientOverview(board);
-
-        primaryStage.setScene(new Scene(clientOverview.getValue()));
+        primaryScene.setRoot(clientOverview.getValue());
         primaryStage.setTitle("Client Overview");
         primaryStage.setOnCloseRequest(event -> {
             if (clientOverview.getKey() != null)

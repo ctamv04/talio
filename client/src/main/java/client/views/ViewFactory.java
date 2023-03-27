@@ -1,6 +1,9 @@
 package client.views;
 
 import client.controllers.*;
+import client.controllers.popups.AddBoardController;
+import client.controllers.popups.AddTaskListController;
+import client.controllers.popups.EditBoardController;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
 import javafx.util.Pair;

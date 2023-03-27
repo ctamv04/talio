@@ -1,5 +1,6 @@
-package client.controllers;
+package client.controllers.popups;
 
+import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
