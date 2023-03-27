@@ -1,6 +1,9 @@
 package client.views;
 
 import client.controllers.*;
+import client.controllers.popups.AddBoardController;
+import client.controllers.popups.AddTaskListController;
+import client.controllers.popups.EditBoardController;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
 import javafx.util.Pair;
@@ -21,12 +24,16 @@ public class ViewFactory {
         return FXML.load(StartingPageController.class, "/client/startingPage.fxml");
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu() {
-        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml");
+    public Pair<ClientMenuController, Parent> createClientMenu(Board board) {
+        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml", board);
     }
 
     public Pair<AddBoardController, Parent> createAddBoard() {
         return FXML.load(AddBoardController.class, "/client/addBoard.fxml");
+    }
+
+    public Pair<EditBoardController, Parent> createEditBoard(Board board) {
+        return FXML.load(EditBoardController.class, "/client/editBoard.fxml", board);
     }
 
     public Pair<ExtendedCardController, Parent> createLogin() {

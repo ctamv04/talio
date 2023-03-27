@@ -16,6 +16,14 @@
          <Font size="18.0" />
       </font>
     </Button>
+    <Button fx:id="menu_button" onAction="#editBoard" layoutX="492.0" layoutY="10.0" mnemonicParsing="false" text="Settings" AnchorPane.rightAnchor="130.0">
+        <graphic>
+            <FontAwesomeIconView glyphName="COG" />
+        </graphic>
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Button>
     <HBox alignment="CENTER" prefHeight="60.0" prefWidth="367.0" spacing="10.0">
         <FontAwesomeIconView glyphName="CHILD" size="30" />
       <TextField fx:id="board_title" editable="false" prefHeight="40.0" prefWidth="303.0" styleClass="board_title" text="Talio | Board X (#00000000)">

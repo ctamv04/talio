@@ -1,5 +1,6 @@
-package client.controllers;
+package client.controllers.popups;
 
+import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
@@ -11,9 +12,10 @@ import models.Board;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AddBoardController implements Initializable {
+public class EditBoardController implements Initializable{
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    private final Board board;
     @FXML
     private TextField board_name;
     @FXML
@@ -22,29 +24,28 @@ public class AddBoardController implements Initializable {
     private Button back_button;
 
     @Inject
-    public AddBoardController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public EditBoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
+        this.board = board;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        done_button.setOnMouseClicked(event -> save());
-        back_button.setOnMouseClicked(event -> back());
     }
 
     public void back() {
-        mainCtrl.closeAddBoard();
+        mainCtrl.closeEditBoard();
     }
 
     public void save() {
-        String name = "Untitled";
+        String name = board.getName();
         if (!board_name.getText().isBlank())
             name = board_name.getText();
-        Board board = new Board(name);
+        board.setName(name);
 
-        board = serverUtils.addBoard(board);
+        serverUtils.updateBoard(board.getId(), board);
+
         back();
-        mainCtrl.showClientOverview(board);
     }
 }

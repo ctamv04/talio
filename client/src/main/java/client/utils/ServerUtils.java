@@ -19,6 +19,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
@@ -148,6 +149,18 @@ public class ServerUtils {
     public void updateTaskCard(Long taskID, TaskCard updated) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
+    /**
+     * Updates the board with a specified id
+     *
+     * @param boardId  id of the board
+     * @param updated updated board
+     */
+    public void updateBoard(Long boardId, Board updated) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + boardId)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
@@ -291,5 +304,21 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
+    }
+
+    public Response getBoardUpdates(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/"+id+"/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
+    public Response getTaskListIdsUpdates(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasklists/"+id+"/ids-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
     }
 }

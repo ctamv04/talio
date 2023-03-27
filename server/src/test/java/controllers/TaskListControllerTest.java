@@ -61,7 +61,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     *Success case for TaskCard addition
+     *Success case for TaskList addition
      */
     @Test
     public void addTaskListSuccess() {
@@ -70,7 +70,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     *Success case for TaskCard addition
+     *Success case for TaskList addition
      */
     @Test
     public void addTaskListSuccess2() {
@@ -90,7 +90,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     *Success case for TaskCard's ID retrieval
+     *Success case for TaskList retrieval
      */
     @Test
     public void getIdTest() {
@@ -100,7 +100,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     *Fail case for TaskCard's ID retrieval
+     *Fail case for TaskList retrieval
      */
     @Test
     public void getIdTestFail() {
@@ -108,19 +108,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     *
-     */
-    @Test
-    public void updateTest() {
-        TaskList updated = tasks.get(0);
-        updated.setName("updated");
-        ResponseEntity<TaskList> response=sut.getById(updated.getId());
-        assertNotNull(response.getBody());
-        assertEquals(updated.getName(), response.getBody().getName());
-    }
-
-    /**
-     *Success case for mass TaskCard retrieval
+     *Success case for mass TaskList retrieval
      */
     @Test
     public void getAllTest() {
@@ -132,7 +120,19 @@ public class TaskListControllerTest {
     }
 
     /**
-     *Fail case for TaskCard deletion
+     *Success case for TaskList update
+     */
+    @Test
+    public void updateTest() {
+        TaskList updated = tasks.get(0);
+        updated.setName("updated");
+        ResponseEntity<TaskList> response=sut.getById(updated.getId());
+        assertNotNull(response.getBody());
+        assertEquals(updated.getName(), response.getBody().getName());
+    }
+
+    /**
+     *Fail case for TaskList deletion
      */
     @Test
     public void deleteTestFalse() {
@@ -141,7 +141,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     *Success case for TaskCard deletion
+     *Success case for TaskList deletion
      */
     @Test
     public void deleteTest() {
@@ -149,8 +149,9 @@ public class TaskListControllerTest {
         assertFalse(sut.getAll().contains(tasks.get(0)));
     }
 
+
     /**
-     *Fail case for TaskCard update
+     *Fail case for TaskList update
      */
     @Test
     public void updateTestFalse() {
