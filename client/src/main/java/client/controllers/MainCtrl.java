@@ -31,6 +31,7 @@ public class MainCtrl {
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
+    private Stage editBoardStage;
     private Stage cardStage;
     private ViewFactory viewFactory;
 
@@ -78,6 +79,15 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
+    public void showEditBoardPage(Board board) {
+        var editBoard = viewFactory.createEditBoard(board);
+        editBoardStage = new Stage(StageStyle.UNDECORATED);
+        editBoardStage.setScene(new Scene(editBoard.getValue()));
+        editBoardStage.setTitle("Edit Board");
+        editBoardStage.initModality(Modality.APPLICATION_MODAL);
+        editBoardStage.showAndWait();
+    }
+
     public void showBoard(Board selectedItem) {
         var board = viewFactory.createBoard(selectedItem);
         primaryStage.setScene(new Scene(board.getValue()));
@@ -116,6 +126,11 @@ public class MainCtrl {
             addBoardStage.close();
     }
 
+    public void closeEditBoard() {
+        if (editBoardStage != null)
+            editBoardStage.close();
+    }
+
     public void showAddTaskListPage(Long boardId) {
         var addTaskList = viewFactory.createAddTaskList(boardId);
         addTaskListStage = new Stage(StageStyle.UNDECORATED);
@@ -130,8 +145,8 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu() {
-        return viewFactory.createClientMenu();
+    public Pair<ClientMenuController, Parent> createClientMenu(Board board) {
+        return viewFactory.createClientMenu(board);
     }
 
     public Pair<BoardController, Parent> createBoard(Board board) {

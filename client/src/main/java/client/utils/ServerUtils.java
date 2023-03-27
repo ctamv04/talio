@@ -151,6 +151,18 @@ public class ServerUtils {
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
+    /**
+     * Updates the board with a specified id
+     *
+     * @param boardId  id of the board
+     * @param updated updated board
+     */
+    public void updateBoard(Long boardId, Board updated) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/" + boardId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
     public void swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/swap/" + id + "/" + pos)
