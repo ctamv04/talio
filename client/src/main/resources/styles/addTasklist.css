@@ -1,0 +1,12 @@
+.layout{
+    -fx-background-color: #fff;
+}
+.save_button {
+    -fx-background-color: #000;
+}
+.back_button {
+    -fx-background-color: #00000000;
+}
+.save_button:hover, .back_button:hover {
+    -fx-cursor: hand;
+}
