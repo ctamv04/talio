@@ -28,6 +28,8 @@ public class TaskCard {
     private int position=0;
     @ElementCollection
     private Map<String, Boolean> subs = new HashMap<>();
+    private String fontID = "#000000";
+    private String backID = "#FFFFFF";
 
     /**
      * Constructor function for the Task Card object with an empty name & description
@@ -99,6 +101,22 @@ public class TaskCard {
 
     public void setSubs(Map<String, Boolean> subs) {
         this.subs = subs;
+    }
+
+    public String getFontID() {
+        return fontID;
+    }
+
+    public void setFontID(String fontID) {
+        this.fontID = fontID;
+    }
+
+    public String getBackID() {
+        return backID;
+    }
+
+    public void setBackID(String backID) {
+        this.backID = backID;
     }
 
     /**
