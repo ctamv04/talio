@@ -58,10 +58,6 @@ public class BoardController implements Initializable {
         startLongPolling();
 
         addList_button.setOnMouseClicked(event -> {
-            Screen screen = Screen.getPrimary();
-            Rectangle2D bounds = screen.getVisualBounds();
-            overlay.setPrefWidth(bounds.getWidth());
-            overlay.setPrefHeight(bounds.getHeight());
             overlay.setVisible(true);
             mainCtrl.showAddTaskListPage(board.getId());
             overlay.setVisible(false);
