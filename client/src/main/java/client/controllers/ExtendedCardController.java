@@ -2,12 +2,16 @@ package client.controllers;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import models.TaskCard;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -24,9 +28,19 @@ public class ExtendedCardController implements Initializable{
     private final Long task_id;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
-
+    private boolean editFlag = false;
     @FXML
     private Label taskName;
+    @FXML
+    private Label descLabel;
+    @FXML
+    private Label subLabel;
+    @FXML
+    private Label tagsLabel;
+    @FXML
+    private Label backLabel;
+    @FXML
+    private Label fontLabel;
     @FXML
     private Button backButton;
     @FXML
@@ -49,6 +63,12 @@ public class ExtendedCardController implements Initializable{
     private Label cancelNew;
     @FXML
     private ListView subs;
+    @FXML
+    private AnchorPane window;
+    @FXML
+    private ColorPicker color_back;
+    @FXML
+    private ColorPicker color_font;
 
     /**
      *
@@ -82,6 +102,15 @@ public class ExtendedCardController implements Initializable{
             e.printStackTrace();
         }
 
+        window.setStyle("-fx-background-color: " + card.getBackID() + ";");
+        taskName.setStyle("-fx-text-fill: " + card.getFontID() + ";");
+        descLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
+        subLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
+        tagsLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
+        backLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
+        fontLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
+
+
         taskName.setText(card.getName());
         desc_box.setText(card.getDescription());
 
@@ -91,8 +120,20 @@ public class ExtendedCardController implements Initializable{
         if(tempSubs != null || tempSubs.isEmpty()){
             List<CheckBox> graphic = new ArrayList<>();
             tempSubs.forEach((a,b) -> {
-                graphic.add(new CheckBox(a));
-                graphic.get(graphic.size() -1).setSelected(b);
+
+                CheckBox box = new CheckBox(a);
+                box.setSelected(b);
+
+                box.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        var key = box.getText();
+                        var value = box.isSelected();
+                        tempSubs.replace(key, value);
+                    }
+                });
+
+                graphic.add(box);
             });
 
             subs.setItems(FXCollections.observableArrayList(graphic));
@@ -112,8 +153,28 @@ public class ExtendedCardController implements Initializable{
 
         newSub.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER) {
-                if (!newSub.getText().isBlank()) {
+
+                if(editFlag && !newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
+
+                    var old_key = ((CheckBox) subs.getSelectionModel().getSelectedItem()).getText();
+                    var old_value = ((CheckBox) subs.getSelectionModel().getSelectedItem()).isSelected();
+
+                    tempSubs.remove(old_key);
+                    tempSubs.put(newSub.getText(), old_value);
+
+                    subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
+                    CheckBox editedBox = new CheckBox(newSub.getText());
+                    editedBox.setSelected(old_value);
+                    subs.getItems().add(editedBox);
+
+                    editFlag = false;
+
+                }else if(!newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
                     tempSubs.put(newSub.getText(), false);
+
+                    CheckBox newBox = new CheckBox(newSub.getText());
+                    newBox.setSelected(false);
+                    subs.getItems().add(newBox);
                 }
 
                 newSubBox.setOpacity(0);
@@ -121,19 +182,25 @@ public class ExtendedCardController implements Initializable{
             }
         });
 
-//        window.setOnMouseClicked(event -> {
-//
-//            if(event.getTarget().getClass() == CheckBox.class){
-//
-//                var key = ((CheckBox) subs.getSelectionModel().getSelectedItem()).getText();
-//                if(key != null){
-//
-//                    ((CheckBox) subs.getSelectionModel().getSelectedItem()).fire();
-//                    var value = ((CheckBox) subs.getSelectionModel().getSelectedItem()).isSelected();
-//                    tempSubs.replace(key, value);
-//                }
-//            }
-//        });
+        subs.setOnMouseClicked(event -> {
+
+            if(event.getClickCount() == 2){
+
+                editFlag = true;
+                newSubBox.setOpacity(1);
+                newSubBox.toFront();
+                newSub.requestFocus();
+            }
+        });
+
+        subs.setOnKeyPressed(event -> {
+
+            if(event.getCode() == KeyCode.DELETE){
+
+                tempSubs.remove(((CheckBox) subs.getSelectionModel().getSelectedItem()).getText());
+                subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
+            }
+        });
 
     }
 
@@ -154,8 +221,6 @@ public class ExtendedCardController implements Initializable{
         if(!desc_box.getText().equals(card.getDescription()))
             card.setDescription(desc_box.getText());
 
-//        var updatedSubs = card.getSubs();
-//        temp.forEach((a,b) -> upsubs.put(a,b));
         card.setSubs(tempSubs);
 
         serverUtils.updateTaskCard(card.getId(), card);
@@ -180,6 +245,42 @@ public class ExtendedCardController implements Initializable{
         editTitle2.setOpacity(0);
         taskName.setOpacity(1);
         taskName.setText(editTitle2.getText());
+    }
+
+    public void backChange() {
+
+        String color = colorConverter(color_back.getValue());
+        window.setStyle("-fx-background-color: " + color + ";");
+        card.setBackID(color);
+
+    }
+
+    public void fontChange() {
+
+        String color = colorConverter(color_font.getValue());
+        taskName.setStyle("-fx-text-fill: " + color + ";");
+        descLabel.setStyle("-fx-text-fill: " + color + ";");
+        subLabel.setStyle("-fx-text-fill: " + color + ";");
+        tagsLabel.setStyle("-fx-text-fill: " + color + ";");
+        backLabel.setStyle("-fx-text-fill: " + color + ";");
+        fontLabel.setStyle("-fx-text-fill: " + color + ";");
+        card.setFontID(color);
+    }
+
+    public String colorConverter(Color color){
+
+//        Double red = color.getRed()*100;
+//        int rInt = red.intValue();
+//        Double green = color.getGreen()*100;
+//        int gInt = green.intValue();
+//        Double blue = color.getBlue()*100;
+//        int bInt = blue.intValue();
+//        return String.format("#%02X%02X%02X", rInt, gInt, bInt);
+
+        return "rgba(" + Math.round(255 * color.getRed()) + ","
+                + Math.round(255 * color.getGreen()) + ","
+                + Math.round(255 * color.getBlue()) + ","
+                + color.getOpacity() + ")";
     }
 
 }
