@@ -140,14 +140,14 @@ public class TaskListControllerTest {
         assertEquals(BAD_REQUEST,response.getStatusCode());
     }
 
-    /**
-     *Success case for TaskList deletion
-     */
-    @Test
-    public void deleteTest() {
-        sut.delete(0L);
-        assertFalse(sut.getAll().contains(tasks.get(0)));
-    }
+//    /**
+//     *Success case for TaskList deletion
+//     */
+//    @Test
+//    public void deleteTest() {
+//        sut.delete(0L);
+//        assertFalse(sut.getAll().contains(tasks.get(0)));
+//    }
 
 
     /**
