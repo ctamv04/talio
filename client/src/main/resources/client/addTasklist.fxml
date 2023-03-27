@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane prefHeight="230.0" prefWidth="588.0" styleClass="layout" stylesheets="@../styles/addTasklist.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.AddTaskListController">
+<AnchorPane prefHeight="230.0" prefWidth="588.0" styleClass="layout" stylesheets="@../styles/addTasklist.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.popups.AddTaskListController">
     <TextField fx:id="tasklist_name" layoutX="31.0" layoutY="115.0" prefHeight="26.0" prefWidth="526.0" promptText="t">
       <font>
          <Font size="15.0" />
