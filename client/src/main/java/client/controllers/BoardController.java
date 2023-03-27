@@ -74,6 +74,7 @@ public class BoardController implements Initializable {
         board_parent.setVgap(30);
 
         anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
+        anchor_pane.prefHeightProperty().bind(scrollPane.heightProperty());
 
         nameProperty.set(board.getName());
         anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
