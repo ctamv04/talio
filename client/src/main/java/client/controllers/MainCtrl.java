@@ -31,6 +31,7 @@ public class MainCtrl {
     private Stage addTaskListStage;
     private Stage editBoardStage;
     private Stage cardStage;
+    private Stage adminLoginStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
 
@@ -50,7 +51,7 @@ public class MainCtrl {
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
-        primaryScene=new Scene(startingPage.getValue());
+        primaryScene = new Scene(startingPage.getValue());
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle("Starting Page");
         primaryStage.setWidth(1000);
@@ -97,11 +98,11 @@ public class MainCtrl {
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
-        cardStage.showAndWait() ;
+        cardStage.showAndWait();
     }
 
     public void closeCard() {
-        if (cardStage!=null)
+        if (cardStage != null)
             cardStage.close();
     }
 
@@ -154,5 +155,19 @@ public class MainCtrl {
 
     public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
         return viewFactory.createMinimizedCard(card_id);
+    }
+
+    public void showAdminLogin() {
+        var adminLogin = viewFactory.createAdminLogin();
+        adminLoginStage = new Stage(StageStyle.UNDECORATED);
+        adminLoginStage.setScene(new Scene(adminLogin.getValue()));
+        adminLoginStage.setTitle("Login as admin");
+        adminLoginStage.initModality(Modality.APPLICATION_MODAL);
+        adminLoginStage.showAndWait();
+    }
+
+    public void closeAdminLogin() {
+        if (adminLoginStage != null)
+            adminLoginStage.close();
     }
 }

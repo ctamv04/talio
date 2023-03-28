@@ -3,6 +3,7 @@ package client.views;
 import client.controllers.*;
 import client.controllers.popups.AddBoardController;
 import client.controllers.popups.AddTaskListController;
+import client.controllers.popups.AdminLoginController;
 import client.controllers.popups.EditBoardController;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
@@ -36,8 +37,8 @@ public class ViewFactory {
         return FXML.load(EditBoardController.class, "/client/editBoard.fxml", board);
     }
 
-    public Pair<ExtendedCardController, Parent> createLogin() {
-        return FXML.load(ExtendedCardController.class, "/client/loginPage.fxml");
+    public Pair<LoginController, Parent> createLogin() {
+        return FXML.load(LoginController.class, "/client/loginPage.fxml");
     }
 
     public Pair<ClientOverviewController, Parent> createClientOverview(Board board) {
@@ -46,6 +47,10 @@ public class ViewFactory {
 
     public Pair<TaskListController, Parent> createTaskList(Long id) {
         return FXML.load(TaskListController.class, "/client/taskList.fxml", id);
+    }
+
+    public Pair<AdminLoginController, Parent> createAdminLogin() {
+        return FXML.load(AdminLoginController.class, "/client/adminLogin.fxml");
     }
 
     /**

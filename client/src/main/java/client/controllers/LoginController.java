@@ -40,6 +40,8 @@ public class LoginController implements Initializable {
     private VBox buttonBox;
     @FXML
     private AnchorPane window;
+    @FXML
+    private Button admin_login_button;
 
     /***
      * Constructor for LoginController
@@ -93,23 +95,25 @@ public class LoginController implements Initializable {
 
         new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
 
+        admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
+
         back_button.setOnMouseClicked(event -> {
             serverUtils.setServer("http://localhost:8080/");
             mainCtrl.showStartingPage();
         });
 
-        window.setOnMouseClicked(event ->{
+        window.setOnMouseClicked(event -> {
             if (event.getTarget() != buttonBox && event.getTarget() != boards)
                 buttonBox.setOpacity(0);
 
         });
     }
 
-    private void joinBoard(Long id){
-        try{
-            Board board=serverUtils.getBoard(id);
+    private void joinBoard(Long id) {
+        try {
+            Board board = serverUtils.getBoard(id);
             mainCtrl.showClientOverview(board);
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             invalid_text.setVisible(true);
         }
     }
@@ -118,26 +122,26 @@ public class LoginController implements Initializable {
      * This is called when a mouse event happens to a board.
      * @param event the mouse event that happened: clicked/clicked twice/...
      */
-    public void boardClicked (MouseEvent event){
+    public void boardClicked(MouseEvent event) {
         Board board = boards.getSelectionModel().getSelectedItem();
 
-        if (board!=null) {
+        if (board != null) {
             Long boardID = board.getId();
 
             if (event.getClickCount() == 2)
                 joinBoard(boardID);
 
             buttonBox.setOpacity(1L);
-            enterBoard.setOnMouseClicked(event2-> joinBoard(boardID));
+            enterBoard.setOnMouseClicked(event2 -> joinBoard(boardID));
 
-            delBoard.setOnMouseClicked(event2-> serverUtils.deleteBoard(boardID));
+            delBoard.setOnMouseClicked(event2 -> serverUtils.deleteBoard(boardID));
         }
     }
 
     /***
      * This is called when the join button is clicked.
      */
-    public void joinButtonClicked () {
+    public void joinButtonClicked() {
         try {
             Long id = Long.parseLong(code_input.getText());
             Board board = serverUtils.getBoard(id);
