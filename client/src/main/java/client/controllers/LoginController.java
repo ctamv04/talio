@@ -88,16 +88,20 @@ public class LoginController implements Initializable {
         });
 
         boards.setOnMouseClicked(this::boardClicked);
+
         join_board_button.setOnAction(event -> joinButtonClicked());
+
         new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
+
         back_button.setOnMouseClicked(event -> {
             serverUtils.setServer("http://localhost:8080/");
             mainCtrl.showStartingPage();
         });
-        window.setOnMouseClicked(event -> {
-            if (event.getTarget() != buttonBox && event.getTarget() != boards) {
-                buttonBox.setOpacity(0L);
-            }
+
+        window.setOnMouseClicked(event ->{
+            if (event.getTarget() != buttonBox && event.getTarget() != boards)
+                buttonBox.setOpacity(0);
+
         });
     }
 
@@ -114,20 +118,19 @@ public class LoginController implements Initializable {
      * This is called when a mouse event happens to a board.
      * @param event the mouse event that happened: clicked/clicked twice/...
      */
-    public void boardClicked (MouseEvent event) {
+    public void boardClicked (MouseEvent event){
         Board board = boards.getSelectionModel().getSelectedItem();
 
-        if (board != null) {
-            Long clickedBoardID = board.getId();
+        if (board!=null) {
+            Long boardID = board.getId();
 
-            if (event.getClickCount() == 2) {
-                joinBoard(clickedBoardID);
-            }
+            if (event.getClickCount() == 2)
+                joinBoard(boardID);
 
             buttonBox.setOpacity(1L);
-            enterBoard.setOnMouseClicked(event2 -> joinBoard(clickedBoardID));
+            enterBoard.setOnMouseClicked(event2-> joinBoard(boardID));
 
-            delBoard.setOnMouseClicked(event2 -> serverUtils.deleteBoard(clickedBoardID));
+            delBoard.setOnMouseClicked(event2-> serverUtils.deleteBoard(boardID));
         }
     }
 
@@ -144,4 +147,3 @@ public class LoginController implements Initializable {
         }
     }
 }
-

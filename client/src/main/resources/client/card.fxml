@@ -3,6 +3,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
@@ -12,14 +13,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExtendedCardController">
+<AnchorPane fx:id="window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExtendedCardController">
    <children>
       <Label fx:id="taskName" layoutX="51.0" layoutY="13.0" text="Task">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Label layoutX="29.0" layoutY="68.0" text="Description">
+      <Label fx:id="descLabel" layoutX="29.0" layoutY="68.0" text="Description">
          <font>
             <Font size="15.0" />
          </font>
@@ -31,7 +32,7 @@
                <children>
                   <HBox prefHeight="32.0" prefWidth="155.0">
                      <children>
-                        <Label text="Subtasks" textAlignment="JUSTIFY">
+                        <Label fx:id="subLabel" text="Subtasks" textAlignment="JUSTIFY">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -42,7 +43,7 @@
                            </HBox.margin></Button>
                      </children>
                   </HBox>
-                  <ListView fx:id="subList" prefHeight="228.0" prefWidth="211.0">
+                  <ListView fx:id="subs" prefHeight="228.0" prefWidth="211.0">
                      <VBox.margin>
                         <Insets right="20.0" top="10.0" />
                      </VBox.margin>
@@ -53,7 +54,7 @@
                <children>
                   <HBox prefHeight="32.0" prefWidth="155.0">
                      <children>
-                        <Label text="Tags" textAlignment="JUSTIFY">
+                        <Label fx:id="tagsLabel" text="Tags" textAlignment="JUSTIFY">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -74,18 +75,57 @@
             </VBox>
          </children>
       </HBox>
-      <Button fx:id="backButton" cancelButton="true" layoutX="519.0" layoutY="305.0" mnemonicParsing="false" onAction="#back" text="Back" />
-      <Button fx:id="saveButton" layoutX="519.0" layoutY="345.0" mnemonicParsing="false" onAction="#save" text="Save" />
-      <TextArea fx:id="editTitle" layoutX="340.0" layoutY="33.0" onMouseEntered="#titleHoverIn" onMouseExited="#titleHoverOut" opacity="0.0" prefHeight="0.0" prefWidth="130.0">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </TextArea>
       <TextField fx:id="editTitle2" layoutX="44.0" layoutY="7.0" onMouseEntered="#titleHoverIn" onMouseExited="#titleHoverOut" opacity="0.0" prefHeight="52.0" prefWidth="173.0">
          <font>
             <Font size="25.0" />
          </font>
       </TextField>
       <FontAwesomeIconView glyphName="PENCIL" layoutX="29.0" layoutY="39.0" size="18" text="" />
+      <HBox fx:id="newSubBox" layoutX="29.0" layoutY="192.0" opacity="0.0" prefHeight="21.0" prefWidth="191.0">
+         <children>
+            <TextField fx:id="newSub" minHeight="0.0" prefHeight="21.0" prefWidth="165.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </TextField>
+            <Label fx:id="cancelNew" prefHeight="25.0" prefWidth="21.0" text="  X">
+               <HBox.margin>
+                  <Insets left="3.0" top="3.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      <VBox layoutX="469.0" layoutY="233.0" prefHeight="148.0" prefWidth="118.0">
+         <children>
+            <Label fx:id="backLabel" layoutX="10.0" layoutY="40.0" text="Background colour">
+               <font>
+                  <Font size="9.0" />
+               </font>
+            </Label>
+            <ColorPicker fx:id="color_back" onAction="#backChange" prefHeight="25.0" prefWidth="118.0" />
+            <Label fx:id="fontLabel" text="Font colour">
+               <font>
+                  <Font size="9.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </Label>
+            <ColorPicker fx:id="color_font" onAction="#fontChange" prefHeight="25.0" prefWidth="118.0" />
+            <HBox prefHeight="32.0" prefWidth="320.0">
+               <children>
+                  <Button fx:id="backButton" cancelButton="true" mnemonicParsing="false" onAction="#back" text="Back" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Save">
+                     <HBox.margin>
+                        <Insets left="34.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="35.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

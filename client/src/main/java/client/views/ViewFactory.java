@@ -48,8 +48,14 @@ public class ViewFactory {
         return FXML.load(TaskListController.class, "/client/taskList.fxml", id);
     }
 
-    public Pair<ExtendedCardController, Parent> createCard(Long card_id) {
-        return FXML.load(ExtendedCardController.class, "/client/card.fxml", card_id);
+    /**
+     * Returns the beans / instances necessary to create a new ExtendedTaskCard scene for a specific TaskCard
+     *
+     * @param cardID TaskCard ID
+     * @return Pair of ExtendedCardController bean, JavaFX Parent instance
+     */
+    public Pair<ExtendedCardController, Parent> createCard(Long cardID) {
+        return FXML.load(ExtendedCardController.class, "/client/card.fxml", cardID);
     }
 
     public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {

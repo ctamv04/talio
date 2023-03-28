@@ -91,9 +91,8 @@ public class MyFXML {
                         injector.getInstance(MainCtrl.class), (Board) params[0]);
 
             if (type == ExtendedCardController.class)
-                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Long) params[0]);
-
+                return new ExtendedCardController(injector.getInstance(ServerUtils.class) ,
+                        injector.getInstance(MainCtrl.class),(Long) params[0]);
 
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),

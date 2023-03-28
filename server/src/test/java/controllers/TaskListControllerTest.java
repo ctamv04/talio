@@ -40,6 +40,9 @@ public class TaskListControllerTest {
     private Board board;
     private final List<TaskList> tasks = new ArrayList<>();
 
+    /**
+     *Setup method for the test methods
+     */
     @BeforeEach
     public void setup() {
         board = new Board();
@@ -57,25 +60,27 @@ public class TaskListControllerTest {
 
     }
 
+    /**
+     *Success case for TaskList addition
+     */
     @Test
     public void addTaskListSuccess() {
         var actual = sut.add(new TaskList("null", board), board.getId());
         assertEquals(OK, actual.getStatusCode());
     }
 
+    /**
+     *Success case for TaskList addition
+     */
     @Test
     public void addTaskListSuccess2() {
         var actual = sut.add(new TaskList(null, board), board.getId());
         assertEquals(OK, actual.getStatusCode());
     }
 
-    @Test
-    public void getIdTest() {
-
-        assertSame(tasks.get(0), sut.getById(tasks.get(0).getId()).getBody());
-
-    }
-
+    /**
+     *Success case for TaskCard retrieval
+     */
     @Test
     public void getTaskCardsTest() {
         TaskList list = tasks.get(0);
@@ -84,11 +89,27 @@ public class TaskListControllerTest {
         assertEquals(tasks.get(0).getTaskCards(), sut.getTaskCard((long) 0).getBody());
     }
 
+    /**
+     *Success case for TaskList retrieval
+     */
+    @Test
+    public void getIdTest() {
+
+        assertSame(tasks.get(0), sut.getById(tasks.get(0).getId()).getBody());
+
+    }
+
+    /**
+     *Fail case for TaskList retrieval
+     */
     @Test
     public void getIdTestFail() {
         assertEquals(BAD_REQUEST, sut.getById(2L).getStatusCode());
     }
 
+    /**
+     *Success case for mass TaskList retrieval
+     */
     @Test
     public void getAllTest() {
         List<TaskList> test_list = sut.getAll();
@@ -98,6 +119,9 @@ public class TaskListControllerTest {
         }
     }
 
+    /**
+     *Success case for TaskList update
+     */
     @Test
     public void updateTest() {
         TaskList updated = tasks.get(0);
@@ -106,23 +130,33 @@ public class TaskListControllerTest {
         assertNotNull(response.getBody());
         assertEquals(updated.getName(), response.getBody().getName());
     }
-    @Test
-    public void updateTestFalse() {
-        sut.update(0L,tasks.get(1));
-        assertEquals(tasks.get(1),sut.getAll().get(0));
-    }
 
-
-    @Test
-    public void deleteTest() {
-//        sut.delete(0L);
-//        assertFalse(sut.getAll().contains(tasks.get(0)));
-    }
+    /**
+     *Fail case for TaskList deletion
+     */
     @Test
     public void deleteTestFalse() {
         ResponseEntity<TaskList> response=sut.delete(5L);
         assertEquals(BAD_REQUEST,response.getStatusCode());
     }
 
+//    /**
+//     *Success case for TaskList deletion
+//     */
+//    @Test
+//    public void deleteTest() {
+//        sut.delete(0L);
+//        assertFalse(sut.getAll().contains(tasks.get(0)));
+//    }
+
+
+    /**
+     *Fail case for TaskList update
+     */
+    @Test
+    public void updateTestFalse() {
+        sut.update(0L,tasks.get(1));
+        assertEquals(tasks.get(1),sut.getAll().get(0));
+    }
 
 }
