@@ -27,6 +27,7 @@ import javafx.util.BuilderFactory;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import models.Board;
+import models.TaskList;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -100,7 +101,7 @@ public class MyFXML {
 
             if (type == TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+                        injector.getInstance(MainCtrl.class), (Long) params[0], (BoardController) params[1]);
 
             return injector.getInstance(type);
         }

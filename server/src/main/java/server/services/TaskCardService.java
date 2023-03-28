@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.lang.Math.min;
 
@@ -73,7 +76,8 @@ public class TaskCardService {
     }
 
     @Transactional
-    public ResponseEntity<TaskCard> swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
+    public ResponseEntity<TaskCard> swapBetweenLists(Long id, int pos, Long idList1, Long idList2,
+                                                     Map<Long, Map<Object, Consumer<List<Long>>>> idListeners) {
         Optional<TaskCard> optional=taskCardRepository.findById(id);
         Optional<TaskList> optionalTaskList1=taskListRepository.findById(idList1);
         Optional<TaskList> optionalTaskList2=taskListRepository.findById(idList2);
@@ -87,7 +91,7 @@ public class TaskCardService {
             return ResponseEntity.badRequest().build();
 
         if(idList1.equals(idList2))
-            return swapSameList(taskCard,taskList1,pos);
+            return swapSameList(taskCard,taskList1,pos,idListeners);
         pos=min(pos,taskList2.getTaskCards().size());
 
         taskList1.getTaskCards().remove(taskCard);
@@ -105,10 +109,15 @@ public class TaskCardService {
         taskCard.setPosition(pos);
         taskListRepository.save(taskList1);
         taskListRepository.save(taskList2);
+
+        traverseIdsListeners(idListeners.get(taskList1.getId()),taskList1);
+        traverseIdsListeners(idListeners.get(taskList2.getId()),taskList2);
+
         return ResponseEntity.ok(taskCardRepository.save(taskCard));
     }
 
-    private ResponseEntity<TaskCard> swapSameList(TaskCard taskCard, TaskList taskList, int pos){
+    private ResponseEntity<TaskCard> swapSameList(TaskCard taskCard, TaskList taskList, int pos,
+                                                  Map<Long, Map<Object, Consumer<List<Long>>>> idListeners){
         List<TaskCard> orderedTaskCardList=taskListRepository.getTaskCardsId(taskList.getId());
         pos=min(pos,taskList.getTaskCards().size()-1);
         int index=orderedTaskCardList.indexOf(taskCard);
@@ -120,6 +129,9 @@ public class TaskCardService {
                 orderedTaskCardList.get(i).setPosition(i+1);
         orderedTaskCardList.get(index).setPosition(pos);
         taskListRepository.save(taskList);
+
+        traverseIdsListeners(idListeners.get(taskList.getId()),taskList);
+
         return ResponseEntity.ok(taskCardRepository.save(taskCard));
     }
 
@@ -139,5 +151,18 @@ public class TaskCardService {
         taskCardRepository.delete(taskCard);
         taskListRepository.save(taskList);
         return ResponseEntity.ok().build();
+    }
+
+    public void traverseIdsListeners(Map<Object, Consumer<List<Long>>> listeners, TaskList taskList){
+        if(listeners!=null){
+            listeners.forEach((key,consumer)->{
+                List<TaskCard> taskCards=taskListRepository.getTaskCardsId(taskList.getId());
+                List<Long> ids=new ArrayList<>();
+                for(var x: taskCards)
+                    ids.add(x.getId());
+                consumer.accept(ids);
+                listeners.remove(key);
+            });
+        }
     }
 }

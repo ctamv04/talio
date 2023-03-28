@@ -51,7 +51,7 @@ public class TaskListControllerTest {
 
         TestTaskListRepository repo = new TestTaskListRepository();
         TaskListService service = new TaskListService(repo, board_repo);
-        sut = new TaskListController(repo, service);
+        sut = new TaskListController(repo, service, null);
 
         for(int i = 0; i < 2; i++){
             tasks.add(new TaskList());

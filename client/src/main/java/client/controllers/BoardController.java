@@ -13,15 +13,14 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import models.Board;
 
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -35,7 +34,8 @@ public class BoardController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private AnchorPane anchor_pane;
-    private final Map<Long, Parent> cache=new HashMap<>();
+    private final Map<Long, Parent> taskListCache =new ConcurrentHashMap<>();
+    private final Map<Long, Parent> taskCardCache =new ConcurrentHashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
@@ -155,13 +155,17 @@ public class BoardController implements Initializable {
     private List<Parent> convertScenesFromTaskListIds(List<Long> ids){
         List<Parent> list=new ArrayList<>();
         for(var id: ids){
-            if (!cache.containsKey(id)) {
-                var taskListPair = mainCtrl.createTaskList(id);
+            if (!taskListCache.containsKey(id)) {
+                var taskListPair = mainCtrl.createTaskList(id,this);
                 taskListControllers.add(taskListPair.getKey());
-                cache.put(id, taskListPair.getValue());
+                taskListCache.put(id, taskListPair.getValue());
             }
-            list.add(cache.get(id));
+            list.add(taskListCache.get(id));
         }
         return list;
+    }
+
+    public Map<Long, Parent> getTaskCardCache() {
+        return taskCardCache;
     }
 }

@@ -3,27 +3,36 @@ package server.controllers;
 import models.TaskCard;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.repositories.TaskCardRepository;
+import server.services.LongPollingService;
 import server.services.TaskCardService;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskCardController {
     private final TaskCardRepository repo;
     private final TaskCardService service;
+    private final LongPollingService longPollingService;
 
     /**
      * Constructor Method
-     * @param repo The injected repo of the object
-     * @param service The injected service of the object
+     *
+     * @param repo               The injected repo of the object
+     * @param service            The injected service of the object
+     * @param longPollingService The injected long polling service
      */
-    public TaskCardController(TaskCardRepository repo, TaskCardService service) {
+    public TaskCardController(TaskCardRepository repo, TaskCardService service, LongPollingService longPollingService) {
         this.repo = repo;
         this.service = service;
+        this.longPollingService = longPollingService;
     }
 
     /**
@@ -57,7 +66,16 @@ public class TaskCardController {
     @PostMapping("")
     public ResponseEntity<TaskCard> add(@RequestBody TaskCard taskCard,
                                         @PathParam("taskListId") Long taskListId) {
-        return service.add(taskCard,taskListId);
+        ResponseEntity<TaskCard> response= service.add(taskCard,taskListId);
+        if(response.getStatusCodeValue()!=200)
+            return response;
+        TaskCard newTaskCard=response.getBody();
+        if(newTaskCard==null)
+            return response;
+
+        service.traverseIdsListeners(idsListeners.get(newTaskCard.getTaskList().getId()),taskCard.getTaskList());
+
+        return response;
     }
 
     /**
@@ -75,7 +93,7 @@ public class TaskCardController {
     @PutMapping("/swap/{id}/{pos}")
     public ResponseEntity<TaskCard> swapBetweenLists(@PathVariable("id") Long id, @PathVariable("pos") int pos,
                                            @PathParam("list1") Long list1, @PathParam("list2") Long list2) {
-        return service.swapBetweenLists(id,pos,list1,list2);
+        return service.swapBetweenLists(id,pos,list1,list2, idsListeners);
     }
 
     /**
@@ -85,6 +103,23 @@ public class TaskCardController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskCard> delete(@PathVariable("id") Long id) {
-        return service.delete(id);
+        Optional<TaskCard> optional =repo.findById(id);
+        if(optional.isEmpty())
+            return ResponseEntity.badRequest().build();
+        TaskCard taskCard=optional.get();
+        ResponseEntity<TaskCard> response=service.delete(id);
+        if(response.getStatusCodeValue()!=200)
+            return response;
+
+        service.traverseIdsListeners(idsListeners.get(taskCard.getTaskList().getId()),taskCard.getTaskList());
+
+        return response;
+    }
+
+    private final Map<Long, Map<Object, Consumer<List<Long>>>> idsListeners =new ConcurrentHashMap<>();
+
+    @GetMapping("/{id}/ids-updates")
+    public DeferredResult<ResponseEntity<List<Long>>> getIdsUpdates(@PathVariable("id") Long taskListId){
+        return longPollingService.getIdsUpdates(taskListId, idsListeners);
     }
 }

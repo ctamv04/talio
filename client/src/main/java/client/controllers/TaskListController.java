@@ -3,11 +3,11 @@ package client.controllers;
 import client.utils.ServerUtils;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.GenericType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.*;
 import javafx.scene.control.Label;
@@ -28,6 +28,9 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import static java.lang.Math.min;
 
@@ -35,12 +38,12 @@ public class TaskListController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long taskListId;
+    private final BoardController boardController;
     @FXML
     public Pane indicator_pane;
     @FXML
     private ScrollPane scrollPane;
-    private Map<Long, Parent> cache;
-    private Timer timer;
+    private final Timer timer=new Timer();
     @FXML
     private Label taskList_name;
     @FXML
@@ -50,10 +53,11 @@ public class TaskListController implements Initializable {
     private int entries=0;
 
     @Inject
-    public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, long taskListId) {
+    public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskListId, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskListId = taskListId;
+        this.boardController = boardController;
     }
 
     /**
@@ -64,20 +68,8 @@ public class TaskListController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cache = new HashMap<>();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                update();
-            }
-        }, 0, 500);
-
-        indicator_pane.prefHeightProperty().bind(taskCards.heightProperty());
-        taskCards.setFixedCellSize(60);
-        taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(300);
+        initialiseScene();
+        startPolling();
 
         taskCards.setCellFactory(new Callback<>() {
             @Override
@@ -92,15 +84,15 @@ public class TaskListController implements Initializable {
                             return;
                         }
 
-                        if (!cache.containsKey(item)) {
+                        if (!boardController.getTaskCardCache().containsKey(item)) {
                             Random random = new Random();
                             var taskCardPair = mainCtrl.createMinimizedCard(item);
                             taskCardPair.getValue().setStyle("-fx-background-color: rgb(" +
                                     random.nextInt(256) + "," + random.nextInt(256) + "," + random.nextInt(256) + ")");
-                            cache.put(item, taskCardPair.getValue());
+                            boardController.getTaskCardCache().put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
                         }
-                        setGraphic(cache.get(item));
+                        setGraphic(boardController.getTaskCardCache().get(item));
                     }
                 };
             }
@@ -114,6 +106,29 @@ public class TaskListController implements Initializable {
             }
         });
 
+        initialiseDragAndDrop();
+    }
+
+    private void initialiseScene(){
+        indicator_pane.prefHeightProperty().bind(taskCards.heightProperty());
+        taskCards.setFixedCellSize(60);
+        taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(300);
+        try{
+            TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
+            List<Long> taskCardsId = serverUtils.getTaskCardsId(taskListId);
+
+            taskList_name.setText(updatedTaskList.getName());
+            taskCards.setItems(FXCollections.observableArrayList(taskCardsId));
+            taskCards.setMaxHeight(taskCards.getFixedCellSize()*taskCardsId.size());
+            taskCards.setMinHeight(taskCards.getFixedCellSize()*taskCardsId.size());
+        } catch (WebApplicationException e) {
+            closePolling();
+        }
+    }
+
+    private void initialiseDragAndDrop(){
         taskCards.setOnDragDetected(this::onDragDetected);
         taskCards.setOnDragOver(this::onDragOver);
         taskCards.setOnDragDropped(this::onDragDropped);
@@ -130,6 +145,20 @@ public class TaskListController implements Initializable {
         line.setStroke(Color.BLACK);
         line.getStrokeDashArray().addAll(10d,10d);
         line.setVisible(false);
+    }
+
+    private void startPolling(){
+        registerTaskCardIdsUpdates(ids-> Platform.runLater(()->{
+            taskCards.setItems(FXCollections.observableArrayList(ids));
+            taskCards.setMaxHeight(taskCards.getFixedCellSize()*ids.size());
+            taskCards.setMinHeight(taskCards.getFixedCellSize()*ids.size());
+        }));
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                update();
+            }
+        }, 0, 500);
     }
 
     private void increment(int offset){
@@ -193,7 +222,6 @@ public class TaskListController implements Initializable {
         return min(index,taskCards.getItems().size());
     }
 
-
     private double findY(int index){
         return index*taskCards.getFixedCellSize();
     }
@@ -209,18 +237,27 @@ public class TaskListController implements Initializable {
     public void update() {
         try {
             TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
-            List<Long> taskCardsId = serverUtils.getTaskCardsId(taskListId);
 
-            Platform.runLater(()->{
-                taskList_name.setText(updatedTaskList.getName());
-                taskCards.setItems(FXCollections.
-                                    observableArrayList(taskCardsId));
-                taskCards.setMaxHeight(taskCards.getFixedCellSize()*taskCardsId.size());
-                taskCards.setMinHeight(taskCards.getFixedCellSize()*taskCardsId.size());
-            });
+            Platform.runLater(()-> taskList_name.setText(updatedTaskList.getName()));
         } catch (WebApplicationException e) {
             closePolling();
         }
+    }
+
+    private final ExecutorService taskCardIdsUpdatesExecutor= Executors.newSingleThreadExecutor();
+
+    private void registerTaskCardIdsUpdates(Consumer<List<Long>> consumer) {
+        taskCardIdsUpdatesExecutor.submit(()->{
+            while(!taskCardIdsUpdatesExecutor.isShutdown()){
+                System.out.println("registering for task card ids updates...");
+                var response=serverUtils.getTaskCardIdsUpdates(taskListId);
+                System.out.println(response.getStatus());
+                if(response.getStatus()==204)
+                    continue;
+                List<Long> ids=response.readEntity(new GenericType<>(){});
+                consumer.accept(ids);
+            }
+        });
     }
 
     /**
@@ -228,6 +265,7 @@ public class TaskListController implements Initializable {
      */
     public void closePolling() {
         timer.cancel();
+        taskCardIdsUpdatesExecutor.shutdown();
         for (MinimizedCardController cardController : taskCardControllers)
             if (cardController != null)
                 cardController.closePolling();
