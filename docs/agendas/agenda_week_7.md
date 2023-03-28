@@ -19,7 +19,9 @@
 
 ### **15:00 - 15:07** || Heuristic Evaluation: What is already done for the draft and what should be improved for the final report? Ask TA to give a feedback. <br /> <br>
 
-### **15:07 - 15:20** || Short demo of the app.  What is left from basic requirements? What advance features we are going to implement? <br /> <br>
+### **15:07 - 15:12** || Product Pitch: What features should be finalized before recording a video? <br /> <br>
+
+### **15:12 - 15:20** || Short demo of the app.  What is left from basic requirements? What advance features we are going to implement? <br /> <br>
 
 ### **15:20 - 15:25** || Question round <br /> <br>
 
