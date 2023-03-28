@@ -44,8 +44,8 @@ public class ViewFactory {
         return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", board);
     }
 
-    public Pair<TaskListController, Parent> createTaskList(Long id) {
-        return FXML.load(TaskListController.class, "/client/taskList.fxml", id);
+    public Pair<TaskListController, Parent> createTaskList(Long taskListId, BoardController boardController) {
+        return FXML.load(TaskListController.class, "/client/taskList.fxml", taskListId, boardController);
     }
 
     /**

@@ -321,4 +321,12 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
     }
+
+    public Response getTaskCardIdsUpdates(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/"+id+"/ids-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
 }

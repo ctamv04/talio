@@ -50,17 +50,18 @@ public class MainCtrl {
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
-        primaryScene=new Scene(startingPage.getValue());
+        if(primaryScene==null)
+            primaryScene=new Scene(startingPage.getValue());
+        else
+            primaryScene.setRoot(startingPage.getValue());
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle("Starting Page");
-        primaryStage.setWidth(1000);
-        primaryStage.setHeight(750);
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
-    public void showTaskList(TaskList selectedItem) {
-        var taskList = viewFactory.createTaskList(selectedItem.getId());
+    public void showTaskList(TaskList selectedItem, BoardController boardController) {
+        var taskList = viewFactory.createTaskList(selectedItem.getId(),boardController);
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
@@ -148,8 +149,8 @@ public class MainCtrl {
         return viewFactory.createBoard(board);
     }
 
-    public Pair<TaskListController, Parent> createTaskList(Long id) {
-        return viewFactory.createTaskList(id);
+    public Pair<TaskListController, Parent> createTaskList(Long taskListId, BoardController boardController) {
+        return viewFactory.createTaskList(taskListId,boardController);
     }
 
     public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
