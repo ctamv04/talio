@@ -16,11 +16,9 @@
 package client.controllers;
 
 import client.views.ViewFactory;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
@@ -31,8 +29,10 @@ public class MainCtrl {
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
+    private Stage editBoardStage;
     private Stage cardStage;
     private ViewFactory viewFactory;
+    private Scene primaryScene;
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -42,7 +42,7 @@ public class MainCtrl {
 
     public void showLoginPage() {
         var loginPage = viewFactory.createLogin();
-        primaryStage.setScene(new Scene(loginPage.getValue()));
+        primaryScene.setRoot(loginPage.getValue());
         primaryStage.setTitle("Login Page");
         primaryStage.show();
     }
@@ -50,15 +50,12 @@ public class MainCtrl {
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
-        primaryStage.setScene(new Scene(startingPage.getValue()));
+        primaryScene=new Scene(startingPage.getValue());
+        primaryStage.setScene(primaryScene);
         primaryStage.setTitle("Starting Page");
-
-//        Screen screen = Screen.getPrimary();
-//        Rectangle2D bounds = screen.getVisualBounds();
-//        primaryStage.setWidth(bounds.getWidth());
-//        primaryStage.setHeight(bounds.getHeight());
-//        primaryStage.setMaximized(true);
-
+        primaryStage.setWidth(1000);
+        primaryStage.setHeight(750);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
@@ -78,6 +75,15 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
+    public void showEditBoardPage(Board board) {
+        var editBoard = viewFactory.createEditBoard(board);
+        editBoardStage = new Stage(StageStyle.UNDECORATED);
+        editBoardStage.setScene(new Scene(editBoard.getValue()));
+        editBoardStage.setTitle("Edit Board");
+        editBoardStage.initModality(Modality.APPLICATION_MODAL);
+        editBoardStage.showAndWait();
+    }
+
     public void showBoard(Board selectedItem) {
         var board = viewFactory.createBoard(selectedItem);
         primaryStage.setScene(new Scene(board.getValue()));
@@ -85,24 +91,23 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public void showCard(Long card_id) {
-        var card = viewFactory.createCard(card_id);
+    public void showCard(Long cardID) {
+        var card = viewFactory.createCard(cardID);
         cardStage = new Stage(StageStyle.UNDECORATED);
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
-        cardStage.showAndWait();
+        cardStage.showAndWait() ;
     }
 
     public void closeCard() {
-        if (cardStage != null)
+        if (cardStage!=null)
             cardStage.close();
     }
 
     public void showClientOverview(Board board) {
         var clientOverview = viewFactory.createClientOverview(board);
-
-        primaryStage.setScene(new Scene(clientOverview.getValue()));
+        primaryScene.setRoot(clientOverview.getValue());
         primaryStage.setTitle("Client Overview");
         primaryStage.setOnCloseRequest(event -> {
             if (clientOverview.getKey() != null)
@@ -114,6 +119,11 @@ public class MainCtrl {
     public void closeAddBoard() {
         if (addBoardStage != null)
             addBoardStage.close();
+    }
+
+    public void closeEditBoard() {
+        if (editBoardStage != null)
+            editBoardStage.close();
     }
 
     public void showAddTaskListPage(Long boardId) {
@@ -130,8 +140,8 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu() {
-        return viewFactory.createClientMenu();
+    public Pair<ClientMenuController, Parent> createClientMenu(Board board) {
+        return viewFactory.createClientMenu(board);
     }
 
     public Pair<BoardController, Parent> createBoard(Board board) {

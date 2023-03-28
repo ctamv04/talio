@@ -30,5 +30,6 @@ dependencies {
 	
 	implementation 'org.openjfx:javafx-controls:19'
 	implementation 'org.openjfx:javafx-fxml:19'
-	
+
+	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
 }

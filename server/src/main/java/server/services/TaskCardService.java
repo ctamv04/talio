@@ -45,6 +45,9 @@ public class TaskCardService {
             task.setName(newTaskCard.getName());
             task.setDescription(newTaskCard.getDescription());
             task.setPosition(newTaskCard.getPosition());
+            task.setSubs(newTaskCard.getSubs());
+            task.setBackID(newTaskCard.getBackID());
+            task.setFontID(newTaskCard.getFontID());
             return ResponseEntity.ok(taskCardRepository.save(task));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }

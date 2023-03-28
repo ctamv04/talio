@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="100.0" prefWidth="200.0" styleClass="layout"
-            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.controllers.StartingPageController">
-    <TextField fx:id="url_input" layoutX="50.0" layoutY="29.0" prefWidth="100.0"/>
-    <Button fx:id="test_button" layoutX="30.0" layoutY="59.0" mnemonicParsing="false" text="Test"/>
-    <Button fx:id="done_button" layoutX="120.0" layoutY="59.0" mnemonicParsing="false" text="Connect"/>
-    <Text fx:id="success_message" fill="GREEN" layoutX="25.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0"
+<AnchorPane prefHeight="400.0" prefWidth="550.0" styleClass="layout" stylesheets="@../styles/startingPage.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.StartingPageController">
+    <Group layoutX="137.0" layoutY="142.0" styleClass="text-id" AnchorPane.bottomAnchor="201.38411712646484"
+           AnchorPane.leftAnchor="137.0" AnchorPane.rightAnchor="133.0" AnchorPane.topAnchor="132.5">
+        <TextField fx:id="url_input" layoutY="26.94921875" prefHeight="25.0" prefWidth="280.0" promptText="Server URL"/>
+        <Text fx:id="enter_url_message" fill="BLACK" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Please enter the server URL:" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="280.0"/>
+    </Group>
+    <Text fx:id="success_message" fill="GREEN" layoutX="212.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0"
           text="Connection established!"/>
-    <Text fx:id="fail_message" fill="RED" layoutX="50.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0"
+    <Text fx:id="fail_message" fill="RED" layoutX="231.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0"
           text="No connection!"/>
+    <Button fx:id="test_button" layoutX="187.0" layoutY="258.0" mnemonicParsing="false" prefHeight="25.0"
+            prefWidth="170.0" text="Test" textAlignment="CENTER"/>
+    <Button fx:id="done_button" layoutX="187.0" layoutY="220.0" mnemonicParsing="false" prefHeight="25.0"
+            prefWidth="170.0" text="Connect" textAlignment="CENTER"/>
+    <Text layoutX="131.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WELCOME TO TALIO"
+          textAlignment="CENTER" textOrigin="TOP" wrappingWidth="280.0" styleClass="welcome_msg"/>
 </AnchorPane>

@@ -28,7 +28,7 @@ public class ClientOverviewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menuPair = mainCtrl.createClientMenu();
+        var menuPair = mainCtrl.createClientMenu(board);
         var boardPair = mainCtrl.createBoard(board);
 
         layout.setTop(menuPair.getValue());

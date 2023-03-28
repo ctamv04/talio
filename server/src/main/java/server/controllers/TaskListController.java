@@ -2,13 +2,18 @@ package server.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import models.TaskCard;
 import models.TaskList;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.context.request.async.DeferredResult;
 import server.repositories.TaskListRepository;
 import server.services.TaskListService;
 
@@ -94,8 +99,23 @@ public class TaskListController {
     @PostMapping("")
     public ResponseEntity<TaskList> add(@RequestBody TaskList taskList,
                                         @PathParam("boardId") Long boardId) {
-
-        return taskListService.add(taskList,boardId);
+        ResponseEntity<TaskList> response= taskListService.add(taskList,boardId);
+        if(response.getStatusCodeValue()!=200)
+            return response;
+        TaskList newTaskList=response.getBody();
+        if(newTaskList==null)
+            return response;
+        Map<Object,Consumer<List<Long>>> listeners= idsListener.get(newTaskList.getBoard().getId());
+        if(listeners!=null){
+            listeners.forEach((key,consumer)->{
+                List<Long> ids=new ArrayList<>();
+                for(var x: newTaskList.getBoard().getTaskLists())
+                    ids.add(x.getId());
+                consumer.accept(ids);
+                listeners.remove(key);
+            });
+        }
+        return response;
     }
 
     /**
@@ -107,7 +127,6 @@ public class TaskListController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskList> update(@PathVariable("id") Long id,
                                            @RequestBody TaskList newTaskList) {
-
         return taskListService.update(id,newTaskList);
     }
 
@@ -118,11 +137,43 @@ public class TaskListController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskList> delete(@PathVariable("id") Long id) {
-
         if (!taskListRepository.existsById(id))
             return ResponseEntity.badRequest().build();
+
+        TaskList taskList=taskListRepository.getById(id);
         taskListRepository.deleteById(id);
+        Map<Object,Consumer<List<Long>>> listeners= idsListener.get(taskList.getBoard().getId());
+        if(listeners!=null){
+            listeners.forEach((key,consumer)->{
+                List<Long> ids=new ArrayList<>();
+                for(var x: taskList.getBoard().getTaskLists()){
+                    if(x!=taskList)
+                        ids.add(x.getId());
+                }
+                consumer.accept(ids);
+                listeners.remove(key);
+            });
+        }
 
         return ResponseEntity.ok().build();
+    }
+
+    private final Map<Long, Map<Object,Consumer<List<Long>>>> idsListener=new ConcurrentHashMap<>();
+
+    @GetMapping("/{id}/ids-updates")
+    public DeferredResult<ResponseEntity<List<Long>>> getIdsUpdates(@PathVariable("id") Long id){
+        var noContent=ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var res=new DeferredResult<ResponseEntity<List<Long>>>(10000L,noContent);
+
+        var key=new Object();
+        Map<Object, Consumer<List<Long>>> listeners=idsListener.get(id);
+        if(listeners==null){
+            listeners=new ConcurrentHashMap<>();
+            idsListener.put(id,listeners);
+        }
+        listeners.put(key,list -> res.setResult(ResponseEntity.ok(list)));
+        res.onCompletion(()-> idsListener.get(id).remove(key));
+
+        return res;
     }
 }

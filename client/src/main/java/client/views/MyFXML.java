@@ -16,6 +16,8 @@
 package client.views;
 
 import client.controllers.*;
+import client.controllers.popups.AddTaskListController;
+import client.controllers.popups.EditBoardController;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
@@ -80,10 +82,17 @@ public class MyFXML {
                 return new ClientOverviewController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Board) params[0]);
 
-            if (type == ExtendedCardController.class)
-                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+            if (type == ClientMenuController.class)
+                return new ClientMenuController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Board) params[0]);
 
+            if (type == EditBoardController.class)
+                return new EditBoardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Board) params[0]);
+
+            if (type == ExtendedCardController.class)
+                return new ExtendedCardController(injector.getInstance(ServerUtils.class) ,
+                        injector.getInstance(MainCtrl.class),(Long) params[0]);
 
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),

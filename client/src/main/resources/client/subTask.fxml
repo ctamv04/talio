@@ -1,0 +1,33 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+
+<!--&lt;!&ndash;<?import com.gluonhq.charm.glisten.control.Icon?>&ndash;&gt;-->
+
+<!--<?import javafx.geometry.Insets?>-->
+<!--<?import javafx.scene.control.Button?>-->
+<!--<?import javafx.scene.control.CheckBox?>-->
+<!--<?import javafx.scene.control.TextField?>-->
+<!--<?import javafx.scene.layout.AnchorPane?>-->
+<!--<?import javafx.scene.layout.HBox?>-->
+<!--<?import javafx.scene.layout.Region?>-->
+
+<!--<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="165.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.SubTaskController">-->
+<!--   <children>-->
+<!--      <HBox prefHeight="30.0" prefWidth="165.0">-->
+<!--         <children>-->
+<!--            <CheckBox fx:id="checkBox" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="CheckBox">-->
+<!--               <HBox.margin>-->
+<!--                  <Insets left="2.0" />-->
+<!--               </HBox.margin>-->
+<!--            </CheckBox>-->
+<!--&lt;!&ndash;            <Icon content="HELP_OUTLINE" prefHeight="30.0" prefWidth="30.0" />&ndash;&gt;-->
+<!--            <Region minHeight="30.0" minWidth="40.0" />-->
+<!--            <Button fx:id="subCancel" mnemonicParsing="false" onAction="#delete" prefHeight="26.0" prefWidth="1.0" text="X" textAlignment="CENTER">-->
+<!--               <HBox.margin>-->
+<!--                  <Insets right="3.0" top="2.0" />-->
+<!--               </HBox.margin>-->
+<!--            </Button>-->
+<!--         </children>-->
+<!--      </HBox>-->
+<!--      <TextField fx:id="editField" layoutX="26.0" layoutY="2.0" onMouseDragEntered="#titleHoverIn" onMouseDragExited="#titleHoverOut" opacity="0.0" prefHeight="26.0" prefWidth="53.0" />-->
+<!--   </children>-->
+<!--</AnchorPane>-->
