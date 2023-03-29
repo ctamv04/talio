@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 
+
 import java.net.URL;
 import java.util.*;
 
@@ -103,6 +104,8 @@ public class ExtendedCardController implements Initializable{
             e.printStackTrace();
         }
 
+        color_back.setValue(Color.web(card.getBackID()));
+        color_font.setValue(Color.web(card.getFontID()));
         window.setStyle("-fx-background-color: " + card.getBackID() + ";");
         taskName.setStyle("-fx-text-fill: " + card.getFontID() + ";");
         descLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");

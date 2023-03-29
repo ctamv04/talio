@@ -85,10 +85,7 @@ public class TaskListController implements Initializable {
                         }
 
                         if (!boardController.getTaskCardCache().containsKey(item)) {
-                            Random random = new Random();
                             var taskCardPair = mainCtrl.createMinimizedCard(item);
-                            taskCardPair.getValue().setStyle("-fx-background-color: rgb(" +
-                                    random.nextInt(256) + "," + random.nextInt(256) + "," + random.nextInt(256) + ")");
                             boardController.getTaskCardCache().put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
                         }
@@ -126,6 +123,7 @@ public class TaskListController implements Initializable {
             taskCards.setItems(FXCollections.observableArrayList(taskCardsId));
             taskCards.setMaxHeight(taskCards.getFixedCellSize()*taskCardsId.size());
             taskCards.setMinHeight(taskCards.getFixedCellSize()*taskCardsId.size());
+
         } catch (WebApplicationException e) {
             closePolling();
         }
