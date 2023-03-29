@@ -91,7 +91,7 @@ public class LoginController implements Initializable {
 
         boards.setOnMouseClicked(this::boardClicked);
 
-        join_board_button.setOnAction(event -> mainCtrl.showDeletedBoard());
+        join_board_button.setOnAction(event -> joinButtonClicked());
 
         new_board_button.setOnAction(event -> {
             overlay.setVisible(true);

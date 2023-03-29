@@ -36,7 +36,6 @@ public class MainCtrl {
     private ViewFactory viewFactory;
     private Scene primaryScene;
 
-
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
         this.viewFactory = viewFactory;
@@ -48,7 +47,6 @@ public class MainCtrl {
         primaryScene.setRoot(loginPage.getValue());
         primaryStage.setTitle("Login Page");
         primaryStage.show();
-
     }
 
 

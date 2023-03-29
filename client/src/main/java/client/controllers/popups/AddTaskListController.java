@@ -1,6 +1,5 @@
 package client.controllers.popups;
 
-import client.controllers.LoginController;
 import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
