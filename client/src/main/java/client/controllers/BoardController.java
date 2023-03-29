@@ -72,9 +72,6 @@ public class BoardController implements Initializable {
         anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
         anchor_pane.prefHeightProperty().bind(scrollPane.heightProperty());
 
-        nameProperty.set(board.getName());
-        anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
-                CornerRadii.EMPTY, Insets.EMPTY)));
         try{
             board=serverUtils.getBoard(board.getId());
             nameProperty.set(board.getName());
@@ -110,14 +107,15 @@ public class BoardController implements Initializable {
     private void registerDetailsUpdates(Consumer<Board> consumer){
         detailUpdatesExecutor.submit(()->{
             while(!detailUpdatesExecutor.isShutdown()){
-                System.out.println("register for details updates...");
                 var response=serverUtils.getBoardUpdates(board.getId());
-                System.out.println(response.getStatus());
                 if(response.getStatus()==204)
                     continue;
                 if(response.getStatus()==400){
                     closePolling();
-                    Platform.runLater(mainCtrl::showLoginPage);
+                    Platform.runLater(() -> {
+                        mainCtrl.showLoginPage();
+                        mainCtrl.showDeletedBoard();
+                    });
                     return;
                 }
                 var board=response.readEntity(Board.class);
@@ -129,9 +127,7 @@ public class BoardController implements Initializable {
     private void registerTaskListIdsUpdates(Consumer<List<Long>> consumer){
         taskListIdsUpdatesExecutor.submit(()->{
             while (!taskListIdsUpdatesExecutor.isShutdown()){
-                System.out.println("register for taskList ids updates...");
                 var response=serverUtils.getTaskListIdsUpdates(board.getId());
-                System.out.println(response.getStatus());
                 if(response.getStatus()==204)
                     continue;
                 List<Long> ids=response.readEntity(new GenericType<>() {});
@@ -167,5 +163,9 @@ public class BoardController implements Initializable {
 
     public Map<Long, Parent> getTaskCardCache() {
         return taskCardCache;
+    }
+
+    public AnchorPane getOverlay() {
+        return overlay;
     }
 }

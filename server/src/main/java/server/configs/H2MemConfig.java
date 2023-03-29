@@ -1,6 +1,7 @@
 package server.configs;
 
 import models.Board;
+import models.Tag;
 import models.TaskCard;
 import models.TaskList;
 import org.springframework.boot.CommandLineRunner;
@@ -10,10 +11,7 @@ import server.repositories.BoardRepository;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Configuration
 public class H2MemConfig {
@@ -25,6 +23,17 @@ public class H2MemConfig {
             Board board1=new Board("Board1");
             Board board2=new Board("Board2");
             Board board3=new Board("Board3");
+
+            List<Board> boards = new ArrayList<>();
+            boards.add(board1);
+
+            List<Tag> tags = new ArrayList<>();
+            tags.add(new Tag("gaming", boards, "#FFFFFF"));
+            tags.add(new Tag("homework >:)", boards, "#FFFEFE"));
+            tags.add(new Tag("new", boards, "#FEEEEE"));
+
+            board1.setTags(tags);
+
             boardRepository.saveAll(List.of(board1,board2,board3));
             for(int i=0;i<6;i++){
                 Random random=new Random();

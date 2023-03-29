@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 public class ClientMenuController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    private final BoardController boardController;
     private final Board board;
     @FXML
     private TextField board_title;
@@ -23,10 +24,11 @@ public class ClientMenuController implements Initializable {
     private Button editButton;
 
     @Inject
-    public ClientMenuController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
+    public ClientMenuController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.board = board;
+        this.boardController = boardController;
     }
 
     @Override
@@ -34,7 +36,9 @@ public class ClientMenuController implements Initializable {
     }
 
     public void editBoard() {
+        boardController.getOverlay().setVisible(true);
         mainCtrl.showEditBoardPage(board);
+        boardController.getOverlay().setVisible(false);
     }
 
 

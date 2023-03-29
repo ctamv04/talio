@@ -165,4 +165,14 @@ public class TaskCardService {
             });
         }
     }
+
+    public List<Long> convertTaskCardsToIds(List<TaskCard> taskCards){
+        if(taskCards==null)
+            return null;
+        List<Long> ids=new ArrayList<>();
+        for(var taskCard: taskCards)
+            ids.add(taskCard.getId());
+        return ids;
+    }
+
 }

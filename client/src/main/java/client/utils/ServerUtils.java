@@ -329,4 +329,20 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
     }
+
+    public Response getTaskListUpdates(Long taskListId) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasklists/"+taskListId+"/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
+    public Response getTaskCardUpdates(Long taskCardId) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/"+taskCardId+"/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
 }

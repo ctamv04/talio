@@ -8,7 +8,9 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -27,12 +29,12 @@ import models.TaskList;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import static java.lang.Math.min;
+import javafx.scene.image.WritableImage;
 
 public class TaskListController implements Initializable {
     private final ServerUtils serverUtils;
@@ -43,7 +45,6 @@ public class TaskListController implements Initializable {
     public Pane indicator_pane;
     @FXML
     private ScrollPane scrollPane;
-    private final Timer timer=new Timer();
     @FXML
     private Label taskList_name;
     @FXML
@@ -102,7 +103,9 @@ public class TaskListController implements Initializable {
             Long cardId = taskCards.getSelectionModel().getSelectedItem();
             if (cardId != null) {
                 taskCards.getSelectionModel().clearSelection();
+                boardController.getOverlay().setVisible(true);
                 mainCtrl.showCard(cardId);
+                boardController.getOverlay().setVisible(false);
             }
         });
 
@@ -115,6 +118,7 @@ public class TaskListController implements Initializable {
         taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(300);
+
         try{
             TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
             List<Long> taskCardsId = serverUtils.getTaskCardsId(taskListId);
@@ -153,12 +157,7 @@ public class TaskListController implements Initializable {
             taskCards.setMaxHeight(taskCards.getFixedCellSize()*ids.size());
             taskCards.setMinHeight(taskCards.getFixedCellSize()*ids.size());
         }));
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                update();
-            }
-        }, 0, 500);
+        registerDetailsUpdates(updatedTaskList-> Platform.runLater(()-> taskList_name.setText(updatedTaskList.getName())));
     }
 
     private void increment(int offset){
@@ -171,7 +170,15 @@ public class TaskListController implements Initializable {
         Dragboard dragboard = taskCards.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
         content.putString(taskCards.getSelectionModel().getSelectedItem().toString()+" "+taskListId);
+
+        WritableImage snapshot=boardController.getTaskCardCache().get(taskCards.getSelectionModel().getSelectedItem()).snapshot(new SnapshotParameters(),null);
+        ImageView dragView = new ImageView(snapshot);
+        dragView.setTranslateX(event.getX());
+        dragView.setTranslateY(event.getY());
+
         dragboard.setContent(content);
+        dragboard.setDragView(dragView.getImage());
+
         event.consume();
     }
 
@@ -231,27 +238,29 @@ public class TaskListController implements Initializable {
         return ratio*(taskCards.getItems().size()*taskCards.getFixedCellSize()-300);
     }
 
-    /**
-     * Update the task cards in the list using pooling.
-     */
-    public void update() {
-        try {
-            TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
-
-            Platform.runLater(()-> taskList_name.setText(updatedTaskList.getName()));
-        } catch (WebApplicationException e) {
-            closePolling();
-        }
-    }
-
+    private final ExecutorService detailUpdatesExecutor =Executors.newSingleThreadExecutor();
     private final ExecutorService taskCardIdsUpdatesExecutor= Executors.newSingleThreadExecutor();
+
+    private void registerDetailsUpdates(Consumer<TaskList> consumer) {
+        detailUpdatesExecutor.submit(()->{
+            while(!detailUpdatesExecutor.isShutdown()){
+                var response=serverUtils.getTaskListUpdates(taskListId);
+                if(response.getStatus()==204)
+                    continue;
+                if(response.getStatus()==400){
+                    closePolling();
+                    return;
+                }
+                var taskList=response.readEntity(TaskList.class);
+                consumer.accept(taskList);
+            }
+        });
+    }
 
     private void registerTaskCardIdsUpdates(Consumer<List<Long>> consumer) {
         taskCardIdsUpdatesExecutor.submit(()->{
             while(!taskCardIdsUpdatesExecutor.isShutdown()){
-                System.out.println("registering for task card ids updates...");
                 var response=serverUtils.getTaskCardIdsUpdates(taskListId);
-                System.out.println(response.getStatus());
                 if(response.getStatus()==204)
                     continue;
                 List<Long> ids=response.readEntity(new GenericType<>(){});
@@ -264,7 +273,7 @@ public class TaskListController implements Initializable {
      * Stops the pooling after closing the scene.
      */
     public void closePolling() {
-        timer.cancel();
+        detailUpdatesExecutor.shutdown();
         taskCardIdsUpdatesExecutor.shutdown();
         for (MinimizedCardController cardController : taskCardControllers)
             if (cardController != null)
@@ -276,7 +285,9 @@ public class TaskListController implements Initializable {
      */
     public void addTaskCard() {
         TaskCard card = new TaskCard();
+        boardController.getOverlay().setVisible(true);
         mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
+        boardController.getOverlay().setVisible(false);
     }
 
     /**
