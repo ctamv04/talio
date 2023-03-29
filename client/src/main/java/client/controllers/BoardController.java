@@ -13,15 +13,14 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import models.Board;
 
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -35,7 +34,8 @@ public class BoardController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private AnchorPane anchor_pane;
-    private final Map<Long, Parent> cache=new HashMap<>();
+    private final Map<Long, Parent> taskListCache =new ConcurrentHashMap<>();
+    private final Map<Long, Parent> taskCardCache =new ConcurrentHashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
@@ -72,9 +72,6 @@ public class BoardController implements Initializable {
         anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
         anchor_pane.prefHeightProperty().bind(scrollPane.heightProperty());
 
-        nameProperty.set(board.getName());
-        anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
-                CornerRadii.EMPTY, Insets.EMPTY)));
         try{
             board=serverUtils.getBoard(board.getId());
             nameProperty.set(board.getName());
@@ -83,6 +80,7 @@ public class BoardController implements Initializable {
             List<Long> ids=serverUtils.getTaskListsId(board.getId());
             List<Parent> taskLists=convertScenesFromTaskListIds(ids);
             board_parent.getChildren().setAll(taskLists);
+            board_parent.getChildren().add(addList_button);
         }catch (WebApplicationException e){
             closePolling();
             mainCtrl.showLoginPage();
@@ -94,13 +92,16 @@ public class BoardController implements Initializable {
             board=updatedBoard;
             Platform.runLater(() -> {
                 nameProperty.set(board.getName());
-                anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
+                anchor_pane.setBackground(new Background(new BackgroundFill(Color.valueOf(board.getBackgroundColor()),
                         CornerRadii.EMPTY, Insets.EMPTY)));
             });
         });
         registerTaskListIdsUpdates(ids -> {
             List<Parent> list = convertScenesFromTaskListIds(ids);
-            Platform.runLater(()-> board_parent.getChildren().setAll(list));
+            Platform.runLater(()-> {
+                board_parent.getChildren().setAll(list);
+                board_parent.getChildren().add(addList_button);
+            });
         });
     }
 
@@ -110,14 +111,15 @@ public class BoardController implements Initializable {
     private void registerDetailsUpdates(Consumer<Board> consumer){
         detailUpdatesExecutor.submit(()->{
             while(!detailUpdatesExecutor.isShutdown()){
-                System.out.println("register for details updates...");
                 var response=serverUtils.getBoardUpdates(board.getId());
-                System.out.println(response.getStatus());
                 if(response.getStatus()==204)
                     continue;
                 if(response.getStatus()==400){
                     closePolling();
-                    Platform.runLater(mainCtrl::showLoginPage);
+                    Platform.runLater(() -> {
+                        mainCtrl.showLoginPage();
+                        mainCtrl.showDeletedBoard();
+                    });
                     return;
                 }
                 var board=response.readEntity(Board.class);
@@ -129,9 +131,7 @@ public class BoardController implements Initializable {
     private void registerTaskListIdsUpdates(Consumer<List<Long>> consumer){
         taskListIdsUpdatesExecutor.submit(()->{
             while (!taskListIdsUpdatesExecutor.isShutdown()){
-                System.out.println("register for taskList ids updates...");
                 var response=serverUtils.getTaskListIdsUpdates(board.getId());
-                System.out.println(response.getStatus());
                 if(response.getStatus()==204)
                     continue;
                 List<Long> ids=response.readEntity(new GenericType<>() {});
@@ -155,13 +155,21 @@ public class BoardController implements Initializable {
     private List<Parent> convertScenesFromTaskListIds(List<Long> ids){
         List<Parent> list=new ArrayList<>();
         for(var id: ids){
-            if (!cache.containsKey(id)) {
-                var taskListPair = mainCtrl.createTaskList(id);
+            if (!taskListCache.containsKey(id)) {
+                var taskListPair = mainCtrl.createTaskList(id,this);
                 taskListControllers.add(taskListPair.getKey());
-                cache.put(id, taskListPair.getValue());
+                taskListCache.put(id, taskListPair.getValue());
             }
-            list.add(cache.get(id));
+            list.add(taskListCache.get(id));
         }
         return list;
+    }
+
+    public Map<Long, Parent> getTaskCardCache() {
+        return taskCardCache;
+    }
+
+    public AnchorPane getOverlay() {
+        return overlay;
     }
 }

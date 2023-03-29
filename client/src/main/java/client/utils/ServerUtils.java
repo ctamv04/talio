@@ -323,8 +323,44 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
-//    public Long getBoardId(Long cardId){
-//        return ClientBuilder.newClient(new ClientConfig()) //
+    public Response getTaskCardIdsUpdates(Long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/"+id+"/ids-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
+    public Response getTaskListUpdates(Long taskListId) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasklists/"+taskListId+"/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
+    public Response getTaskCardUpdates(Long taskCardId) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/"+taskCardId+"/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
+    /**
+     * Updates the TaskList with a specified ID
+     *
+     * @param tasklistID  id of the Task list
+     * @param updated updated Task List
+     */
+    public void updateTaskList(Long tasklistID, TaskList updated) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/" + tasklistID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
+    //    public Long getBoardId(Long cardId){
+    //        return ClientBuilder.newClient(new ClientConfig()) //
 //                .target(SERVER).path("api/tasks/board/" + cardId)
 //                .request(APPLICATION_JSON) //
 //                .accept(APPLICATION_JSON) //

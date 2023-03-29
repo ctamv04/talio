@@ -6,13 +6,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane prefHeight="60.0" prefWidth="169.0" styleClass="layout" stylesheets="@../styles/minimisedCard.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.MinimizedCardController">
+<StackPane fx:id="minBG" prefHeight="60.0" prefWidth="169.0" styleClass="layout" stylesheets="@../styles/minimisedCard.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.MinimizedCardController">
    <Text fx:id="card_name" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
       <font>
          <Font size="18.0" />
       </font>
    </Text>
-   <Button fx:id="close_button" mnemonicParsing="false" prefHeight="14.0" prefWidth="17.0" styleClass="close-button" onAction="#delete" StackPane.alignment="TOP_RIGHT">
+   <Button fx:id="close_button" mnemonicParsing="false" onAction="#delete" prefHeight="14.0" prefWidth="17.0" styleClass="close-button" StackPane.alignment="TOP_RIGHT">
       <graphic>
          <FontAwesomeIconView glyphName="TIMES" size="10" />
       </graphic>

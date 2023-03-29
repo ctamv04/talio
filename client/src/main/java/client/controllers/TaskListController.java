@@ -3,16 +3,15 @@ package client.controllers;
 import client.utils.ServerUtils;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.GenericType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -27,22 +26,26 @@ import models.TaskList;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
-import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import static java.lang.Math.min;
+import javafx.scene.image.WritableImage;
 
 public class TaskListController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long taskListId;
+    private final BoardController boardController;
     @FXML
     public Pane indicator_pane;
     @FXML
     private ScrollPane scrollPane;
-    private Map<Long, Parent> cache;
-    private Timer timer;
     @FXML
     private Label taskList_name;
+    @FXML
+    private TextField editTaskList_Name;
     @FXML
     public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
@@ -50,10 +53,11 @@ public class TaskListController implements Initializable {
     private int entries=0;
 
     @Inject
-    public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, long taskListId) {
+    public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskListId, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskListId = taskListId;
+        this.boardController = boardController;
     }
 
     /**
@@ -64,20 +68,8 @@ public class TaskListController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cache = new HashMap<>();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                update();
-            }
-        }, 0, 500);
-
-        indicator_pane.prefHeightProperty().bind(taskCards.heightProperty());
-        taskCards.setFixedCellSize(60);
-        taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(300);
+        initialiseScene();
+        startPolling();
 
         taskCards.setCellFactory(new Callback<>() {
             @Override
@@ -92,15 +84,12 @@ public class TaskListController implements Initializable {
                             return;
                         }
 
-                        if (!cache.containsKey(item)) {
-                            Random random = new Random();
+                        if (!boardController.getTaskCardCache().containsKey(item)) {
                             var taskCardPair = mainCtrl.createMinimizedCard(item);
-                            taskCardPair.getValue().setStyle("-fx-background-color: rgb(" +
-                                    random.nextInt(256) + "," + random.nextInt(256) + "," + random.nextInt(256) + ")");
-                            cache.put(item, taskCardPair.getValue());
+                            boardController.getTaskCardCache().put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
                         }
-                        setGraphic(cache.get(item));
+                        setGraphic(boardController.getTaskCardCache().get(item));
                     }
                 };
             }
@@ -110,10 +99,37 @@ public class TaskListController implements Initializable {
             Long cardId = taskCards.getSelectionModel().getSelectedItem();
             if (cardId != null) {
                 taskCards.getSelectionModel().clearSelection();
+                boardController.getOverlay().setVisible(true);
                 mainCtrl.showCard(cardId);
+                boardController.getOverlay().setVisible(false);
             }
         });
 
+        initialiseDragAndDrop();
+    }
+
+    private void initialiseScene(){
+        indicator_pane.prefHeightProperty().bind(taskCards.heightProperty());
+        taskCards.setFixedCellSize(60);
+        taskCards.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(300);
+
+        try{
+            TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
+            List<Long> taskCardsId = serverUtils.getTaskCardsId(taskListId);
+
+            taskList_name.setText(updatedTaskList.getName());
+            taskCards.setItems(FXCollections.observableArrayList(taskCardsId));
+            taskCards.setMaxHeight(taskCards.getFixedCellSize()*taskCardsId.size());
+            taskCards.setMinHeight(taskCards.getFixedCellSize()*taskCardsId.size());
+
+        } catch (WebApplicationException e) {
+            closePolling();
+        }
+    }
+
+    private void initialiseDragAndDrop(){
         taskCards.setOnDragDetected(this::onDragDetected);
         taskCards.setOnDragOver(this::onDragOver);
         taskCards.setOnDragDropped(this::onDragDropped);
@@ -132,6 +148,15 @@ public class TaskListController implements Initializable {
         line.setVisible(false);
     }
 
+    private void startPolling(){
+        registerTaskCardIdsUpdates(ids-> Platform.runLater(()->{
+            taskCards.setItems(FXCollections.observableArrayList(ids));
+            taskCards.setMaxHeight(taskCards.getFixedCellSize()*ids.size());
+            taskCards.setMinHeight(taskCards.getFixedCellSize()*ids.size());
+        }));
+        registerDetailsUpdates(updatedTaskList-> Platform.runLater(()-> taskList_name.setText(updatedTaskList.getName())));
+    }
+
     private void increment(int offset){
         entries=entries+offset;
         line.setVisible(entries != 0);
@@ -142,7 +167,15 @@ public class TaskListController implements Initializable {
         Dragboard dragboard = taskCards.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
         content.putString(taskCards.getSelectionModel().getSelectedItem().toString()+" "+taskListId);
+
+        WritableImage snapshot=boardController.getTaskCardCache().get(taskCards.getSelectionModel().getSelectedItem()).snapshot(new SnapshotParameters(),null);
+        ImageView dragView = new ImageView(snapshot);
+        dragView.setTranslateX(event.getX());
+        dragView.setTranslateY(event.getY());
+
         dragboard.setContent(content);
+        dragboard.setDragView(dragView.getImage());
+
         event.consume();
     }
 
@@ -193,7 +226,6 @@ public class TaskListController implements Initializable {
         return min(index,taskCards.getItems().size());
     }
 
-
     private double findY(int index){
         return index*taskCards.getFixedCellSize();
     }
@@ -203,31 +235,43 @@ public class TaskListController implements Initializable {
         return ratio*(taskCards.getItems().size()*taskCards.getFixedCellSize()-300);
     }
 
-    /**
-     * Update the task cards in the list using pooling.
-     */
-    public void update() {
-        try {
-            TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
-            List<Long> taskCardsId = serverUtils.getTaskCardsId(taskListId);
+    private final ExecutorService detailUpdatesExecutor =Executors.newSingleThreadExecutor();
+    private final ExecutorService taskCardIdsUpdatesExecutor= Executors.newSingleThreadExecutor();
 
-            Platform.runLater(()->{
-                taskList_name.setText(updatedTaskList.getName());
-                taskCards.setItems(FXCollections.
-                                    observableArrayList(taskCardsId));
-                taskCards.setMaxHeight(taskCards.getFixedCellSize()*taskCardsId.size());
-                taskCards.setMinHeight(taskCards.getFixedCellSize()*taskCardsId.size());
-            });
-        } catch (WebApplicationException e) {
-            closePolling();
-        }
+    private void registerDetailsUpdates(Consumer<TaskList> consumer) {
+        detailUpdatesExecutor.submit(()->{
+            while(!detailUpdatesExecutor.isShutdown()){
+                var response=serverUtils.getTaskListUpdates(taskListId);
+                if(response.getStatus()==204)
+                    continue;
+                if(response.getStatus()==400){
+                    closePolling();
+                    return;
+                }
+                var taskList=response.readEntity(TaskList.class);
+                consumer.accept(taskList);
+            }
+        });
+    }
+
+    private void registerTaskCardIdsUpdates(Consumer<List<Long>> consumer) {
+        taskCardIdsUpdatesExecutor.submit(()->{
+            while(!taskCardIdsUpdatesExecutor.isShutdown()){
+                var response=serverUtils.getTaskCardIdsUpdates(taskListId);
+                if(response.getStatus()==204)
+                    continue;
+                List<Long> ids=response.readEntity(new GenericType<>(){});
+                consumer.accept(ids);
+            }
+        });
     }
 
     /**
      * Stops the pooling after closing the scene.
      */
     public void closePolling() {
-        timer.cancel();
+        detailUpdatesExecutor.shutdown();
+        taskCardIdsUpdatesExecutor.shutdown();
         for (MinimizedCardController cardController : taskCardControllers)
             if (cardController != null)
                 cardController.closePolling();
@@ -238,7 +282,9 @@ public class TaskListController implements Initializable {
      */
     public void addTaskCard() {
         TaskCard card = new TaskCard();
+        boardController.getOverlay().setVisible(true);
         mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
+        boardController.getOverlay().setVisible(false);
     }
 
     /**
@@ -247,5 +293,28 @@ public class TaskListController implements Initializable {
     public void removeTaskList() {
         closePolling();
         serverUtils.removeTaskList(taskListId);
+    }
+
+    /**
+     * Allows the user to edit the title of the Tasklist by hovering on its title area.
+     */
+    public void editTaskListNameHoverIn() {
+        editTaskList_Name.setText(taskList_name.getText());
+        editTaskList_Name.setOpacity(1);
+        taskList_name.setOpacity(0);
+    }
+
+
+    /**
+     * Saves the new title when the user hovers out of the TaskList's title area.
+     */
+    public void editTaskListNameHoverOut() {
+        editTaskList_Name.setOpacity(0);
+        taskList_name.setOpacity(1);
+        taskList_name.setText(editTaskList_Name.getText());
+        TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
+        updatedTaskList.setName(taskList_name.getText());
+        serverUtils.updateTaskList(taskListId, updatedTaskList);
+
     }
 }

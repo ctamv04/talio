@@ -15,6 +15,7 @@
  */
 package client.controllers;
 
+import client.Main;
 import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,6 +32,7 @@ public class MainCtrl {
     private Stage addTaskListStage;
     private Stage editBoardStage;
     private Stage cardStage;
+    private Stage deletedBoardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
 
@@ -50,17 +52,18 @@ public class MainCtrl {
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
-        primaryScene=new Scene(startingPage.getValue());
+        if(primaryScene==null)
+            primaryScene=new Scene(startingPage.getValue());
+        else
+            primaryScene.setRoot(startingPage.getValue());
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle("Starting Page");
-        primaryStage.setWidth(1000);
-        primaryStage.setHeight(750);
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
-    public void showTaskList(TaskList selectedItem) {
-        var taskList = viewFactory.createTaskList(selectedItem.getId());
+    public void showTaskList(TaskList selectedItem, BoardController boardController) {
+        var taskList = viewFactory.createTaskList(selectedItem.getId(),boardController);
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
@@ -140,19 +143,32 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu(Board board) {
-        return viewFactory.createClientMenu(board);
+    public Pair<ClientMenuController, Parent> createClientMenu(Board board, BoardController boardController) {
+        return viewFactory.createClientMenu(board, boardController);
     }
 
     public Pair<BoardController, Parent> createBoard(Board board) {
         return viewFactory.createBoard(board);
     }
 
-    public Pair<TaskListController, Parent> createTaskList(Long id) {
-        return viewFactory.createTaskList(id);
+    public Pair<TaskListController, Parent> createTaskList(Long taskListId, BoardController boardController) {
+        return viewFactory.createTaskList(taskListId,boardController);
     }
 
     public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
         return viewFactory.createMinimizedCard(card_id);
+    }
+
+    public void showDeletedBoard() {
+        var addDeleteBoard = viewFactory.createBoardDeleted();
+        deletedBoardStage = new Stage(StageStyle.UNDECORATED);
+        deletedBoardStage.setScene(new Scene(addDeleteBoard.getValue()));
+        deletedBoardStage.setTitle("Deleted board");
+        deletedBoardStage.initModality(Modality.APPLICATION_MODAL);
+        deletedBoardStage.showAndWait();
+    }
+    public void closeDeletedBoard() {
+        if (deletedBoardStage != null)
+            deletedBoardStage.close();
     }
 }
