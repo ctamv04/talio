@@ -7,11 +7,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import models.Tag;
 import models.TaskCard;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -28,6 +31,9 @@ public class ExtendedCardController implements Initializable{
     private final Long task_id;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
+    private List<Tag> taskTags = new ArrayList<>();
+    private List<Tag> boardTags = new ArrayList<>();
+
     private boolean editFlag = false;
     @FXML
     private Label taskName;
@@ -69,7 +75,14 @@ public class ExtendedCardController implements Initializable{
     private ColorPicker color_back;
     @FXML
     private ColorPicker color_font;
-
+    @FXML
+    private ListView tags;
+    @FXML
+    private ScrollPane bTagList;
+    @FXML
+    private Label cancelbTagList;
+    @FXML
+    private HBox bTagListBox;
     /**
      *
      * @param serverUtils
@@ -111,12 +124,31 @@ public class ExtendedCardController implements Initializable{
         backLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
         fontLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
 
-
         taskName.setText(card.getName());
         desc_box.setText(card.getDescription());
 
         newSubBox.toBack();
+        bTagListBox.toBack();
+
         tempSubs = card.getSubs();
+        boardTags = serverUtils.getBoardTags(card.getId());
+
+        if(boardTags != null || boardTags.isEmpty()){
+            VBox tagList = new VBox();
+
+            boardTags.forEach((a) -> {
+
+                Label tag = new Label(a.getName());
+                tag.setStyle("-fx-text-fill: " + a.getColor() + "; -fx-border-color: " + a.getColor() + "; -fx-text-alignment: center;");
+
+                tagList.getChildren().add(tag);
+            });
+
+            tagList.setStyle("-fx-alignment: center;");
+            bTagList.setFitToWidth(true);
+            bTagList.setContent(tagList);
+
+        }
 
         if(tempSubs != null || tempSubs.isEmpty()){
             List<CheckBox> graphic = new ArrayList<>();
@@ -201,6 +233,11 @@ public class ExtendedCardController implements Initializable{
                 tempSubs.remove(((CheckBox) subs.getSelectionModel().getSelectedItem()).getText());
                 subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
             }
+        });
+
+        addTag.setOnMouseClicked(event -> {
+            bTagListBox.setOpacity(1);
+            bTagListBox.toFront();
         });
 
     }
