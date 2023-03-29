@@ -94,7 +94,7 @@ public class BoardController implements Initializable {
             board=updatedBoard;
             Platform.runLater(() -> {
                 nameProperty.set(board.getName());
-                anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
+                anchor_pane.setBackground(new Background(new BackgroundFill(Color.valueOf(board.getBackgroundColor()),
                         CornerRadii.EMPTY, Insets.EMPTY)));
             });
         });
