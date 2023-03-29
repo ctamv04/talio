@@ -10,7 +10,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -30,8 +32,18 @@ public class Board {
     )
     @JsonIgnore
     private List<TaskList> taskLists = new ArrayList<>();
+
+//    @OneToMany(
+//            mappedBy = "board",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JsonIgnore
+    private List<Tag> tags = new ArrayList<>();
     private String backgroundColor="#FFFFFF";
     private String fontColor="#000000";
+
     /**
      * Constructor functions for the Board class
      * @param name name of the board

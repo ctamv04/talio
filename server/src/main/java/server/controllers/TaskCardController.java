@@ -49,6 +49,22 @@ public class TaskCardController {
     }
 
     /**
+     *
+     * @param cardID
+     * @return
+     */
+    @GetMapping("/board/{id}")
+    public ResponseEntity<Long> getBoardId(@PathVariable("id") Long cardID){
+        Optional<TaskCard> taskCard = repo.findById(cardID);
+
+        if(taskCard.isEmpty())
+            return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(taskCard.get().getTaskList().getBoard().getId());
+
+    }
+
+    /**
      * Add a taskCard method
      * @param taskCard The wanted taskCard
      * @param taskListId The id of the list it belongs to
