@@ -298,7 +298,7 @@ public class TaskListController implements Initializable {
     }
 
     /**
-     *Allows the user to edit the title of the TaskCard by hovering on its title area
+     * Allows the user to edit the title of the Tasklist by hovering on its title area.
      */
     public void editTaskListNameHoverIn() {
         editTaskList_Name.setText(taskList_name.getText());
@@ -308,7 +308,7 @@ public class TaskListController implements Initializable {
 
 
     /**
-     *Saves the new title when the user hovers out of the TaskCard's title area
+     * Saves the new title when the user hovers out of the TaskList's title area.
      */
     public void editTaskListNameHoverOut() {
         editTaskList_Name.setOpacity(0);
