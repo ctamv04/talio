@@ -13,7 +13,7 @@
 
 ### Approval of the agenda and previous minutes - Does anyone have anything to add? 
 
-+ The Chair added a section regarding the Product Pitch draft to today's meedting agenda
++ The Chair added a section regarding the Product Pitch draft to today's meeting agenda
 + Nothing else to add
 
 ### Progress for the previous week. Did everyone contribute enough, what issue were resolved?
@@ -46,7 +46,7 @@
 + An Apprendix section will be added, as well as mockup screenshots.
 + Final proofing will be done, as well as a partial rewrite of the Conclusions & Improvements section
 + The Issues found by the other team should be prioritized better based on severity
-+ Not much else will be changed fro mthe draft to the final submission. We are happy with its current form
++ Not much else will be changed from the draft to the final submission. We are happy with its current form
 + We will contact the other team in regards to some problems in their evaluation process which have affected our report, mainly, the fact that they only went through our mockups once during their review process
 
 
@@ -57,7 +57,7 @@
 + We will focus on the script and the storyline
 + We are probably going to write the script together and film separately. This will be discussed in detail right after the formal meeting.
 + Al of our app's features should be showcased, as well as all features we plan to implement
-+ We all agreed on the high importancce of the Product Pitch, asd it will have a sizable impact on our final PRoduct grade
++ We all agreed on the high importancce of the Product Pitch, asd it will have a sizable impact on our final Product grade
 
 ### Short demo of the app.  What is left from basic requirements? What advance features we are going to implement?
 
@@ -65,7 +65,7 @@
 
 **TODO** (Task distribution was not fully determined during the meeting, they will be decided during the informal meeting)
 + Tasklist renaming feature must be added (Only Basic Requirement not yet implemented)
-+ Long polling must still be implemented everywhere, as well as Websockets in some parts of the app.
++ Long polling must still be implemented everywhere
 + Websockets must be integrated (Mihai)
 + Subtask feature finalized, Tag feature added, Tests, Javadoc finished, Debugging, Styling of ExtendedTaskCard (Christos)
 + Add Tag management menu in Board Settings
@@ -85,7 +85,7 @@
 + Division of tasks and code contribution is still a major problem that hasn't been addressed. We will try to balance out contributions as much as possible in the remaining days
 + "Very Good" feedback doesn’t necessarily mean there’s any problem, it just means we should keep doing what we’re doing for the rest of the features.
 + Partial grades can be received for Epics
-+ Fucntion should be prioritized over Form over the remaining days of the project
++ Function should be prioritized over Form over the remaining days of the project
 
 ### Feedback on this meeting
 
