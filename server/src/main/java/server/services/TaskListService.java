@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import server.repositories.BoardRepository;
 import server.repositories.TaskListRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,4 +60,14 @@ public class TaskListService {
         taskList.setBoard(board);
         return ResponseEntity.ok(taskListRepository.save(taskList));
     }
+
+    public List<Long> convertTaskListsToIds(List<TaskList> taskLists){
+        if(taskLists==null)
+            return null;
+        List<Long> ids=new ArrayList<>();
+        for(var taskList: taskLists)
+            ids.add(taskList.getId());
+        return ids;
+    }
+
 }
