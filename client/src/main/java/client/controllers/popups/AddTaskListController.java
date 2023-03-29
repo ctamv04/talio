@@ -1,5 +1,6 @@
 package client.controllers.popups;
 
+import client.controllers.LoginController;
 import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -9,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import models.TaskList;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 

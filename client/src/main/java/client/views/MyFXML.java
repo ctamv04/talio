@@ -17,6 +17,7 @@ package client.views;
 
 import client.controllers.*;
 import client.controllers.popups.AddTaskListController;
+import client.controllers.popups.BoardDeletedController;
 import client.controllers.popups.EditBoardController;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
@@ -27,7 +28,6 @@ import javafx.util.BuilderFactory;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import models.Board;
-import models.TaskList;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -85,7 +85,7 @@ public class MyFXML {
 
             if (type == ClientMenuController.class)
                 return new ClientMenuController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Board) params[0]);
+                        injector.getInstance(MainCtrl.class), (Board) params[0], (BoardController) params[1]);
 
             if (type == EditBoardController.class)
                 return new EditBoardController(injector.getInstance(ServerUtils.class),
@@ -102,6 +102,10 @@ public class MyFXML {
             if (type == TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0], (BoardController) params[1]);
+
+            if (type == BoardDeletedController.class)
+                return new BoardDeletedController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class));
 
             return injector.getInstance(type);
         }

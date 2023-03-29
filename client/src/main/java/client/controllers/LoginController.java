@@ -40,6 +40,8 @@ public class LoginController implements Initializable {
     private VBox buttonBox;
     @FXML
     private AnchorPane window;
+    @FXML
+    private AnchorPane overlay;
 
     /***
      * Constructor for LoginController
@@ -64,7 +66,7 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        overlay.setVisible(false);
         buttonBox.setOpacity(0L);
 
         invalid_text.setVisible(false);
@@ -89,9 +91,13 @@ public class LoginController implements Initializable {
 
         boards.setOnMouseClicked(this::boardClicked);
 
-        join_board_button.setOnAction(event -> joinButtonClicked());
+        join_board_button.setOnAction(event -> mainCtrl.showDeletedBoard());
 
-        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
+        new_board_button.setOnAction(event -> {
+            overlay.setVisible(true);
+            mainCtrl.showAddBoardPage();
+            overlay.setVisible(false);
+        });
 
         back_button.setOnMouseClicked(event -> {
             serverUtils.setServer("http://localhost:8080/");
@@ -145,5 +151,9 @@ public class LoginController implements Initializable {
         } catch (NumberFormatException | WebApplicationException e) {
             invalid_text.setVisible(true);
         }
+    }
+
+    public AnchorPane getOverlay() {
+        return overlay;
     }
 }
