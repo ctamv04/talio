@@ -25,6 +25,9 @@ public class Workspace {
     @JsonIgnore
     private List<Board> boards = new ArrayList<>();
 
+    /**
+     * Constructor functions for the Workspace class
+     */
     public Workspace() {
         this.password = generatePassword();
     }
@@ -60,15 +63,29 @@ public class Workspace {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
 
+    /**
+     * Generates password with length in range [8, 16].
+     * Password contains lowercase and uppercase english letters and digits.
+     *
+     * @return password
+     */
     private String generatePassword() {
-        int charA = 97;
-        int charZ = 122;
+        int characterNumber = 62;
 
         Random random = new Random();
         StringBuilder buffer = new StringBuilder();
         int length = random.nextInt(8) + 8;
         for (int i = 0; i < length; i++) {
-            int code = random.nextInt(charZ - charA + 1) + charA;
+            int code = random.nextInt(characterNumber);
+            if (code < 10) {
+                code += 48;
+            } else {
+                if (code < 36) {
+                    code += 65;
+                } else {
+                    code += 97;
+                }
+            }
             buffer.append((char) code);
         }
 

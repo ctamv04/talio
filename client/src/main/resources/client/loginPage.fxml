@@ -31,7 +31,7 @@
     </VBox>
     <Button fx:id="back_button" layoutX="25.0" layoutY="29.0" mnemonicParsing="false" text="Back"
             AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="50.0"/>
-    <Button fx:id="admin_login_button" layoutX="75.0" layoutY="29.0" mnemonicParsing="false" text="Login as admin"
+    <Button fx:id="admin_login_button" layoutX="50.0" layoutY="29.0" mnemonicParsing="false" text="Login as admin"
             AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="50.0"/>
     <VBox layoutX="22.0" layoutY="185.0" prefHeight="157.0" prefWidth="338.0" spacing="5.0"
           styleClass="visited_boards_vbox" stylesheets="@../styles/loginPage.css" AnchorPane.bottomAnchor="50.0"

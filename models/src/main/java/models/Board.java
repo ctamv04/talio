@@ -30,19 +30,13 @@ public class Board {
     )
     @JsonIgnore
     private List<TaskList> taskLists = new ArrayList<>();
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
 
-
-    //    @OneToMany(
-//            mappedBy = "board",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
     @ManyToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     private List<Tag> tags = new ArrayList<>();
     private String backgroundColor = "#FFFFFF";
     private String fontColor = "#000000";
+
 
     /**
      * Constructor functions for the Board class

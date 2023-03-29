@@ -24,12 +24,24 @@ public class AdminLoginController implements Initializable {
     @FXML
     private TextField password_input;
 
+    /**
+     * Constructor for AdminLoginController
+     *
+     * @param serverUtils serverUtils
+     * @param mainCtrl    the main Controller
+     */
     @Inject
     public AdminLoginController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         done_button.setOnMouseClicked(event -> validate());
@@ -37,12 +49,16 @@ public class AdminLoginController implements Initializable {
         connection_denied_message.setVisible(false);
     }
 
+    /**
+     * Called when done button is clicked.
+     * Checks if password was inserted correctly
+     */
     private void validate() {
         if (password_input.getText().isBlank()) {
             connection_denied_message.setVisible(true);
         } else {
             if (password_input.getText().equals(serverUtils.getWorkspace().getPassword())) {
-                mainCtrl.setIsAdmin(true);
+                mainCtrl.updateRole();
                 mainCtrl.closeAdminLogin();
             } else {
                 connection_denied_message.setVisible(true);

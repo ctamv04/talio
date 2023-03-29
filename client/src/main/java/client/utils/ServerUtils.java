@@ -339,6 +339,20 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
+    /**
+     * Returns current workspace
+     *
+     * @return workspace
+     */
+    public Workspace getWorkspace() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/workspaces") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
     public Response getTaskCardUpdates(Long taskCardId) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + taskCardId + "/details-updates") //
@@ -347,12 +361,15 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
-    public Workspace getWorkspace() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/workspaces") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
+    /**
+     * Updates the TaskList with a specified ID
+     *
+     * @param tasklistID id of the Task list
+     * @param updated    updated Task List
+     */
+    public void updateTaskList(Long tasklistID, TaskList updated) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/" + tasklistID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 }

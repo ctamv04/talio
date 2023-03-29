@@ -43,6 +43,7 @@ public class LoginController implements Initializable {
     @FXML
     private Button admin_login_button;
     @FXML
+
     private AnchorPane overlay;
 
     /***
@@ -99,13 +100,15 @@ public class LoginController implements Initializable {
         });
     }
 
-    public void setVisibleBoards() {
-        if (mainCtrl.getAdmin()) {
-            System.out.println(1111);
+    /**
+     * Adds boards to the login page.
+     * Admin can see all boards in the current workspace,
+     * user can see boards it created or accessed before.
+     */
+    private void setVisibleBoards() {
+        if (mainCtrl.isAdmin()) {
             boards_view.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
         } else {
-            System.out.println(2222);
-            System.out.println(mainCtrl.getBoards());
             boards_view.setItems(FXCollections.observableArrayList(mainCtrl.getBoards()));
         }
         boards_view.setCellFactory(new Callback<>() {

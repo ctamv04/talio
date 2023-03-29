@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import models.TaskCard;
 
@@ -24,6 +25,8 @@ public class MinimizedCardController implements Initializable {
     private Button close_button;
     @FXML
     private Text card_name;
+    @FXML
+    private StackPane minBG;
 
     @Inject
     public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId) {
@@ -42,6 +45,9 @@ public class MinimizedCardController implements Initializable {
         try {
             TaskCard taskCard = serverUtils.getTaskCard(taskCardId);
             card_name.setText(taskCard.getName());
+            minBG.setStyle("-fx-background-color:" + taskCard.getBackID() + "; ");
+            minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" + taskCard.getFontID() + ";");
+            ;
         } catch (WebApplicationException e) {
             closePolling();
         }
@@ -70,6 +76,8 @@ public class MinimizedCardController implements Initializable {
                     return;
                 }
                 var taskCard = response.readEntity(TaskCard.class);
+                minBG.setStyle("-fx-background-color:" + taskCard.getBackID() + "; ");
+                minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" + taskCard.getFontID() + ";");
                 consumer.accept(taskCard);
             }
         });

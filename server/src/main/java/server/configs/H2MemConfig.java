@@ -1,5 +1,6 @@
 package server.configs;
 
+
 import models.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,6 @@ public class H2MemConfig {
             Board board1 = new Board("Board1");
             Board board2 = new Board("Board2");
             Board board3 = new Board("Board3");
-            System.out.println(board1.getId() + " " + board2.getId() + " " + board3.getId());
 
             List<Board> boards = new ArrayList<>();
             boards.add(board1);
@@ -39,8 +39,8 @@ public class H2MemConfig {
 
             workspaceRepository.save(workspace);
             System.out.println("Generated password is: " + workspace.getPassword());
-            boardRepository.saveAll(List.of(board1, board2, board3));
 
+            boardRepository.saveAll(List.of(board1, board2, board3));
             for (int i = 0; i < 6; i++) {
                 Random random = new Random();
                 TaskList taskList = new TaskList(String.valueOf(random.nextInt(1000, 9999)), board1);

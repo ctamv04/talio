@@ -25,8 +25,8 @@ import javafx.util.Pair;
 import models.Board;
 import models.TaskList;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainCtrl {
     private Stage primaryStage;
@@ -35,11 +35,12 @@ public class MainCtrl {
     private Stage editBoardStage;
     private Stage cardStage;
     private Stage adminLoginStage;
+
     private Stage deletedBoardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
     private boolean isAdmin;
-    private List<Board> boards = new ArrayList<>();
+    private Set<Board> boards = new HashSet<>();
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -57,6 +58,7 @@ public class MainCtrl {
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
+
         if (primaryScene == null)
             primaryScene = new Scene(startingPage.getValue());
         else
@@ -194,11 +196,11 @@ public class MainCtrl {
             deletedBoardStage.close();
     }
 
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void updateRole() {
+        this.isAdmin = true;
     }
 
-    public boolean getAdmin() {
+    public boolean isAdmin() {
         return isAdmin;
     }
 
@@ -206,7 +208,7 @@ public class MainCtrl {
         boards.add(board);
     }
 
-    public List<Board> getBoards() {
+    public Set<Board> getBoards() {
         return boards;
     }
 }

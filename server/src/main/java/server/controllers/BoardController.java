@@ -98,7 +98,6 @@ public class BoardController {
      */
     @PostMapping("")
     public ResponseEntity<Board> add(@RequestBody Board board) {
-        System.out.println(board);
         return ResponseEntity.ok(boardRepository.save(board));
     }
 
