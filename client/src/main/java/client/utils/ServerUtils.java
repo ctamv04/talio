@@ -345,4 +345,16 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
     }
+
+    /**
+     * Updates the TaskList with a specified ID
+     *
+     * @param tasklistID  id of the Task list
+     * @param updated updated Task List
+     */
+    public void updateTaskList(Long tasklistID, TaskList updated) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tasklists/" + tasklistID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
 }

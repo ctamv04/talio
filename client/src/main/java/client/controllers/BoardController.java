@@ -80,6 +80,7 @@ public class BoardController implements Initializable {
             List<Long> ids=serverUtils.getTaskListsId(board.getId());
             List<Parent> taskLists=convertScenesFromTaskListIds(ids);
             board_parent.getChildren().setAll(taskLists);
+            board_parent.getChildren().add(addList_button);
         }catch (WebApplicationException e){
             closePolling();
             mainCtrl.showLoginPage();
@@ -97,7 +98,10 @@ public class BoardController implements Initializable {
         });
         registerTaskListIdsUpdates(ids -> {
             List<Parent> list = convertScenesFromTaskListIds(ids);
-            Platform.runLater(()-> board_parent.getChildren().setAll(list));
+            Platform.runLater(()-> {
+                board_parent.getChildren().setAll(list);
+                board_parent.getChildren().add(addList_button);
+            });
         });
     }
 
