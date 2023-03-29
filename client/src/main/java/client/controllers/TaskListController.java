@@ -102,7 +102,9 @@ public class TaskListController implements Initializable {
             Long cardId = taskCards.getSelectionModel().getSelectedItem();
             if (cardId != null) {
                 taskCards.getSelectionModel().clearSelection();
+                boardController.getOverlay().setVisible(true);
                 mainCtrl.showCard(cardId);
+                boardController.getOverlay().setVisible(false);
             }
         });
 
@@ -276,7 +278,9 @@ public class TaskListController implements Initializable {
      */
     public void addTaskCard() {
         TaskCard card = new TaskCard();
+        boardController.getOverlay().setVisible(true);
         mainCtrl.showCard(serverUtils.addTaskCard(card, taskListId).getId());
+        boardController.getOverlay().setVisible(false);
     }
 
     /**

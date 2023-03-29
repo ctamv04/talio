@@ -117,7 +117,10 @@ public class BoardController implements Initializable {
                     continue;
                 if(response.getStatus()==400){
                     closePolling();
-                    Platform.runLater(mainCtrl::showLoginPage);
+                    Platform.runLater(() -> {
+                        mainCtrl.showLoginPage();
+                        mainCtrl.showDeletedBoard();
+                    });
                     return;
                 }
                 var board=response.readEntity(Board.class);
@@ -167,5 +170,9 @@ public class BoardController implements Initializable {
 
     public Map<Long, Parent> getTaskCardCache() {
         return taskCardCache;
+    }
+
+    public AnchorPane getOverlay() {
+        return overlay;
     }
 }
