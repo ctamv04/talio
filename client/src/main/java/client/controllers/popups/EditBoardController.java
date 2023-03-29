@@ -6,7 +6,10 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import models.Board;
 
 import java.net.URL;
@@ -22,6 +25,10 @@ public class EditBoardController implements Initializable{
     private Button done_button;
     @FXML
     private Button back_button;
+    @FXML
+    private ColorPicker backgroundColor;
+    @FXML
+    private  ColorPicker textColor;
 
     @Inject
     public EditBoardController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
@@ -32,6 +39,8 @@ public class EditBoardController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        backgroundColor.setValue(Color.valueOf(board.getBackgroundColor()));
+        textColor.setValue(Color.valueOf(board.getFontColor()));
     }
 
     public void back() {
@@ -40,9 +49,13 @@ public class EditBoardController implements Initializable{
 
     public void save() {
         String name = board.getName();
-        if (!board_name.getText().isBlank())
+        if (!board_name.getText().isBlank()) {
             name = board_name.getText();
+        }
         board.setName(name);
+
+        board.setBackgroundColor(backgroundColor.getValue().toString());
+        board.setFontColor(textColor.getValue().toString());
 
         serverUtils.updateBoard(board.getId(), board);
 
