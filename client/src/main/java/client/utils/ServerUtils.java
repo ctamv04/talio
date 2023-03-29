@@ -20,7 +20,6 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import javafx.concurrent.Task;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
