@@ -9,12 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -47,6 +44,8 @@ public class TaskListController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private Label taskList_name;
+    @FXML
+    private TextField editTaskList_Name;
     @FXML
     public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers=new ArrayList<>();
@@ -296,5 +295,28 @@ public class TaskListController implements Initializable {
     public void removeTaskList() {
         closePolling();
         serverUtils.removeTaskList(taskListId);
+    }
+
+    /**
+     *Allows the user to edit the title of the TaskCard by hovering on its title area
+     */
+    public void editTaskListNameHoverIn() {
+        editTaskList_Name.setText(taskList_name.getText());
+        editTaskList_Name.setOpacity(1);
+        taskList_name.setOpacity(0);
+    }
+
+
+    /**
+     *Saves the new title when the user hovers out of the TaskCard's title area
+     */
+    public void editTaskListNameHoverOut() {
+        editTaskList_Name.setOpacity(0);
+        taskList_name.setOpacity(1);
+        taskList_name.setText(editTaskList_Name.getText());
+        TaskList updatedTaskList = serverUtils.getTaskList(taskListId);
+        updatedTaskList.setName(taskList_name.getText());
+        serverUtils.updateTaskList(taskListId, updatedTaskList);
+
     }
 }
