@@ -28,14 +28,14 @@ public class ClientOverviewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var menuPair = mainCtrl.createClientMenu(board);
         var boardPair = mainCtrl.createBoard(board);
+        boardController = boardPair.getKey();
+        var menuPair = mainCtrl.createClientMenu(board, boardController);
 
         layout.setTop(menuPair.getValue());
         layout.setCenter(boardPair.getValue());
 
         ClientMenuController clientMenuController = menuPair.getKey();
-        boardController = boardPair.getKey();
 
         clientMenuController.getBoard_title().textProperty().bind(Bindings.concat("Talio | ",
                 boardController.namePropertyProperty(), " (#", board.getId(), ")"));

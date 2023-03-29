@@ -9,12 +9,12 @@ import java.util.function.Consumer;
 
 import models.TaskCard;
 import models.TaskList;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.context.request.async.DeferredResult;
 import server.repositories.TaskListRepository;
+import server.services.LongPollingService;
 import server.services.TaskListService;
 
 import javax.websocket.server.PathParam;
@@ -25,17 +25,21 @@ public class TaskListController {
 
     private final TaskListRepository taskListRepository;
     private final TaskListService taskListService;
+    private final LongPollingService longPollingService;
 
     /**
      * Constructor Method
+     *
      * @param taskListRepository The injected taskListRepository of the object
-     * @param taskListService The injected taskListService of the object
+     * @param taskListService    The injected taskListService of the object
+     * @param longPollingService The injected longPolling service
      */
     public TaskListController(TaskListRepository taskListRepository,
-                              TaskListService taskListService) {
+                              TaskListService taskListService, LongPollingService longPollingService) {
 
         this.taskListRepository = taskListRepository;
         this.taskListService = taskListService;
+        this.longPollingService = longPollingService;
     }
 
     /**
@@ -54,10 +58,9 @@ public class TaskListController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TaskList> getById(@PathVariable("id") Long id) {
-
         Optional<TaskList> taskList=taskListRepository.findById(id);
         return taskList.map(ResponseEntity::ok).
-                            orElseGet(() -> ResponseEntity.badRequest().build());
+                orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
@@ -102,19 +105,14 @@ public class TaskListController {
         ResponseEntity<TaskList> response= taskListService.add(taskList,boardId);
         if(response.getStatusCodeValue()!=200)
             return response;
+
         TaskList newTaskList=response.getBody();
         if(newTaskList==null)
             return response;
-        Map<Object,Consumer<List<Long>>> listeners= idsListener.get(newTaskList.getBoard().getId());
-        if(listeners!=null){
-            listeners.forEach((key,consumer)->{
-                List<Long> ids=new ArrayList<>();
-                for(var x: newTaskList.getBoard().getTaskLists())
-                    ids.add(x.getId());
-                consumer.accept(ids);
-                listeners.remove(key);
-            });
-        }
+
+        longPollingService.registerUpdate(idsListeners.get(boardId),
+                taskListService.convertTaskListsToIds(newTaskList.getBoard().getTaskLists()));
+
         return response;
     }
 
@@ -127,7 +125,15 @@ public class TaskListController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskList> update(@PathVariable("id") Long id,
                                            @RequestBody TaskList newTaskList) {
-        return taskListService.update(id,newTaskList);
+        ResponseEntity<TaskList> response= taskListService.update(id,newTaskList);
+        if(response.getStatusCodeValue()!=200)
+            return response;
+
+        TaskList taskList=response.getBody();
+
+        longPollingService.registerUpdate(detailsListeners.get(id),taskList);
+
+        return response;
     }
 
     /**
@@ -142,38 +148,26 @@ public class TaskListController {
 
         TaskList taskList=taskListRepository.getById(id);
         taskListRepository.deleteById(id);
-        Map<Object,Consumer<List<Long>>> listeners= idsListener.get(taskList.getBoard().getId());
-        if(listeners!=null){
-            listeners.forEach((key,consumer)->{
-                List<Long> ids=new ArrayList<>();
-                for(var x: taskList.getBoard().getTaskLists()){
-                    if(x!=taskList)
-                        ids.add(x.getId());
-                }
-                consumer.accept(ids);
-                listeners.remove(key);
-            });
-        }
+
+        longPollingService.registerUpdate(detailsListeners.get(taskList.getId()),null);
+        List<TaskList> taskLists=taskList.getBoard().getTaskLists();
+        taskLists.remove(taskList);
+        longPollingService.registerUpdate(idsListeners.get(taskList.getBoard().getId()),taskListService.convertTaskListsToIds(taskLists));
 
         return ResponseEntity.ok().build();
     }
 
-    private final Map<Long, Map<Object,Consumer<List<Long>>>> idsListener=new ConcurrentHashMap<>();
+    private final Map<Long, Map<Object,Consumer<List<Long>>>> idsListeners =new ConcurrentHashMap<>();
+    private final Map<Long, Map<Object,Consumer<TaskList>>> detailsListeners=new ConcurrentHashMap<>();
 
     @GetMapping("/{id}/ids-updates")
-    public DeferredResult<ResponseEntity<List<Long>>> getIdsUpdates(@PathVariable("id") Long id){
-        var noContent=ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        var res=new DeferredResult<ResponseEntity<List<Long>>>(10000L,noContent);
-
-        var key=new Object();
-        Map<Object, Consumer<List<Long>>> listeners=idsListener.get(id);
-        if(listeners==null){
-            listeners=new ConcurrentHashMap<>();
-            idsListener.put(id,listeners);
-        }
-        listeners.put(key,list -> res.setResult(ResponseEntity.ok(list)));
-        res.onCompletion(()-> idsListener.get(id).remove(key));
-
-        return res;
+    public DeferredResult<ResponseEntity<List<Long>>> getIdsUpdates(@PathVariable("id") Long boardId){
+        return longPollingService.getUpdates(boardId, idsListeners);
     }
+
+    @GetMapping("/{id}/details-updates")
+    public DeferredResult<ResponseEntity<TaskList>> getDetailsUpdates(@PathVariable("id") Long id){
+        return longPollingService.getUpdates(id,detailsListeners);
+    }
+
 }

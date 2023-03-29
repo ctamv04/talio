@@ -1,29 +1,32 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class Workspace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String password;
 
-    public Workspace(String password) {
-        this.password = password;
+    @OneToMany
+    @JsonIgnore
+    private List<Board> boards = new ArrayList<>();
+
+    public Workspace() {
+        this.password = generatePassword();
     }
 
     /**
@@ -55,5 +58,20 @@ public class Workspace {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+    }
+
+    private String generatePassword() {
+        int charA = 97;
+        int charZ = 122;
+
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder();
+        int length = random.nextInt(8) + 8;
+        for (int i = 0; i < length; i++) {
+            int code = random.nextInt(charZ - charA + 1) + charA;
+            buffer.append((char) code);
+        }
+
+        return buffer.toString();
     }
 }

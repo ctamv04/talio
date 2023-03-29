@@ -31,7 +31,7 @@ public class LoginController implements Initializable {
     @FXML
     private TextField code_input;
     @FXML
-    private ListView<Board> boards;
+    private ListView<Board> boards_view;
     @FXML
     private Button delBoard;
     @FXML
@@ -42,6 +42,8 @@ public class LoginController implements Initializable {
     private AnchorPane window;
     @FXML
     private Button admin_login_button;
+    @FXML
+    private AnchorPane overlay;
 
     /***
      * Constructor for LoginController
@@ -66,12 +68,47 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        overlay.setVisible(false);
         buttonBox.setOpacity(0L);
 
         invalid_text.setVisible(false);
-        boards.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
-        boards.setCellFactory(new Callback<>() {
+
+        setVisibleBoards();
+
+        boards_view.setOnMouseClicked(this::boardClicked);
+
+        join_board_button.setOnAction(event -> joinButtonClicked());
+
+        new_board_button.setOnAction(event -> {
+            overlay.setVisible(true);
+            mainCtrl.showAddBoardPage();
+            overlay.setVisible(false);
+        });
+
+        admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
+
+        back_button.setOnMouseClicked(event -> {
+            serverUtils.setServer("http://localhost:8080/");
+            mainCtrl.showStartingPage();
+        });
+
+        window.setOnMouseClicked(event -> {
+            if (event.getTarget() != buttonBox && event.getTarget() != boards_view)
+                buttonBox.setOpacity(0);
+
+        });
+    }
+
+    public void setVisibleBoards() {
+        if (mainCtrl.getAdmin()) {
+            System.out.println(1111);
+            boards_view.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
+        } else {
+            System.out.println(2222);
+            System.out.println(mainCtrl.getBoards());
+            boards_view.setItems(FXCollections.observableArrayList(mainCtrl.getBoards()));
+        }
+        boards_view.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Board> call(ListView<Board> param) {
                 return new ListCell<>() {
@@ -87,25 +124,6 @@ public class LoginController implements Initializable {
                     }
                 };
             }
-        });
-
-        boards.setOnMouseClicked(this::boardClicked);
-
-        join_board_button.setOnAction(event -> joinButtonClicked());
-
-        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
-
-        admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
-
-        back_button.setOnMouseClicked(event -> {
-            serverUtils.setServer("http://localhost:8080/");
-            mainCtrl.showStartingPage();
-        });
-
-        window.setOnMouseClicked(event -> {
-            if (event.getTarget() != buttonBox && event.getTarget() != boards)
-                buttonBox.setOpacity(0);
-
         });
     }
 
@@ -123,7 +141,7 @@ public class LoginController implements Initializable {
      * @param event the mouse event that happened: clicked/clicked twice/...
      */
     public void boardClicked(MouseEvent event) {
-        Board board = boards.getSelectionModel().getSelectedItem();
+        Board board = boards_view.getSelectionModel().getSelectedItem();
 
         if (board != null) {
             Long boardID = board.getId();
@@ -145,9 +163,14 @@ public class LoginController implements Initializable {
         try {
             Long id = Long.parseLong(code_input.getText());
             Board board = serverUtils.getBoard(id);
+            mainCtrl.addBoard(board);
             mainCtrl.showClientOverview(board);
         } catch (NumberFormatException | WebApplicationException e) {
             invalid_text.setVisible(true);
         }
+    }
+
+    public AnchorPane getOverlay() {
+        return overlay;
     }
 }

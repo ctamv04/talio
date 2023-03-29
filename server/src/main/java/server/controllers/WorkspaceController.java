@@ -1,5 +1,6 @@
 package server.controllers;
 
+import models.Workspace;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class WorkspaceController {
      * @return Generated password
      */
     @GetMapping("")
-    public String getPassword() {
-        return repo.findAll().get(0).getPassword();
+    public Workspace getAll() {
+        return repo.findAll().get(0);
     }
 }

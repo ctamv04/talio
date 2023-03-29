@@ -1,10 +1,7 @@
 package client.views;
 
 import client.controllers.*;
-import client.controllers.popups.AddBoardController;
-import client.controllers.popups.AddTaskListController;
-import client.controllers.popups.AdminLoginController;
-import client.controllers.popups.EditBoardController;
+import client.controllers.popups.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
 import javafx.util.Pair;
@@ -25,8 +22,8 @@ public class ViewFactory {
         return FXML.load(StartingPageController.class, "/client/startingPage.fxml");
     }
 
-    public Pair<ClientMenuController, Parent> createClientMenu(Board board) {
-        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml", board);
+    public Pair<ClientMenuController, Parent> createClientMenu(Board board, BoardController boardController) {
+        return FXML.load(ClientMenuController.class, "/client/clientMenu.fxml", board, boardController);
     }
 
     public Pair<AddBoardController, Parent> createAddBoard() {
@@ -45,8 +42,8 @@ public class ViewFactory {
         return FXML.load(ClientOverviewController.class, "/client/clientOverview.fxml", board);
     }
 
-    public Pair<TaskListController, Parent> createTaskList(Long id) {
-        return FXML.load(TaskListController.class, "/client/taskList.fxml", id);
+    public Pair<TaskListController, Parent> createTaskList(Long taskListId, BoardController boardController) {
+        return FXML.load(TaskListController.class, "/client/taskList.fxml", taskListId, boardController);
     }
 
     public Pair<AdminLoginController, Parent> createAdminLogin() {
@@ -69,5 +66,9 @@ public class ViewFactory {
 
     public Pair<AddTaskListController, Parent> createAddTaskList(Long board_id) {
         return FXML.load(AddTaskListController.class, "/client/addTaskList.fxml", board_id);
+    }
+
+    public Pair<BoardDeletedController, Parent> createBoardDeleted() {
+        return FXML.load(BoardDeletedController.class, "/client/boardDeleted.fxml");
     }
 }

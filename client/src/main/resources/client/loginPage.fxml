@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
+
 <AnchorPane fx:id="window" prefHeight="400.0" prefWidth="550.0" stylesheets="@../styles/loginPage.css"
             xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.controllers.LoginController">
@@ -39,7 +40,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Visited Boards"/>
             <HBox prefHeight="117.0" prefWidth="321.0" spacing="10.0">
                 <children>
-                    <ListView fx:id="boards" prefHeight="117.0" prefWidth="205.0"/>
+                    <ListView fx:id="boards_view" prefHeight="117.0" prefWidth="205.0"/>
                     <VBox fx:id="buttonBox" prefHeight="61.0" prefWidth="90.0" spacing="5.0">
                         <children>
                             <Button fx:id="enterBoard" mnemonicParsing="false" prefHeight="0.0" prefWidth="75.0"
@@ -58,5 +59,8 @@
             </HBox>
         </children>
     </VBox>
+    <AnchorPane fx:id="overlay" prefHeight="400.0" prefWidth="550.0" style="-fx-background-color: #000000B3;"
+                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0"/>
 
 </AnchorPane>
