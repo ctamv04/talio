@@ -1,20 +1,20 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
+import client.utils.WebsocketUtils;
 import com.google.inject.Inject;
+import javafx.application.Platform;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import models.Tag;
@@ -33,6 +33,7 @@ public class ExtendedCardController implements Initializable{
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long task_id;
+    private final WebsocketUtils websocketUtils;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
     private List<Tag> taskTags = new ArrayList<>();
@@ -96,10 +97,11 @@ public class ExtendedCardController implements Initializable{
      * @param task_id
      */
     @Inject
-    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id) {
+    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id, WebsocketUtils websocketUtils) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.task_id = task_id;
+        this.websocketUtils = websocketUtils;
     }
 
     /**
@@ -244,6 +246,23 @@ public class ExtendedCardController implements Initializable{
             bTagListBox.toBack();
         });
 
+        startWebsockets();
+    }
+
+    private void startWebsockets() {
+        websocketUtils.registerForMessages("/topic/extended-taskcard/"+task_id, TaskCard.class, updatedTaskCard->{
+            Platform.runLater(()->{
+                if(updatedTaskCard.getPosition()==-1){
+                    //TODO the extended task card gets deleted while used
+                    System.out.println("deleted");
+                    stopWebsockets();
+                }
+            });
+        });
+    }
+
+    private void stopWebsockets(){
+        websocketUtils.unsubscribeFromMessages("/topic/extended-taskcard/"+task_id);
     }
 
     /**
