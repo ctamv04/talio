@@ -64,7 +64,49 @@ class BoardTest {
         assertEquals(board.getTags(),new ArrayList<>());
     }
 
-    // Yasir please move your getters and setters here, if I do it I steal your code :(
+    /**
+     * Tests if the function gets the correct name
+     */
+    @Test
+    void getName() {
+        Board board1 = new Board("board");
+        assertEquals(board1.getName(), "board");
+    }
+    /**
+     * Tests if the function gets the correct TaskList list
+     */
+    @Test
+    void getTaskLists() {
+        List<TaskList> tasklistList = new ArrayList<>();
+        TaskList taskList1 = new TaskList("Name", null);
+        tasklistList.add(taskList1);
+        Board board1 = new Board("board", tasklistList);
+        assertEquals(tasklistList, board1.getTaskLists());
+    }
+
+    /**
+     * Tests if the function sets the correct TaskList list
+     */
+    @Test
+    void setTaskLists() {
+        Board board1 = new Board("board");
+        List<TaskList> tasklistList = new ArrayList<>();
+        TaskList taskList1 = new TaskList("Name", null);
+        tasklistList.add(taskList1);
+        board1.setTaskLists(tasklistList);
+        assertEquals(tasklistList, board1.getTaskLists());
+    }
+
+    /**
+     * Tests if the function sets the correct name
+     */
+    @Test
+    void setName() {
+        Board board1 = new Board("board");
+        board1.setName("DifferentName");
+        assertEquals(board1.getName(), "DifferentName");
+    }
+
 
     // --------------------------------------------
     // Equals, HashCode & toString                |

@@ -1,128 +1,172 @@
 package controllers;
 
-import mocks.TestTaskCardRepository;
-import mocks.TestTaskListRepository;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.controllers.TaskCardController;
+import server.repositories.TaskCardRepository;
+import server.repositories.TaskListRepository;
+import server.services.LongPollingService;
 import server.services.TaskCardService;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class TaskCardControllerTest {
-    private TaskCardController controller;
-    private TestTaskListRepository taskListRepo;
+    @Mock
+    private TaskListRepository taskListRepositoryMock;
+    @Mock
+    private LongPollingService longPollingServiceMock;
+    @Mock
+    private TaskCardService taskCardServiceMock;
+    @Mock
+    private TaskCardRepository taskCardRepositoryMock;
+    @Mock
+    private SimpMessagingTemplate messagesMock;
+    @InjectMocks
+    private TaskCardController sut;
+    private TaskCard taskCard1;
+    private TaskList taskList1;
+    private TaskList taskList2;
+    private List<TaskCard> taskCardList;
+    private final Map<Long, Map<Object, Consumer<List<Long>>>> idsListeners = new ConcurrentHashMap<>();
 
+
+    /**
+     * Setup for each test
+     */
     @BeforeEach
-    public void setup() {
-        TestTaskCardRepository taskCardRepo = new TestTaskCardRepository();
-        taskListRepo = new TestTaskListRepository();
+        public void setup() {
+            taskCardRepositoryMock = Mockito.mock(TaskCardRepository.class);
+            taskCardServiceMock = Mockito.mock(TaskCardService.class);
+            longPollingServiceMock = Mockito.mock(LongPollingService.class);
+            taskListRepositoryMock = Mockito.mock(TaskListRepository.class);
+            messagesMock = Mockito.mock(SimpMessagingTemplate.class);
 
-        TaskCardService service = new TaskCardService(taskCardRepo, taskListRepo);
-        controller = new TaskCardController(taskCardRepo, service, null, null, null);
-    }
+            sut = new TaskCardController(taskCardRepositoryMock, taskCardServiceMock, longPollingServiceMock, taskListRepositoryMock, messagesMock);
 
-    @Test
-    public void testConstructor() {
-//        assertEquals(0, controller.getAll().size());
-    }
+            Board board1 = new Board("board1");
+            board1.setId(1L);
+            taskList1 = new TaskList("list1", board1);
+            taskList1.setId(1L);
+            taskList2 = new TaskList("list2", board1);
+            taskList2.setId(2L);
+            board1.setTaskLists(List.of(taskList1, taskList2));
+            taskCard1 = new TaskCard("Task1", taskList1);
+        TaskCard taskCard2 = new TaskCard("Task2", taskList1);
+            taskCard1.setId(1L);
+            taskCard2.setId(2L);
+            taskCardList = new ArrayList<>(List.of(taskCard1, taskCard2));
+            taskList1.setTaskCards(taskCardList);
+        }
 
+    /**
+     * Tests the getAll function
+     */
     @Test
     public void testGetAll() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//
-//        TaskCard tc = new TaskCard(tl);
-//        taskListRepo.save(tl);
-//        controller.add(tc,0L);
-//        assertEquals(1, controller.getAll().size());
+        Mockito.when(taskCardRepositoryMock.findAll()).thenReturn(taskCardList);
+        assertEquals(taskCardList, sut.getAll());
     }
 
+    /**
+     * Tests the getById function
+     */
+    @Test
+    public void testGetById() {
+        Mockito.when(taskCardRepositoryMock.findById(1L)).thenReturn(Optional.of(taskCard1));
+        Mockito.when(taskCardRepositoryMock.findById(3L)).thenReturn(Optional.empty());
+
+        assertEquals(taskCard1,sut.getById(1L).getBody());
+        assertEquals(400,sut.getById(3L).getStatusCodeValue());
+    }
+
+    /**
+     * Tests the getBoardId function
+     */
+    @Test
+    public void testGetBoardId() {
+        Mockito.when(taskCardRepositoryMock.findById(1L)).thenReturn(Optional.of(taskCard1));
+        Mockito.when(taskCardRepositoryMock.findById(3L)).thenReturn(Optional.empty());
+
+        assertEquals(1L,sut.getBoardId(1L).getBody());
+        assertEquals(BAD_REQUEST,sut.getBoardId(2L).getStatusCode());
+    }
+
+    /**
+     * Tests the add function
+     */
     @Test
     public void testAdd() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//
-//        TaskCard tc1 = new TaskCard(tl);
-//        TaskCard tc2 = new TaskCard(tl);
-//
-//        taskListRepo.save(tl);
-//        controller.add(tc1,0L);
-//        assertEquals(1, controller.getAll().size());
-//        controller.add(tc2,0L);
-//        assertEquals(2, controller.getAll().size());
-//        assertEquals(controller.getById(1L).getBody(), tc1);
-//        assertEquals(controller.getById(2L).getBody(), tc2);
+        TaskCard taskCard3 = new TaskCard("Task Card 3", taskList1);
+        taskCardList.add(taskCard3);
+        taskList1.setTaskCards(taskCardList);
+        Mockito.when(taskCardServiceMock.add(taskCard3, taskCard3.getTaskList().getId())).thenReturn(ResponseEntity.of(Optional.of(taskCard3)));
+
+        assertEquals(taskCard3,sut.add(taskCard3, taskCard3.getTaskList().getId()).getBody());
     }
 
-    @Test
-    public void testWrongId() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//        TaskCard tc = new TaskCard(tl);
-//
-//        taskListRepo.save(tl);
-//        controller.add(tc,0L);
-//        assertEquals(BAD_REQUEST, controller.getById(2L).getStatusCode());
-    }
-
-    @Test
-    public void testRightId() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//
-//        TaskCard tc = new TaskCard(tl);
-//        taskListRepo.save(tl);
-//        controller.add(tc,0L);
-//        assertEquals(tc, controller.getById(1L).getBody());
-    }
-
+    /**
+     * Tests the update function
+     */
     @Test
     public void testUpdate() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//
-//        TaskCard tc = new TaskCard("name1", tl);
-//        TaskCard newTc = new TaskCard("name2", tl);
-//
-//        taskListRepo.save(tl);
-//        controller.add(tc,0L);
-//        controller.update(1L, newTc);
-//        ResponseEntity<TaskCard> response=controller.getById(1L);
-//        assertNotNull(response.getBody());
-//        assertEquals(newTc.getName(), response.getBody().getName());
-//        assertEquals(newTc.getDescription(), response.getBody().getDescription());
-//        assertEquals(BAD_REQUEST, controller.update(2L, newTc).getStatusCode());
+        TaskCard newTaskCard = new TaskCard("New", taskList1);
+        newTaskCard.setId(1L);
+        Mockito.when(taskCardServiceMock.update(1L,newTaskCard)).thenReturn(ResponseEntity.ok(taskCard1));
+        Mockito.when(taskCardServiceMock.update(3L,newTaskCard)).thenReturn(ResponseEntity.badRequest().build());
+
+        assertNotNull(sut.update(1L,newTaskCard).getBody());
+        assertEquals(400,sut.update(3L,newTaskCard).getStatusCodeValue());
     }
 
+    /**
+     * Tests the swapBetweenLists function
+     */
+    @Test
+    public void testSwapBetweenLists() {
+        Mockito.when(taskCardRepositoryMock.findById(1L)).thenReturn(Optional.of(taskCard1));
+        Mockito.when(taskListRepositoryMock.findById(1L)).thenReturn(Optional.of(taskList1));
+        Mockito.when(taskListRepositoryMock.findById(2L)).thenReturn(Optional.of(taskList2));
+        Mockito.when(taskListRepositoryMock.save(taskList1)).thenReturn(taskList1);
+        Mockito.when(taskListRepositoryMock.save(taskList2)).thenReturn(taskList2);
+        Mockito.when(taskCardRepositoryMock.save(taskCard1)).thenReturn(taskCard1);
+        Mockito.when(taskCardServiceMock.swapBetweenLists(1L, taskCard1.getPosition(), 1L, 2L, idsListeners)).thenReturn(ResponseEntity.of(Optional.of(taskCard1)));
+        assertEquals(ResponseEntity.ok(taskCard1), sut.swapBetweenLists(1L, taskCard1.getPosition(), 1L, 2L));
+    }
+
+    /**
+     * Tests the delete function
+     */
     @Test
     public void testDelete() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//
-//        TaskCard tc1 = new TaskCard(tl);
-//        TaskCard tc2 = new TaskCard(tl);
-//
-//        taskListRepo.save(tl);
-//        controller.add(tc1,0L);
-//        controller.add(tc2,0L);
-//        assertEquals(2, controller.getAll().size());
+        Mockito.when(taskCardRepositoryMock.findById(1L)).thenReturn(Optional.of(taskCard1));
+        Mockito.when(taskCardServiceMock.delete(1L)).thenReturn(ResponseEntity.of(Optional.of(taskCard1)));
+        Mockito.when(taskCardRepositoryMock.findById(3L)).thenReturn(Optional.empty());
+
+        assertEquals(ResponseEntity.ok(taskCard1), sut.delete(1L));
+        assertEquals(BAD_REQUEST,sut.delete(3L).getStatusCode());
     }
 
+    /**
+     * Tests the getIdsUpdates function
+     */
     @Test
-    public void testDeleteFalse() {
-//        Board b = new Board("board1");
-//        TaskList tl = new TaskList("taskList1", b);
-//
-//        taskListRepo.save(tl);
-//
-//        ResponseEntity<TaskCard> response=controller.delete(1L);
-//        assertEquals(BAD_REQUEST,response.getStatusCode());
+    public void testGetIdsUpdates() {
+        Mockito.when(longPollingServiceMock.getUpdates(1L,idsListeners)).thenReturn(new DeferredResult<>());
+        assertNotNull(sut.getIdsUpdates(1L));
     }
 }
