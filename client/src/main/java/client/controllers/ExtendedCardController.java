@@ -313,8 +313,8 @@ public class ExtendedCardController implements Initializable{
         tagsLabel.setStyle("-fx-text-fill: " + color + ";");
         backLabel.setStyle("-fx-text-fill: " + color + ";");
         fontLabel.setStyle("-fx-text-fill: " + color + ";");
-        icon.setStyle("-fx-fill: " + card.getFontID() + ";");
-        backButton.setStyle("-fx-fill: " + card.getFontID() + ";");
+        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
+        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
         card.setFontID(color);
     }
 
