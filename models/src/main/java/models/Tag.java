@@ -21,21 +21,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name="Untitled";
-
-//    @OneToMany(
-//            mappedBy = "tag",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
-    @ManyToMany
+    @ManyToOne
     @JsonIgnore
-    private List<Board> boards = new ArrayList<>();
-
-//    @OneToMany(
-//            mappedBy = "tag",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
+    private Board board;
     @ManyToMany
     @JsonIgnore
     private List<TaskCard> tasks = new ArrayList<>();
@@ -45,35 +33,35 @@ public class Tag {
     /**
      * Other constructor functions for the Tag class which takes a taskList
      * @param name name of the Tag
-     * @param boards the Board List of the object
+     * @param board the Board of the object
      */
-    public Tag(String name, List<Board> boards) {
+    public Tag(String name, Board board) {
         this.name = name;
-        this.boards = boards;
+        this.board = board;
     }
 
     /**
      * Constructor Method
      * @param name The name of the object
-     * @param boards The Board List of the object
+     * @param board The Board of the object
      * @param color The Color of the object
      */
-    public Tag(String name, List<Board> boards, String color) {
+    public Tag(String name, Board board, String color) {
         this.name = name;
-        this.boards = boards;
+        this.board = board;
         this.color = color;
     }
 
     /**
      *
      * @param name
-     * @param boards
+     * @param board
      * @param tasks
      * @param color
      */
-    public Tag(String name, List<Board> boards, List<TaskCard> tasks, String color) {
+    public Tag(String name, Board board, List<TaskCard> tasks, String color) {
         this.name = name;
-        this.boards = boards;
+        this.board = board;
         this.tasks = tasks;
         this.color = color;
     }
@@ -81,12 +69,12 @@ public class Tag {
     /**
      *
      * @param name
-     * @param boards
+     * @param board
      * @param tasks
      */
-    public Tag(String name, List<Board> boards, List<TaskCard> tasks) {
+    public Tag(String name, Board board, List<TaskCard> tasks) {
         this.name = name;
-        this.boards = boards;
+        this.board = board;
         this.tasks = tasks;
     }
 
