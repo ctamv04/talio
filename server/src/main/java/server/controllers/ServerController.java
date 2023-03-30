@@ -33,7 +33,7 @@ public class ServerController {
      *
      * @return password
      */
-    private String generatePassword() {
+    public String generatePassword() {
         int characterNumber = 62;
 
         Random random = new Random();
