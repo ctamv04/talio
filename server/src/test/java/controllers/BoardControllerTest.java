@@ -1,139 +1,125 @@
 package controllers;
 
-import mocks.TestBoardRepository;
 import models.Board;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.controllers.BoardController;
+import server.repositories.BoardRepository;
 import server.services.BoardService;
+import server.services.LongPollingService;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class BoardControllerTest {
-    private BoardController controller;
-    private TestBoardRepository repo;
+    @Mock
+    private BoardService boardServiceMock;
+    @Mock
+    private BoardRepository boardRepositoryMock;
+    @Mock
+    private LongPollingService longPollingServiceMock;
+    @InjectMocks
+    private BoardController sut;
+
+    private Board board1;
+    private List<Board> boardList;
 
     @BeforeEach
     public void setup() {
-        repo = new TestBoardRepository();
-        BoardService service = new BoardService(repo);
-        controller = new BoardController(repo, service, null);
+        boardServiceMock=Mockito.mock(BoardService.class);
+        boardRepositoryMock=Mockito.mock(BoardRepository.class);
+        longPollingServiceMock=Mockito.mock(LongPollingService.class);
+        sut=new BoardController(boardRepositoryMock,boardServiceMock,longPollingServiceMock);
+
+        board1 = new Board("board1");
+        board1.setId(1L);
+        Board board2 = new Board("board2");
+        board2.setId(2L);
+        boardList= new ArrayList<>(List.of(board1, board2));
+        TaskList taskList1 = new TaskList("list1", board1);
+        TaskList taskList2 = new TaskList("list1", board1);
+        taskList1.setId(1L);
+        taskList2.setId(2L);
+        board1.setTaskLists(List.of(taskList1, taskList2));
     }
 
     @Test
     public void testGetAll() {
-        List<Board> boardsList = new ArrayList<>();
-
-        Board board1 = new Board("board1");
-        Board board2 = new Board("board2");
-        TaskList taskList = new TaskList("taskList1", board1);
-        board1.setTaskLists(List.of(taskList));
-
-        repo.save(board1);
-        repo.save(board2);
-
-        boardsList.add(board1);
-        boardsList.add(board2);
-
-        assertEquals(boardsList, controller.getAll());
+        Mockito.when(boardRepositoryMock.findAll()).thenReturn(boardList);
+        assertEquals(boardList, sut.getAll());
     }
 
     @Test
     public void testGetById() {
-        List<Board> boardsList = new ArrayList<>();
+        Mockito.when(boardRepositoryMock.findById(1L)).thenReturn(Optional.of(board1));
+        Mockito.when(boardRepositoryMock.findById(3L)).thenReturn(Optional.empty());
 
-        Board board1 = new Board("board1");
-        Board board2 = new Board("board2");
-        TaskList taskList = new TaskList("taskList1", board1);
-        board1.setTaskLists(List.of(taskList));
+        assertEquals(board1,sut.getById(1L).getBody());
+        assertEquals(400,sut.getById(3L).getStatusCodeValue());
+    }
 
-        repo.save(board1);
-        repo.save(board2);
+    @Test
+    public void testGetTaskListsId(){
+        Mockito.when(boardRepositoryMock.findById(1L)).thenReturn(Optional.of(board1));
+        Mockito.when(boardRepositoryMock.findById(3L)).thenReturn(Optional.empty());
 
-        boardsList.add(board1);
-        boardsList.add(board2);
-
-        assertEquals(boardsList.get(0), controller.getById((long) 0).getBody());
+        assertEquals(List.of(1L,2L),sut.getTaskListsId(1L).getBody());
+        assertEquals(BAD_REQUEST,sut.getTaskListsId(3L).getStatusCode());
     }
 
     @Test
     public void testGetTaskLists() {
-        List<Board> boardsList = new ArrayList<>();
+        Mockito.when(boardRepositoryMock.findById(1L)).thenReturn(Optional.of(board1));
+        Mockito.when(boardRepositoryMock.findById(3L)).thenReturn(Optional.empty());
 
-        Board board1 = new Board("board1");
-        Board board2 = new Board("board2");
-        TaskList taskList = new TaskList("taskList1", board1);
-        board1.setTaskLists(List.of(taskList));
-
-        repo.save(board1);
-        repo.save(board2);
-
-        boardsList.add(board1);
-        boardsList.add(board2);
-
-        assertEquals(boardsList.get(0).getTaskLists(), controller.getTaskLists((long) 0).getBody());
-    }
-
-    @Test
-    public void testGetByIdWrongId() {
-        assertEquals(BAD_REQUEST, controller.getById((long) 2023).getStatusCode());
+        assertEquals(board1.getTaskLists(),sut.getTaskLists(1L).getBody());
+        assertEquals(BAD_REQUEST,sut.getTaskListsId(3L).getStatusCode());
     }
 
     @Test
     public void testAdd() {
-        Board board1 = new Board("board1");
-        Board board2 = new Board("board2");
-        TaskList taskList = new TaskList("taskList1", board1);
-        board1.setTaskLists(List.of(taskList));
+        Board board3=new Board("Board3");
+        Mockito.when(boardRepositoryMock.save(board3)).thenReturn(board3);
 
-        controller.add(board1);
-        controller.add(board2);
-
-        assertEquals(List.of(board1, board2), repo.findAll());
+        assertEquals(board3,sut.add(board3).getBody());
     }
 
     @Test
     public void testUpdate() {
-//        Board board1 = new Board("board1");
-//        Board board2 = new Board("board2");
-//
-//        repo.save(board1);
-//
-//        controller.update((long) 0, board2);
-//
-//        assertEquals(board2.getName(), repo.findAll().get(0).getName());
+        Board newBoard=new Board("newBoard");
+        newBoard.setId(1L);
+        Mockito.when(boardServiceMock.update(1L,newBoard)).thenReturn(ResponseEntity.ok(board1));
+        Mockito.when(boardServiceMock.update(3L,newBoard)).thenReturn(ResponseEntity.badRequest().build());
+
+        assertNotNull(sut.update(1L,newBoard).getBody());
+        assertEquals(400,sut.update(3L,newBoard).getStatusCodeValue());
     }
 
     @Test
     public void testDelete() {
-//        Board board1 = new Board("board1");
-//        Board board2 = new Board("board2");
-//        TaskList taskList = new TaskList("taskList1", board1);
-//        board1.setTaskLists(List.of(taskList));
-//        board2.setId((long) 1);
-//
-//        repo.save(board1);
-//        repo.save(board2);
-//
-//        controller.delete((long) 1);
-//
-//        assertEquals(List.of(board1), repo.findAll());
+        Mockito.when(boardRepositoryMock.existsById(1L)).thenReturn(true);
+        Mockito.when(boardRepositoryMock.existsById(3L)).thenReturn(false);
+
+        assertEquals(ResponseEntity.ok().build(),sut.delete(1L));
+        assertEquals(BAD_REQUEST,sut.delete(3L).getStatusCode());
     }
 
     @Test
-    public void testDeleteFalse() {
-        Board board1 = new Board("board1");
-        repo.save(board1);
-
-        ResponseEntity<Board> response=controller.delete(1L);
-
-        assertEquals(BAD_REQUEST,response.getStatusCode());
+    public void testGetDetailsUpdate() {
+        Mockito.when(longPollingServiceMock.getUpdates(1L,new HashMap<>())).thenReturn(new DeferredResult<>());
+        assertNotNull(sut.getDetailsUpdates(1L));
     }
 }
