@@ -166,6 +166,10 @@ public class TaskListController implements Initializable {
         line.setVisible(entries != 0);
     }
 
+    /***
+     * When a task card is dragged, this method is called.
+     * @param event the mouse event
+     */
     private void onDragDetected(MouseEvent event) {
         Dragboard dragboard = taskCards.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
@@ -241,18 +245,23 @@ public class TaskListController implements Initializable {
     private final ExecutorService detailUpdatesExecutor = Executors.newSingleThreadExecutor();
     private final ExecutorService taskCardIdsUpdatesExecutor = Executors.newSingleThreadExecutor();
 
+    /***
+     * Looks whether there has been a valid request, and if so, calls the consumer with the updated
+     * task list.
+     * @param consumer the consumer to be called
+     */
     private void registerDetailsUpdates(Consumer<TaskList> consumer) {
         detailUpdatesExecutor.submit(() -> {
             while (!detailUpdatesExecutor.isShutdown()) {
                 var response = serverUtils.getTaskListUpdates(taskListId);
-                if (response.getStatus() == 204)
-                    continue;
-                if (response.getStatus() == 400) {
+                if (response.getStatus() == 400) { // bad request
                     closePolling();
                     return;
                 }
-                var taskList = response.readEntity(TaskList.class);
-                consumer.accept(taskList);
+                if (response.getStatus() == 204) { // no updates
+                    var taskList = response.readEntity(TaskList.class);
+                    consumer.accept(taskList);
+                }
             }
         });
     }
@@ -271,7 +280,7 @@ public class TaskListController implements Initializable {
     }
 
     /**
-     * Stops the pooling after closing the scene.
+     * Stops the polling after closing the scene.
      */
     public void closePolling() {
         detailUpdatesExecutor.shutdown();
