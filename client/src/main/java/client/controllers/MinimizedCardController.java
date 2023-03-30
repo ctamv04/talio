@@ -1,32 +1,25 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
+import client.utils.WebsocketUtils;
 import com.google.inject.Inject;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import models.Board;
 import models.TaskCard;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 public class MinimizedCardController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long taskCardId;
+    private final WebsocketUtils websocketUtils;
     @FXML
     private Button close_button;
     @FXML
@@ -35,16 +28,18 @@ public class MinimizedCardController implements Initializable {
     private StackPane minBG;
 
     @Inject
-    public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId) {
+    public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId,
+                                   WebsocketUtils websocketUtils) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskCardId = taskCardId;
+        this.websocketUtils = websocketUtils;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeScene();
-        startLongPolling();
+        startWebsockets();
     }
 
     private void initializeScene() {
@@ -52,41 +47,28 @@ public class MinimizedCardController implements Initializable {
             TaskCard taskCard=serverUtils.getTaskCard(taskCardId);
             card_name.setText(taskCard.getName());
             minBG.setStyle("-fx-background-color:" + taskCard.getBackID() +"; ");
-            minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +taskCard.getFontID() + ";");;
+            minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +taskCard.getFontID() + ";");
         }catch (WebApplicationException e){
-            closePolling();
+            stopWebsockets();
         }
     }
 
-    private void startLongPolling() {
-        registerDetailsUpdates(updatedTaskCard -> Platform.runLater(()-> card_name.setText(updatedTaskCard.getName())));
-    }
-
-    public void closePolling(){
-        detailUpdatesExecutor.shutdown();
-    }
-
-    private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
-
-    private void registerDetailsUpdates(Consumer<TaskCard> consumer){
-        detailUpdatesExecutor.submit(()->{
-            while(!detailUpdatesExecutor.isShutdown()){
-                System.out.println("register updates...");
-                var response=serverUtils.getTaskCardUpdates(taskCardId);
-                System.out.println(response.getStatus());
-                if(response.getStatus()==204)
-                    continue;
-                if(response.getStatus()==400){
-                    closePolling();
+    private void startWebsockets() {
+        websocketUtils.registerForMessages("/topic/taskcard/"+taskCardId, TaskCard.class, updatedTaskCard->{
+            Platform.runLater(()->{
+                if(updatedTaskCard.getPosition()==-1){
+                    stopWebsockets();
                     return;
                 }
-                var taskCard=response.readEntity(TaskCard.class);
-                minBG.setStyle("-fx-background-color:" + taskCard.getBackID() +"; ");
-                minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +taskCard.getFontID() + ";");
-                consumer.accept(taskCard);
-
-            }
+                card_name.setText(updatedTaskCard.getName());
+                minBG.setStyle("-fx-background-color:" + updatedTaskCard.getBackID() +"; ");
+                minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +updatedTaskCard.getFontID() + ";");
+            });
         });
+    }
+
+    public void stopWebsockets(){
+        websocketUtils.unsubscribeFromMessages("/topic/taskcard/"+taskCardId);
     }
 
     public void delete() {

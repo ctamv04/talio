@@ -32,6 +32,11 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
     private String SERVER;
+    private final String address="localhost:8080";
+
+    public String getAddress() {
+        return address;
+    }
 
     /**
      * Constructor for server utils with no parameters. Port is set to default 8080

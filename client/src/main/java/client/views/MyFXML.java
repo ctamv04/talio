@@ -20,6 +20,7 @@ import client.controllers.popups.AddTaskListController;
 import client.controllers.popups.BoardDeletedController;
 import client.controllers.popups.EditBoardController;
 import client.utils.ServerUtils;
+import client.utils.WebsocketUtils;
 import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -93,11 +94,12 @@ public class MyFXML {
 
             if (type == ExtendedCardController.class)
                 return new ExtendedCardController(injector.getInstance(ServerUtils.class) ,
-                        injector.getInstance(MainCtrl.class),(Long) params[0]);
+                        injector.getInstance(MainCtrl.class),(Long) params[0], injector.getInstance(WebsocketUtils.class));
 
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Long) params[0]);
+                        injector.getInstance(MainCtrl.class), (Long) params[0],
+                        injector.getInstance(WebsocketUtils.class));
 
             if (type == TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),

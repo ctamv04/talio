@@ -1,7 +1,9 @@
 package client.controllers;
 
 import client.utils.ServerUtils;
+import client.utils.WebsocketUtils;
 import com.google.inject.Inject;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -27,6 +29,7 @@ public class ExtendedCardController implements Initializable{
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final Long task_id;
+    private WebsocketUtils websocketUtils;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
     private boolean editFlag = false;
@@ -78,10 +81,11 @@ public class ExtendedCardController implements Initializable{
      * @param task_id
      */
     @Inject
-    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id) {
+    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id, WebsocketUtils websocketUtils) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.task_id = task_id;
+        this.websocketUtils = websocketUtils;
     }
 
     /**
@@ -206,6 +210,23 @@ public class ExtendedCardController implements Initializable{
             }
         });
 
+        startWebsockets();
+    }
+
+    private void startWebsockets() {
+        websocketUtils.registerForMessages("/topic/extended-taskcard/"+task_id, TaskCard.class, updatedTaskCard->{
+            Platform.runLater(()->{
+                if(updatedTaskCard.getPosition()==-1){
+                    //TODO the extended task card gets deleted while used
+                    System.out.println("deleted");
+                    stopWebsockets();
+                }
+            });
+        });
+    }
+
+    private void stopWebsockets(){
+        websocketUtils.unsubscribeFromMessages("/topic/extended-taskcard/"+task_id);
     }
 
     /**
