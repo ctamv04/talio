@@ -21,6 +21,7 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import models.Board;
+import models.Tag;
 import models.TaskCard;
 import models.TaskList;
 import org.glassfish.jersey.client.ClientConfig;
@@ -370,5 +371,21 @@ public class ServerUtils {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/" + tasklistID)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+    }
+
+    //    public Long getBoardId(Long cardId){
+    //        return ClientBuilder.newClient(new ClientConfig()) //
+//                .target(SERVER).path("api/tasks/board/" + cardId)
+//                .request(APPLICATION_JSON) //
+//                .accept(APPLICATION_JSON) //
+//                .get(Long.class);
+//    }
+
+    public List<Tag> getBoardTags(Long cardID){
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tags/board/" + cardID)
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {});
     }
 }

@@ -2,16 +2,22 @@ package client.controllers;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import models.Tag;
 import models.TaskCard;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -29,6 +35,9 @@ public class ExtendedCardController implements Initializable{
     private final Long task_id;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
+    private List<Tag> taskTags = new ArrayList<>();
+    private List<Tag> boardTags = new ArrayList<>();
+
     private boolean editFlag = false;
     @FXML
     private Label taskName;
@@ -43,7 +52,7 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private Label fontLabel;
     @FXML
-    private Button backButton;
+    private FontAwesomeIconView backButton;
     @FXML
     private Button saveButton;
     @FXML
@@ -70,7 +79,16 @@ public class ExtendedCardController implements Initializable{
     private ColorPicker color_back;
     @FXML
     private ColorPicker color_font;
-
+    @FXML
+    private ListView tags;
+    @FXML
+    private ListView bTagList;
+    @FXML
+    private FontAwesomeIconView cancelbTagList;
+    @FXML
+    private FontAwesomeIconView icon;
+    @FXML
+    private HBox bTagListBox;
     /**
      *
      * @param serverUtils
@@ -113,31 +131,67 @@ public class ExtendedCardController implements Initializable{
         tagsLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
         backLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
         fontLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-
+        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
+        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
 
         taskName.setText(card.getName());
         desc_box.setText(card.getDescription());
 
-        newSubBox.toBack();
-        tempSubs = card.getSubs();
+        tagList.setOrientation(Orientation.HORIZONTAL);
+        bTagListBox.toBack();
 
-        if(tempSubs != null || tempSubs.isEmpty()){
-            List<CheckBox> graphic = new ArrayList<>();
+        tempSubs = card.getSubs();
+        boardTags = serverUtils.getBoardTags(card.getId());
+        taskTags = card.getTags();
+
+        bTagList.setItems(FXCollections.observableArrayList(boardTags));
+        bTagList.setCellFactory(a -> new ListCell<Tag>() {
+            @Override
+            protected void updateItem(Tag tag, boolean empty) {
+                super.updateItem(tag, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(tag.getName());
+                    setStyle("-fx-text-fill: " + tag.getColor());
+                }
+            }
+        });
+
+        bTagList.setOnMouseClicked(event -> {
+
+            var tag = (Tag) bTagList.getSelectionModel().getSelectedItem();
+            if(tag != null && !taskTags.contains(tag)){
+
+                taskTags.add(tag);
+
+                tagList.getItems().add(tagEntryFactory(tag));
+
+                bTagListBox.setOpacity(0);
+                bTagListBox.toBack();
+            }
+
+        });
+
+        if(taskTags != null && !taskTags.isEmpty()) {
+            List<HBox> graphic = new ArrayList<>();
+            taskTags.forEach((tag) -> {
+
+                HBox tagBox = tagEntryFactory(tag);
+
+                graphic.add(tagBox);
+            });
+
+            tagList.setItems(FXCollections.observableArrayList(graphic));
+        }
+
+        if(tempSubs != null || !tempSubs.isEmpty()){
+            List<HBox> graphic = new ArrayList<>();
             tempSubs.forEach((a,b) -> {
 
-                CheckBox box = new CheckBox(a);
-                box.setSelected(b);
+                HBox tagBox = entryFactory(a, b);
 
-                box.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                        var key = box.getText();
-                        var value = box.isSelected();
-                        tempSubs.replace(key, value);
-                    }
-                });
-
-                graphic.add(box);
+                graphic.add(tagBox);
             });
 
             subs.setItems(FXCollections.observableArrayList(graphic));
@@ -146,13 +200,11 @@ public class ExtendedCardController implements Initializable{
         addSub.setOnMouseClicked(event -> {
             newSub.clear();
             newSubBox.setOpacity(1);
-            newSubBox.toFront();
             newSub.requestFocus();
         });
 
         cancelNew.setOnMouseClicked(event -> {
             newSubBox.setOpacity(0);
-            newSubBox.toBack();
         });
 
         newSub.setOnKeyPressed(event -> {
@@ -160,50 +212,36 @@ public class ExtendedCardController implements Initializable{
 
                 if(editFlag && !newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
 
-                    var old_key = ((CheckBox) subs.getSelectionModel().getSelectedItem()).getText();
-                    var old_value = ((CheckBox) subs.getSelectionModel().getSelectedItem()).isSelected();
+                    var index = subs.getSelectionModel().getSelectedIndex();
+                    var old_key = ((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText();
+                    var old_value = ((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).isSelected();
 
                     tempSubs.remove(old_key);
                     tempSubs.put(newSub.getText(), old_value);
 
                     subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
-                    CheckBox editedBox = new CheckBox(newSub.getText());
-                    editedBox.setSelected(old_value);
-                    subs.getItems().add(editedBox);
+                    subs.getItems().add(index, entryFactory(newSub.getText(), old_value));
 
                     editFlag = false;
 
                 }else if(!newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
                     tempSubs.put(newSub.getText(), false);
 
-                    CheckBox newBox = new CheckBox(newSub.getText());
-                    newBox.setSelected(false);
-                    subs.getItems().add(newBox);
+                    subs.getItems().add(entryFactory(newSub.getText(), false));
                 }
 
                 newSubBox.setOpacity(0);
-                newSubBox.toBack();
             }
         });
 
-        subs.setOnMouseClicked(event -> {
-
-            if(event.getClickCount() == 2){
-
-                editFlag = true;
-                newSubBox.setOpacity(1);
-                newSubBox.toFront();
-                newSub.requestFocus();
-            }
+        addTag.setOnMouseClicked(event -> {
+            bTagListBox.setOpacity(1);
+            bTagListBox.toFront();
         });
 
-        subs.setOnKeyPressed(event -> {
-
-            if(event.getCode() == KeyCode.DELETE){
-
-                tempSubs.remove(((CheckBox) subs.getSelectionModel().getSelectedItem()).getText());
-                subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
-            }
+        cancelbTagList.setOnMouseClicked(event -> {
+            bTagListBox.setOpacity(0);
+            bTagListBox.toBack();
         });
 
     }
@@ -226,6 +264,7 @@ public class ExtendedCardController implements Initializable{
             card.setDescription(desc_box.getText());
 
         card.setSubs(tempSubs);
+        card.setTags(taskTags);
 
         serverUtils.updateTaskCard(card.getId(), card);
 
@@ -274,6 +313,8 @@ public class ExtendedCardController implements Initializable{
         tagsLabel.setStyle("-fx-text-fill: " + color + ";");
         backLabel.setStyle("-fx-text-fill: " + color + ";");
         fontLabel.setStyle("-fx-text-fill: " + color + ";");
+        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
+        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
         card.setFontID(color);
     }
 
@@ -291,6 +332,65 @@ public class ExtendedCardController implements Initializable{
                 + Math.round(255 * color.getGreen()) + ","
                 + Math.round(255 * color.getBlue()) + ","
                 + color.getOpacity() + ")";
+    }
+
+    public HBox entryFactory(String a, Boolean b){
+
+        FontAwesomeIconView edit = new FontAwesomeIconView(FontAwesomeIcon.PENCIL);
+        edit.setStyle("-fx-start-margin: 10px");
+
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
+
+        FontAwesomeIconView delete = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+
+        CheckBox checkBox = new CheckBox(a);
+        checkBox.setSelected(b);
+
+        checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                var key = checkBox.getText();
+                var value = checkBox.isSelected();
+                tempSubs.replace(key, value);
+            }
+        });
+
+        edit.setOnMouseClicked(event -> {
+            editFlag = true;
+            newSub.setText(((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText());
+            newSubBox.setOpacity(1);
+            newSub.requestFocus();
+        });
+
+        delete.setOnMouseClicked(event -> {
+            tempSubs.remove(((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText());
+            subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
+        });
+
+        return new HBox(checkBox, edit, region, delete);
+    }
+
+    public HBox tagEntryFactory(Tag tag){
+
+        Label label = new Label(tag.getName());
+        label.setStyle("-fx-text-fill: " + tag.getColor());
+
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
+
+        FontAwesomeIconView delete = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        delete.setStyle("-fx-start-margin: 5px");
+
+        delete.setOnMouseClicked(event -> {
+            taskTags.remove(tag);
+            tagList.getItems().remove(tagList.getSelectionModel().getSelectedItem());
+        });
+
+        HBox box = new HBox(label, region, delete);
+        box.setStyle("-fx-border-color: " + tag.getColor());
+
+        return box;
     }
 
 }
