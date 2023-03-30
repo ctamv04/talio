@@ -12,7 +12,14 @@ import java.util.function.Consumer;
 @Service
 public class LongPollingService {
 
-    public <T> DeferredResult<ResponseEntity<T>> getUpdates(Long id, Map<Long, Map<Object, Consumer<T>>> listeners){
+    /***
+     * This method is used to get the updates for a listener with a specific id from the map of listeners
+     * @param id the id of the listeners
+     * @param listeners the map of listeners
+     * @return the deferred result
+     * @param <T> the type of the entity
+     */
+    public <T> DeferredResult<ResponseEntity<T>> getUpdates(Long id, Map<Long, Map<Object, Consumer<T>>> listeners) {
         var noContent=ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         var res=new DeferredResult<ResponseEntity<T>>(10000L,noContent);
 
