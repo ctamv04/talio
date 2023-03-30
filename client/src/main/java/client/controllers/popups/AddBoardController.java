@@ -42,9 +42,11 @@ public class AddBoardController implements Initializable {
         String name = "Untitled";
         if (!board_name.getText().isBlank())
             name = board_name.getText();
+
         Board board = new Board(name);
 
         board = serverUtils.addBoard(board);
+        mainCtrl.addBoard(board);
         back();
         mainCtrl.showClientOverview(board);
     }

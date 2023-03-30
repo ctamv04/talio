@@ -10,9 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -24,7 +22,7 @@ public class Board {
     @GenericGenerator(name = "sequence_board_id", strategy = "generators.BoardIdGenerator")
     @GeneratedValue(generator = "sequence_board_id")
     private Long id;
-    private String name="Untitled";
+    private String name = "Untitled";
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.ALL,
@@ -33,18 +31,15 @@ public class Board {
     @JsonIgnore
     private List<TaskList> taskLists = new ArrayList<>();
 
-//    @OneToMany(
-//            mappedBy = "board",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
     @ManyToMany(cascade = {CascadeType.ALL})
     private List<Tag> tags = new ArrayList<>();
-    private String backgroundColor="#FFFFFF";
-    private String fontColor="#000000";
+    private String backgroundColor = "#FFFFFF";
+    private String fontColor = "#000000";
+
 
     /**
      * Constructor functions for the Board class
+     *
      * @param name name of the board
      */
     public Board(String name) {
@@ -53,7 +48,8 @@ public class Board {
 
     /**
      * Other constructor functions for the Board class which takes a taskList
-     * @param name name of the board
+     *
+     * @param name      name of the board
      * @param taskLists List with all the tasklists
      */
     public Board(String name, List<TaskList> taskLists) {
@@ -63,10 +59,11 @@ public class Board {
 
     /**
      * Constructor Method
-     * @param name The name of the object
-     * @param taskLists The taskLists of the object
+     *
+     * @param name            The name of the object
+     * @param taskLists       The taskLists of the object
      * @param backgroundColor The backgroundColor of the object
-     * @param fontColor The fontColor of the object
+     * @param fontColor       The fontColor of the object
      */
     public Board(String name, List<TaskList> taskLists, String backgroundColor, String fontColor) {
         this.name = name;
@@ -77,6 +74,7 @@ public class Board {
 
     /**
      * Checks if 2 boards are equal
+     *
      * @param obj the object we check to see if it's equal with the board
      * @return returns true or false
      */
@@ -87,6 +85,7 @@ public class Board {
 
     /**
      * Hashes a board
+     *
      * @return returns a hashcode for a board
      */
     @Override
@@ -96,6 +95,7 @@ public class Board {
 
     /**
      * A function that gives a String with all the board information
+     *
      * @return returns a string with all the board information
      */
     @Override
