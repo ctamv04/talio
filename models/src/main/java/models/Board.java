@@ -39,7 +39,6 @@ public class Board {
 //            orphanRemoval = true
 //    )
     @ManyToMany(cascade = {CascadeType.ALL})
-    @JsonIgnore
     private List<Tag> tags = new ArrayList<>();
     private String backgroundColor="#FFFFFF";
     private String fontColor="#000000";
