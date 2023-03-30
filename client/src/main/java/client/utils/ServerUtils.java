@@ -56,7 +56,7 @@ public class ServerUtils {
     public boolean healthCheck(String server) {
         try {
             ClientBuilder.newClient(new ClientConfig())
-                    .target(server).path("api/boards") //
+                    .target(server).path("api/server") //
                     .request(APPLICATION_JSON) //
                     .accept(APPLICATION_JSON) //
                     .get();
@@ -155,7 +155,7 @@ public class ServerUtils {
     /**
      * Updates the board with a specified id
      *
-     * @param boardId  id of the board
+     * @param boardId id of the board
      * @param updated updated board
      */
     public void updateBoard(Long boardId, Board updated) {
@@ -308,7 +308,7 @@ public class ServerUtils {
 
     public Response getBoardUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/"+id+"/details-updates") //
+                .target(SERVER).path("api/boards/" + id + "/details-updates") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
@@ -316,7 +316,7 @@ public class ServerUtils {
 
     public Response getTaskListIdsUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasklists/"+id+"/ids-updates") //
+                .target(SERVER).path("api/tasklists/" + id + "/ids-updates") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
@@ -324,7 +324,7 @@ public class ServerUtils {
 
     public Response getTaskCardIdsUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasks/"+id+"/ids-updates") //
+                .target(SERVER).path("api/tasks/" + id + "/ids-updates") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
@@ -332,15 +332,29 @@ public class ServerUtils {
 
     public Response getTaskListUpdates(Long taskListId) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasklists/"+taskListId+"/details-updates") //
+                .target(SERVER).path("api/tasklists/" + taskListId + "/details-updates") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
     }
 
+    /**
+     * Returns current password
+     *
+     * @return password
+     */
+    public String getPassword() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/server") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
     public Response getTaskCardUpdates(Long taskCardId) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasks/"+taskCardId+"/details-updates") //
+                .target(SERVER).path("api/tasks/" + taskCardId + "/details-updates") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(Response.class);
@@ -349,8 +363,8 @@ public class ServerUtils {
     /**
      * Updates the TaskList with a specified ID
      *
-     * @param tasklistID  id of the Task list
-     * @param updated updated Task List
+     * @param tasklistID id of the Task list
+     * @param updated    updated Task List
      */
     public void updateTaskList(Long tasklistID, TaskList updated) {
         ClientBuilder.newClient(new ClientConfig())

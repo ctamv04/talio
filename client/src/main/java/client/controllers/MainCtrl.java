@@ -15,7 +15,6 @@
  */
 package client.controllers;
 
-import client.Main;
 import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,15 +25,22 @@ import javafx.util.Pair;
 import models.Board;
 import models.TaskList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainCtrl {
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
     private Stage editBoardStage;
     private Stage cardStage;
+    private Stage adminLoginStage;
+
     private Stage deletedBoardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
+    private boolean isAdmin;
+    private List<Board> boards = new ArrayList<>();
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -52,10 +58,12 @@ public class MainCtrl {
 
     public void showStartingPage() {
         var startingPage = viewFactory.createStartingPage();
-        if(primaryScene==null)
-            primaryScene=new Scene(startingPage.getValue());
+
+        if (primaryScene == null)
+            primaryScene = new Scene(startingPage.getValue());
         else
             primaryScene.setRoot(startingPage.getValue());
+
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle("Starting Page");
         primaryStage.setMaximized(true);
@@ -63,7 +71,7 @@ public class MainCtrl {
     }
 
     public void showTaskList(TaskList selectedItem, BoardController boardController) {
-        var taskList = viewFactory.createTaskList(selectedItem.getId(),boardController);
+        var taskList = viewFactory.createTaskList(selectedItem.getId(), boardController);
         primaryStage.setScene(new Scene(taskList.getValue()));
         primaryStage.setTitle("TaskList");
         primaryStage.show();
@@ -100,11 +108,11 @@ public class MainCtrl {
         cardStage.setScene(new Scene(card.getValue()));
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
-        cardStage.showAndWait() ;
+        cardStage.showAndWait();
     }
 
     public void closeCard() {
-        if (cardStage!=null)
+        if (cardStage != null)
             cardStage.close();
     }
 
@@ -152,11 +160,26 @@ public class MainCtrl {
     }
 
     public Pair<TaskListController, Parent> createTaskList(Long taskListId, BoardController boardController) {
-        return viewFactory.createTaskList(taskListId,boardController);
+        return viewFactory.createTaskList(taskListId, boardController);
     }
 
     public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
         return viewFactory.createMinimizedCard(card_id);
+    }
+
+    public void showAdminLogin() {
+        var adminLogin = viewFactory.createAdminLogin();
+        adminLoginStage = new Stage(StageStyle.UNDECORATED);
+        adminLoginStage.setScene(new Scene(adminLogin.getValue()));
+        adminLoginStage.setTitle("Login as admin");
+        adminLoginStage.initModality(Modality.APPLICATION_MODAL);
+        adminLoginStage.showAndWait();
+    }
+
+    public void closeAdminLogin() {
+        if (adminLoginStage != null)
+            adminLoginStage.close();
+        showLoginPage();
     }
 
     public void showDeletedBoard() {
@@ -167,8 +190,25 @@ public class MainCtrl {
         deletedBoardStage.initModality(Modality.APPLICATION_MODAL);
         deletedBoardStage.showAndWait();
     }
+
     public void closeDeletedBoard() {
         if (deletedBoardStage != null)
             deletedBoardStage.close();
+    }
+
+    public void updateRole() {
+        this.isAdmin = true;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void addBoard(Board board) {
+        boards.add(board);
+    }
+
+    public List<Board> getBoards() {
+        return boards;
     }
 }
