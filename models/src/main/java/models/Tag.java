@@ -21,10 +21,10 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name="Untitled";
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private Board board;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     private List<TaskCard> tasks = new ArrayList<>();
 
