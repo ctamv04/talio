@@ -153,9 +153,9 @@ public class LoginController implements Initializable {
                 joinBoard(boardID);
 
             buttonBox.setOpacity(1L);
-            enterBoard.setOnMouseClicked(event2 -> joinBoard(boardID));
+            enterBoard.setOnMouseClicked(eventTwo -> joinBoard(boardID));
 
-            delBoard.setOnMouseClicked(event2 -> serverUtils.deleteBoard(boardID));
+            delBoard.setOnMouseClicked(eventTwo -> serverUtils.deleteBoard(boardID));
         }
     }
 

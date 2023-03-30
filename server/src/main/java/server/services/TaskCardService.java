@@ -167,6 +167,11 @@ public class TaskCardService {
         }
     }
 
+    /***
+     * Convert a list of taskCards to a list of ids
+     * @param taskCards The list of taskCards
+     * @return The list of ids
+     */
     public List<Long> convertTaskCardsToIds(List<TaskCard> taskCards){
         if(taskCards==null)
             return null;

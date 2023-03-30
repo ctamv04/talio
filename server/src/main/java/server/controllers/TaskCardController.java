@@ -32,6 +32,7 @@ public class TaskCardController {
      * @param service The service of the object
      * @param longPollingService The longPollingService of the object
      * @param taskListRepository The taskListRepository of the object
+     * @param messages The messaging template
      */
     public TaskCardController(TaskCardRepository repo, TaskCardService service, LongPollingService longPollingService,
                               TaskListRepository taskListRepository, SimpMessagingTemplate messages) {
