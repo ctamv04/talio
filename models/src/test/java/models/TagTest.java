@@ -85,6 +85,15 @@ class TagTest {
         assertEquals(tag.getBoards(),boards);
     }
 
+    /**
+     *  Tests the setId function
+     */
+    @Test
+    void  setID() {
+        Tag tag = new Tag();
+        tag.setId(1L);
+        assertEquals(1L, tag.getId());
+    }
     /***
      * Tests if the function gets the correct tasks
      */
