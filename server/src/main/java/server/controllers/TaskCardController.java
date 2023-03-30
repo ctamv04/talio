@@ -2,6 +2,7 @@ package server.controllers;
 
 import models.TaskCard;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import server.repositories.TaskCardRepository;
@@ -23,6 +24,7 @@ public class TaskCardController {
     private final TaskCardService taskCardService;
     private final LongPollingService longPollingService;
     private final TaskListRepository taskListRepository;
+    private final SimpMessagingTemplate messages;
 
     /**
      * Constructor Method
@@ -31,11 +33,13 @@ public class TaskCardController {
      * @param longPollingService The longPollingService of the object
      * @param taskListRepository The taskListRepository of the object
      */
-    public TaskCardController(TaskCardRepository repo, TaskCardService service, LongPollingService longPollingService, TaskListRepository taskListRepository) {
+    public TaskCardController(TaskCardRepository repo, TaskCardService service, LongPollingService longPollingService,
+                              TaskListRepository taskListRepository, SimpMessagingTemplate messages) {
         this.taskCardRepository = repo;
         this.taskCardService = service;
         this.longPollingService = longPollingService;
         this.taskListRepository = taskListRepository;
+        this.messages = messages;
     }
 
     /**
@@ -61,9 +65,9 @@ public class TaskCardController {
     }
 
     /**
-     *
-     * @param cardID
-     * @return
+     * Get the card by its id
+     * @param cardID The card id
+     * @return The corresponding card
      */
     @GetMapping("/board/{id}")
     public ResponseEntity<Long> getBoardId(@PathVariable("id") Long cardID){
@@ -113,8 +117,9 @@ public class TaskCardController {
             return response;
 
         TaskCard taskCard=response.getBody();
-
-        longPollingService.registerUpdate(detailsListeners.get(id),taskCard);
+        if(taskCard==null)
+            return response;
+        messages.convertAndSend("/topic/taskcard/"+id,taskCard);
 
         return response;
     }
@@ -140,7 +145,10 @@ public class TaskCardController {
         if(response.getStatusCodeValue()!=200)
             return response;
 
-        longPollingService.registerUpdate(detailsListeners.get(id),null);
+        TaskCard dummyTaskcard=new TaskCard();
+        dummyTaskcard.setPosition(-1);
+        messages.convertAndSend("/topic/taskcard/"+id,dummyTaskcard);
+        messages.convertAndSend("/topic/extended-taskcard/"+id,dummyTaskcard);
         longPollingService.registerUpdate(idsListeners.get(taskCard.getTaskList().getId()),
                 taskCardService.convertTaskCardsToIds(taskListRepository.getTaskCardsId(taskCard.getTaskList().getId())));
 
@@ -148,15 +156,9 @@ public class TaskCardController {
     }
 
     private final Map<Long, Map<Object, Consumer<List<Long>>>> idsListeners =new ConcurrentHashMap<>();
-    private final Map<Long, Map<Object, Consumer<TaskCard>>> detailsListeners =new ConcurrentHashMap<>();
 
     @GetMapping("/{id}/ids-updates")
     public DeferredResult<ResponseEntity<List<Long>>> getIdsUpdates(@PathVariable("id") Long taskListId){
         return longPollingService.getUpdates(taskListId, idsListeners);
-    }
-
-    @GetMapping("/{id}/details-updates")
-    public DeferredResult<ResponseEntity<TaskCard>> getDetailsUpdates(@PathVariable("id") Long id){
-        return longPollingService.getUpdates(id,detailsListeners);
     }
 }

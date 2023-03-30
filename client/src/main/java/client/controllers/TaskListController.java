@@ -164,7 +164,6 @@ public class TaskListController implements Initializable {
     private void increment(int offset) {
         entries = entries + offset;
         line.setVisible(entries != 0);
-        System.out.println(taskListId + " " + offset + " " + entries);
     }
 
     private void onDragDetected(MouseEvent event) {
@@ -210,8 +209,7 @@ public class TaskListController implements Initializable {
                 if (index > initialPos)
                     index--;
             }
-            serverUtils.swapBetweenLists(id, index, list1, taskListId);
-            System.out.println(id + " " + list1 + " " + taskListId + " " + index + " ");
+            serverUtils.swapBetweenLists(id, index,list1,taskListId);
             success = true;
             taskCards.getSelectionModel().clearSelection();
             taskList_name.getParent().requestFocus();
@@ -280,7 +278,7 @@ public class TaskListController implements Initializable {
         taskCardIdsUpdatesExecutor.shutdown();
         for (MinimizedCardController cardController : taskCardControllers)
             if (cardController != null)
-                cardController.closePolling();
+                cardController.stopWebsockets();
     }
 
     /**

@@ -25,7 +25,7 @@ public class TaskCardControllerTest {
         taskListRepo = new TestTaskListRepository();
 
         TaskCardService service = new TaskCardService(taskCardRepo, taskListRepo);
-        controller = new TaskCardController(taskCardRepo, service, null, null);
+        controller = new TaskCardController(taskCardRepo, service, null, null, null);
     }
 
     @Test
