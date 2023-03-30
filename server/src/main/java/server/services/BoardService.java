@@ -12,16 +12,14 @@ import server.repositories.BoardRepository;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    /**
-     * Constructor Method
+    /* Constructor Method
      * @param boardRepository The injected boardRepository of the object
      */
     public BoardService(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
     }
 
-    /**
-     * Updates a board with a new given one
+    /* Updates a board with a new given one
      * @param id The id of the board that needs updated
      * @param newBoard The new board to be used for update
      * @return Return a response based on the existence of the id
@@ -30,6 +28,7 @@ public class BoardService {
     public ResponseEntity<Board> update(@PathVariable("id") Long id, @RequestBody Board newBoard) {
         return boardRepository.findById(id).map(board -> {
             board.setName(newBoard.getName());
+//            board.setWorkspace(newBoard.getWorkspace());
             board.setBackgroundColor(newBoard.getBackgroundColor());
             board.setFontColor(newBoard.getFontColor());
             return ResponseEntity.ok(boardRepository.save(board));

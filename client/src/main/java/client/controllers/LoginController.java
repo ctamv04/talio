@@ -31,7 +31,7 @@ public class LoginController implements Initializable {
     @FXML
     private TextField code_input;
     @FXML
-    private ListView<Board> boards;
+    private ListView<Board> boards_view;
     @FXML
     private Button delBoard;
     @FXML
@@ -40,6 +40,11 @@ public class LoginController implements Initializable {
     private VBox buttonBox;
     @FXML
     private AnchorPane window;
+    @FXML
+    private Button admin_login_button;
+    @FXML
+
+    private AnchorPane overlay;
 
     /***
      * Constructor for LoginController
@@ -64,12 +69,49 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        overlay.setVisible(false);
         buttonBox.setOpacity(0L);
 
         invalid_text.setVisible(false);
-        boards.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
-        boards.setCellFactory(new Callback<>() {
+
+        setVisibleBoards();
+
+        boards_view.setOnMouseClicked(this::boardClicked);
+
+        join_board_button.setOnAction(event -> joinButtonClicked());
+
+        new_board_button.setOnAction(event -> {
+            overlay.setVisible(true);
+            mainCtrl.showAddBoardPage();
+            overlay.setVisible(false);
+        });
+
+        admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
+
+        back_button.setOnMouseClicked(event -> {
+            serverUtils.setServer("http://localhost:8080/");
+            mainCtrl.showStartingPage();
+        });
+
+        window.setOnMouseClicked(event -> {
+            if (event.getTarget() != buttonBox && event.getTarget() != boards_view)
+                buttonBox.setOpacity(0);
+
+        });
+    }
+
+    /**
+     * Adds boards to the login page.
+     * Admin can see all boards in the current workspace,
+     * user can see boards it created or accessed before.
+     */
+    private void setVisibleBoards() {
+        if (mainCtrl.isAdmin()) {
+            boards_view.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
+        } else {
+            boards_view.setItems(FXCollections.observableArrayList(mainCtrl.getBoards()));
+        }
+        boards_view.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Board> call(ListView<Board> param) {
                 return new ListCell<>() {
@@ -86,30 +128,13 @@ public class LoginController implements Initializable {
                 };
             }
         });
-
-        boards.setOnMouseClicked(this::boardClicked);
-
-        join_board_button.setOnAction(event -> joinButtonClicked());
-
-        new_board_button.setOnAction(event -> mainCtrl.showAddBoardPage());
-
-        back_button.setOnMouseClicked(event -> {
-            serverUtils.setServer("http://localhost:8080/");
-            mainCtrl.showStartingPage();
-        });
-
-        window.setOnMouseClicked(event ->{
-            if (event.getTarget() != buttonBox && event.getTarget() != boards)
-                buttonBox.setOpacity(0);
-
-        });
     }
 
-    private void joinBoard(Long id){
-        try{
-            Board board=serverUtils.getBoard(id);
+    private void joinBoard(Long id) {
+        try {
+            Board board = serverUtils.getBoard(id);
             mainCtrl.showClientOverview(board);
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             invalid_text.setVisible(true);
         }
     }
@@ -118,32 +143,37 @@ public class LoginController implements Initializable {
      * This is called when a mouse event happens to a board.
      * @param event the mouse event that happened: clicked/clicked twice/...
      */
-    public void boardClicked (MouseEvent event){
-        Board board = boards.getSelectionModel().getSelectedItem();
+    public void boardClicked(MouseEvent event) {
+        Board board = boards_view.getSelectionModel().getSelectedItem();
 
-        if (board!=null) {
+        if (board != null) {
             Long boardID = board.getId();
 
             if (event.getClickCount() == 2)
                 joinBoard(boardID);
 
             buttonBox.setOpacity(1L);
-            enterBoard.setOnMouseClicked(event2-> joinBoard(boardID));
+            enterBoard.setOnMouseClicked(event2 -> joinBoard(boardID));
 
-            delBoard.setOnMouseClicked(event2-> serverUtils.deleteBoard(boardID));
+            delBoard.setOnMouseClicked(event2 -> serverUtils.deleteBoard(boardID));
         }
     }
 
     /***
      * This is called when the join button is clicked.
      */
-    public void joinButtonClicked () {
+    public void joinButtonClicked() {
         try {
             Long id = Long.parseLong(code_input.getText());
             Board board = serverUtils.getBoard(id);
+            mainCtrl.addBoard(board);
             mainCtrl.showClientOverview(board);
         } catch (NumberFormatException | WebApplicationException e) {
             invalid_text.setVisible(true);
         }
+    }
+
+    public AnchorPane getOverlay() {
+        return overlay;
     }
 }

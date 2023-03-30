@@ -8,7 +8,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -25,6 +27,15 @@ public class TaskCard {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private TaskList taskList;
+
+//    @OneToMany(
+//            mappedBy = "task",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+    @ManyToMany(cascade = {CascadeType.ALL})
+    private List<Tag> tags = new ArrayList<>();
+
     private int position=0;
     @ElementCollection
     private Map<String, Boolean> subs = new HashMap<>();
