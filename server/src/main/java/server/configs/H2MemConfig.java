@@ -28,9 +28,9 @@ public class H2MemConfig {
             boards.add(board1);
 
             List<Tag> tags = new ArrayList<>();
-            tags.add(new Tag("gaming", boards, "#FFFFFF"));
-            tags.add(new Tag("homework >:)", boards, "#FFFEFE"));
-            tags.add(new Tag("new", boards, "#FEEEEE"));
+            tags.add(new Tag("gaming", boards, "#000000"));
+            tags.add(new Tag("homework >:)", boards, "#FF0000"));
+            tags.add(new Tag("new", boards, "#0000FF"));
 
             board1.setTags(tags);
 
