@@ -96,13 +96,17 @@ public class TaskListController implements Initializable {
         });
 
         taskCards.setOnMouseClicked(event -> {
-            Long cardId = taskCards.getSelectionModel().getSelectedItem();
-            if (cardId != null) {
-                taskCards.getSelectionModel().clearSelection();
-                boardController.getOverlay().setVisible(true);
-                mainCtrl.showCard(cardId);
-                boardController.getOverlay().setVisible(false);
+
+            if(event.getClickCount() == 2){
+                Long cardId = taskCards.getSelectionModel().getSelectedItem();
+                if (cardId != null) {
+                    taskCards.getSelectionModel().clearSelection();
+                    boardController.getOverlay().setVisible(true);
+                    mainCtrl.showCard(cardId);
+                    boardController.getOverlay().setVisible(false);
+                }
             }
+
         });
 
         initialiseDragAndDrop();
