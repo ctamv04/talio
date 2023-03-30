@@ -86,7 +86,11 @@ public class LoginController implements Initializable {
             overlay.setVisible(false);
         });
 
-        admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
+        if (mainCtrl.isAdmin()) {
+            admin_login_button.setVisible(false);
+        } else {
+            admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
+        }
 
         back_button.setOnMouseClicked(event -> {
             serverUtils.setServer("http://localhost:8080/");

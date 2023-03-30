@@ -25,6 +25,7 @@ import models.Tag;
 import models.TaskCard;
 import models.TaskList;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
     private String SERVER;
-    private final String address="localhost:8080";
+    private String address;
 
     public String getAddress() {
         return address;
@@ -44,13 +45,15 @@ public class ServerUtils {
      */
     public ServerUtils() {
         SERVER = "http://localhost:8080/";
+        address = "localhost:8080";
     }
 
     /**
      * Sets the server url
      */
-    public void setServer(String server) {
-        SERVER = server;
+    public void setServer(String address) {
+        SERVER = "http://" + address + "/";
+        this.address = address;
     }
 
     /**
@@ -62,6 +65,7 @@ public class ServerUtils {
     public boolean healthCheck(String server) {
         try {
             ClientBuilder.newClient(new ClientConfig())
+                    .property(ClientProperties.CONNECT_TIMEOUT, 1000)
                     .target(server).path("api/server") //
                     .request(APPLICATION_JSON) //
                     .accept(APPLICATION_JSON) //
@@ -386,11 +390,12 @@ public class ServerUtils {
 //                .get(Long.class);
 //    }
 
-    public List<Tag> getBoardTags(Long cardID){
+    public List<Tag> getBoardTags(Long cardID) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tags/board/" + cardID)
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {});
+                .get(new GenericType<>() {
+                });
     }
 }
