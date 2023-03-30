@@ -25,8 +25,8 @@ import javafx.util.Pair;
 import models.Board;
 import models.TaskList;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainCtrl {
     private Stage primaryStage;
@@ -40,7 +40,7 @@ public class MainCtrl {
     private ViewFactory viewFactory;
     private Scene primaryScene;
     private boolean isAdmin;
-    private Set<Board> boards = new HashSet<>();
+    private List<Board> boards = new ArrayList<>();
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -208,7 +208,7 @@ public class MainCtrl {
         boards.add(board);
     }
 
-    public Set<Board> getBoards() {
+    public List<Board> getBoards() {
         return boards;
     }
 }

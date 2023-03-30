@@ -1,14 +1,16 @@
 package server.configs;
 
 
-import models.*;
+import models.Board;
+import models.Tag;
+import models.TaskCard;
+import models.TaskList;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import server.repositories.BoardRepository;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
-import server.repositories.WorkspaceRepository;
 
 import java.util.*;
 
@@ -18,11 +20,9 @@ public class H2MemConfig {
     @Bean
     CommandLineRunner commandLineRunner(BoardRepository boardRepository,
                                         TaskListRepository taskListRepository,
-                                        TaskCardRepository taskCardRepository,
-                                        WorkspaceRepository workspaceRepository) {
+                                        TaskCardRepository taskCardRepository) {
         return args -> {
 
-            Workspace workspace = new Workspace();
             Board board1 = new Board("Board1");
             Board board2 = new Board("Board2");
             Board board3 = new Board("Board3");
@@ -36,9 +36,6 @@ public class H2MemConfig {
             tags.add(new Tag("new", boards, "#FEEEEE"));
 
             board1.setTags(tags);
-
-            workspaceRepository.save(workspace);
-            System.out.println("Generated password is: " + workspace.getPassword());
 
             boardRepository.saveAll(List.of(board1, board2, board3));
             for (int i = 0; i < 6; i++) {

@@ -23,7 +23,6 @@ import jakarta.ws.rs.core.Response;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
-import models.Workspace;
 import org.glassfish.jersey.client.ClientConfig;
 
 import java.util.List;
@@ -57,7 +56,7 @@ public class ServerUtils {
     public boolean healthCheck(String server) {
         try {
             ClientBuilder.newClient(new ClientConfig())
-                    .target(server).path("api/boards") //
+                    .target(server).path("api/server") //
                     .request(APPLICATION_JSON) //
                     .accept(APPLICATION_JSON) //
                     .get();
@@ -340,13 +339,13 @@ public class ServerUtils {
     }
 
     /**
-     * Returns current workspace
+     * Returns current password
      *
-     * @return workspace
+     * @return password
      */
-    public Workspace getWorkspace() {
+    public String getPassword() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/workspaces") //
+                .target(SERVER).path("api/server") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {

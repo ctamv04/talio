@@ -57,7 +57,9 @@ public class AdminLoginController implements Initializable {
         if (password_input.getText().isBlank()) {
             connection_denied_message.setVisible(true);
         } else {
-            if (password_input.getText().equals(serverUtils.getWorkspace().getPassword())) {
+            System.out.println(password_input.getText() + " " + password_input.getText().length());
+            System.out.println(serverUtils.getPassword() + " " + serverUtils.getPassword().length());
+            if (password_input.getText().equals(serverUtils.getPassword())) {
                 mainCtrl.updateRole();
                 mainCtrl.closeAdminLogin();
             } else {
