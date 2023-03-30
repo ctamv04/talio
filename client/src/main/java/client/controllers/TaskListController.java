@@ -254,14 +254,14 @@ public class TaskListController implements Initializable {
         detailUpdatesExecutor.submit(() -> {
             while (!detailUpdatesExecutor.isShutdown()) {
                 var response = serverUtils.getTaskListUpdates(taskListId);
-                if (response.getStatus() == 400) { // bad request
+                if (response.getStatus() == 204)
+                    continue;
+                if (response.getStatus() == 400) {
                     closePolling();
                     return;
                 }
-                if (response.getStatus() == 204) { // no updates
-                    var taskList = response.readEntity(TaskList.class);
-                    consumer.accept(taskList);
-                }
+                var taskList = response.readEntity(TaskList.class);
+                consumer.accept(taskList);
             }
         });
     }
