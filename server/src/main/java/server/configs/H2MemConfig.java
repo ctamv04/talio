@@ -1,5 +1,6 @@
 package server.configs;
 
+
 import models.Board;
 import models.Tag;
 import models.TaskCard;
@@ -15,14 +16,16 @@ import java.util.*;
 
 @Configuration
 public class H2MemConfig {
+
     @Bean
     CommandLineRunner commandLineRunner(BoardRepository boardRepository,
                                         TaskListRepository taskListRepository,
-                                        TaskCardRepository taskCardRepository){
+                                        TaskCardRepository taskCardRepository) {
         return args -> {
-            Board board1=new Board("Board1");
-            Board board2=new Board("Board2");
-            Board board3=new Board("Board3");
+
+            Board board1 = new Board("Board1");
+            Board board2 = new Board("Board2");
+            Board board3 = new Board("Board3");
 
             List<Board> boards = new ArrayList<>();
             boards.add(board1);
@@ -34,14 +37,15 @@ public class H2MemConfig {
 
             board1.setTags(tags);
 
-            boardRepository.saveAll(List.of(board1,board2,board3));
-            for(int i=0;i<6;i++){
-                Random random=new Random();
-                TaskList taskList=new TaskList(String.valueOf(random.nextInt(1000,9999)),board1);
+            boardRepository.saveAll(List.of(board1, board2, board3));
+            for (int i = 0; i < 6; i++) {
+                Random random = new Random();
+                TaskList taskList = new TaskList(String.valueOf(random.nextInt(1000, 9999)), board1);
+
                 board1.getTaskLists().add(taskList);
                 taskListRepository.save(taskList);
-                for(int j=0;j<5;j++){
-                    TaskCard taskCard=new TaskCard(String.valueOf(random.nextInt(1000,9999)),taskList,j);
+                for (int j = 0; j < 5; j++) {
+                    TaskCard taskCard = new TaskCard(String.valueOf(random.nextInt(1000, 9999)), taskList, j);
                     taskList.getTaskCards().add(taskCard);
 
                     Map<String, Boolean> a = new HashMap<>();

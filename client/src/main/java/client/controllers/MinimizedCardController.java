@@ -44,7 +44,7 @@ public class MinimizedCardController implements Initializable {
 
     private void initializeScene() {
         try {
-            TaskCard taskCard=serverUtils.getTaskCard(taskCardId);
+            TaskCard taskCard = serverUtils.getTaskCard(taskCardId);
             card_name.setText(taskCard.getName());
             minBG.setStyle("-fx-background-color:" + taskCard.getBackID() +"; ");
             minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +taskCard.getFontID() + ";");
@@ -54,17 +54,15 @@ public class MinimizedCardController implements Initializable {
     }
 
     private void startWebsockets() {
-        websocketUtils.registerForMessages("/topic/taskcard/"+taskCardId, TaskCard.class, updatedTaskCard->{
-            Platform.runLater(()->{
-                if(updatedTaskCard.getPosition()==-1){
-                    stopWebsockets();
-                    return;
-                }
-                card_name.setText(updatedTaskCard.getName());
-                minBG.setStyle("-fx-background-color:" + updatedTaskCard.getBackID() +"; ");
-                minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +updatedTaskCard.getFontID() + ";");
-            });
-        });
+        websocketUtils.registerForMessages("/topic/taskcard/"+taskCardId, TaskCard.class, updatedTaskCard-> Platform.runLater(() -> {
+            if (updatedTaskCard.getPosition() == -1) {
+                stopWebsockets();
+                return;
+            }
+            card_name.setText(updatedTaskCard.getName());
+            minBG.setStyle("-fx-background-color:" + updatedTaskCard.getBackID() + "; ");
+            minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" + updatedTaskCard.getFontID() + ";");
+        }));
     }
 
     public void stopWebsockets(){
