@@ -32,7 +32,7 @@ public class TagService {
             tag.setName(newTag.getName());
             tag.setColor(newTag.getColor());
             tag.setTasks(newTag.getTasks());
-            tag.setBoards(newTag.getBoards());
+            tag.setBoard(newTag.getBoard());
             tag.setTasks(newTag.getTasks());
 
             return ResponseEntity.ok(repo.save(tag));
@@ -50,7 +50,7 @@ public class TagService {
 
         Board board = optional.get();
         board.getTags().add(tag);
-        tag.getBoards().add(board);
+        tag.setBoard(board);
         return ResponseEntity.ok(repo.save(tag));
     }
 
@@ -67,9 +67,7 @@ public class TagService {
             task.getTags().remove(tag);
         });
 
-        tag.getBoards().forEach(board -> {
-            board.getTags().remove(tag);
-        });
+        tag.getBoard().getTags().remove(tag);
 
         repo.deleteById(tagID);
         return ResponseEntity.ok().build();
