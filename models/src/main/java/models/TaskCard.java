@@ -34,7 +34,6 @@ public class TaskCard {
 //            orphanRemoval = true
 //    )
     @ManyToMany(cascade = {CascadeType.ALL})
-    @JsonIgnore
     private List<Tag> tags = new ArrayList<>();
 
     private int position=0;

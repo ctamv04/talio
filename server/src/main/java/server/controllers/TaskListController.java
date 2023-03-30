@@ -160,6 +160,11 @@ public class TaskListController {
     private final Map<Long, Map<Object,Consumer<List<Long>>>> idsListeners =new ConcurrentHashMap<>();
     private final Map<Long, Map<Object,Consumer<TaskList>>> detailsListeners=new ConcurrentHashMap<>();
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}/ids-updates")
     public DeferredResult<ResponseEntity<List<Long>>> getIdsUpdates(@PathVariable("id") Long boardId){
         return longPollingService.getUpdates(boardId, idsListeners);
