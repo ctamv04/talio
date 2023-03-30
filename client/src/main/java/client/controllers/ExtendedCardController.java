@@ -332,8 +332,8 @@ public class ExtendedCardController implements Initializable{
         tagsLabel.setStyle("-fx-text-fill: " + color + ";");
         backLabel.setStyle("-fx-text-fill: " + color + ";");
         fontLabel.setStyle("-fx-text-fill: " + color + ";");
-        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
-        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
+        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
+        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
         card.setFontID(color);
     }
 
@@ -356,7 +356,6 @@ public class ExtendedCardController implements Initializable{
     public HBox entryFactory(String a, Boolean b){
 
         FontAwesomeIconView edit = new FontAwesomeIconView(FontAwesomeIcon.PENCIL);
-        edit.setStyle("-fx-start-margin: 10px");
 
         Region region = new Region();
         HBox.setHgrow(region, Priority.ALWAYS);
@@ -383,11 +382,14 @@ public class ExtendedCardController implements Initializable{
         });
 
         delete.setOnMouseClicked(event -> {
-            tempSubs.remove(((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText());
+            tempSubs.remove(a);
             subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
         });
 
-        return new HBox(checkBox, edit, region, delete);
+        HBox box = new HBox(checkBox, edit, region, delete);
+        box.setStyle("-fx-spacing: 5px");
+
+        return box;
     }
 
     public HBox tagEntryFactory(Tag tag){
@@ -399,7 +401,6 @@ public class ExtendedCardController implements Initializable{
         HBox.setHgrow(region, Priority.ALWAYS);
 
         FontAwesomeIconView delete = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
-        delete.setStyle("-fx-start-margin: 5px");
 
         delete.setOnMouseClicked(event -> {
             taskTags.remove(tag);
@@ -407,7 +408,7 @@ public class ExtendedCardController implements Initializable{
         });
 
         HBox box = new HBox(label, region, delete);
-        box.setStyle("-fx-border-color: " + tag.getColor());
+        box.setStyle("-fx-spacing: 5px; -fx-border-color: " + tag.getColor());
 
         return box;
     }
