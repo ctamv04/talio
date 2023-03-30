@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskListTest {
 
-
-
     /**
      * Test if 2 equal are equal
      */
