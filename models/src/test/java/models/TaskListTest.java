@@ -2,11 +2,80 @@ package models;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskListTest {
+    // --------------------------------------------
+    // Touch all Constructors                     |
+    // --------------------------------------------
 
+    /**
+     * Test if the no params constructor works
+     */
+    @Test
+    void testConstructor0params() {
+        TaskList taskList = new TaskList();
+        assertNotNull(taskList);
+    }
 
+    /***
+     * Test if the constructor with one param works
+     */
+    @Test
+    void testConstructor2params() {
+        Board board = new Board("board");
+        TaskList taskList = new TaskList("Name", board);
+        assertNotNull(taskList);
+    }
+
+    /***
+     * Test if the constructor with three params works
+     */
+    @Test
+    void testConstructor3params() {
+        TaskCard taskCard = new TaskCard("Name", "Description", new TaskList(), 2);
+        Board board = new Board("board");
+        TaskList taskList = new TaskList("Name", new ArrayList<TaskCard>(), board);
+        assertNotNull(taskList);
+    }
+
+    // --------------------------------------------
+    // Getters and Setters                        |
+    // --------------------------------------------
+
+    /***
+     * Test if the function gets the correct task cards
+     */
+    @Test
+    void testGetTaskCards() {
+        TaskCard taskCard=new TaskCard("Name","Description",new TaskList(),2);
+        Board board=new Board("board");
+        TaskList taskList=new TaskList("Name",new ArrayList<TaskCard>(),board);
+        assertEquals(taskList.getTaskCards(),new ArrayList<TaskCard>());
+    }
+
+    /***
+     * Test if the function sets the correct task cards
+     */
+    @Test
+    void testSetTaskCards() {
+        TaskCard taskCard=new TaskCard("Name","Description",new TaskList(),2);
+        Board board=new Board("board");
+        TaskList taskList=new TaskList("Name",new ArrayList<TaskCard>(),board);
+        List<TaskCard> taskCards=new ArrayList<>();
+        taskCards.add(taskCard);
+        taskList.setTaskCards(taskCards);
+        assertEquals(taskList.getTaskCards(),taskCards);
+    }
+
+    // Please paste your getters and setters here, if I do it I steal your code :(
+
+    // --------------------------------------------
+    // HashCode, Equals and ToString              |
+    // --------------------------------------------
 
     /**
      * Test if 2 equal are equal
@@ -52,7 +121,6 @@ class TaskListTest {
         TaskList taskList2 = taskList1;
         assertEquals(taskList1, taskList2);
         assertEquals(taskList1, taskList1);
-
     }
 
     /**

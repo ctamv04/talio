@@ -2,12 +2,14 @@ package models;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskCardTest {
+	// --------------------------------------------
+	// Touch all Constructors                     |
+	// --------------------------------------------
 	@Test
 	public void checkConstructorOnlyTaskList() {
 		var t = new TaskCard(new TaskList());
@@ -29,6 +31,30 @@ public class TaskCardTest {
 		assertEquals("description", t.getDescription());
 	}
 
+	@Test
+	public void checkConstructorNameDescriptionTasklistAndPosition() {
+		var t=new TaskCard("name","description",new TaskList(),1);
+		assertEquals("name",t.getName());
+		assertEquals("description",t.getDescription());
+		assertEquals(1,t.getPosition());
+	}
+
+	@Test
+	public void checkConstructorPosition() {
+		var t=new TaskCard(1);
+		assertEquals(1,t.getPosition());
+	}
+
+	@Test
+	public void checkConstructorNameTasklistAndPosition() {
+		var t=new TaskCard("name",new TaskList(),1);
+		assertEquals("name",t.getName());
+		assertEquals(1,t.getPosition());
+	}
+
+	// --------------------------------------------
+	// Getters and Setters                        |
+	// --------------------------------------------
 	@Test
 	public void getSetName() {
 		var t = new TaskCard();
@@ -52,6 +78,48 @@ public class TaskCardTest {
 		assertEquals(l, t.getTaskList());
 	}
 
+	@Test
+	public void getSetTags() {
+		var t=new TaskCard();
+		var l=new ArrayList<Tag>();
+		l.add(new Tag("tag",new ArrayList<>(),new ArrayList<>(),"#000000"));
+		t.setTags(l);
+		assertEquals(l,t.getTags());
+	}
+
+	@Test
+	public void getSetPosition() {
+		var t=new TaskCard();
+		t.setPosition(1);
+		assertEquals(1,t.getPosition());
+	}
+
+	@Test
+	public void getSetSubs() {
+		var t=new TaskCard();
+		var l=new HashMap<String, Boolean>();
+		l.put("sub",true);
+		t.setSubs((Map<String, Boolean>) l);
+		assertEquals(l,t.getSubs());
+	}
+
+	@Test
+	public void getSetFontID() {
+		var t=new TaskCard();
+		t.setFontID("fontID");
+		assertEquals("fontID",t.getFontID());
+	}
+
+	@Test
+	public void getSetBackID() {
+		var t=new TaskCard();
+		t.setBackID("backID");
+		assertEquals("backID",t.getBackID());
+	}
+
+	// --------------------------------------------
+	// Equals, HashCode and ToString              |
+	// --------------------------------------------
 
 	@Test
 	public void equalsHashCode() {

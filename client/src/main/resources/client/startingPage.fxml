@@ -11,7 +11,8 @@
             fx:controller="client.controllers.StartingPageController">
     <Group layoutX="137.0" layoutY="142.0" styleClass="text-id" AnchorPane.bottomAnchor="201.38411712646484"
            AnchorPane.leftAnchor="137.0" AnchorPane.rightAnchor="133.0" AnchorPane.topAnchor="132.5">
-        <TextField fx:id="url_input" layoutY="26.94921875" prefHeight="25.0" prefWidth="280.0" promptText="Server URL"/>
+        <TextField fx:id="url_input" layoutY="26.94921875" prefHeight="25.0" prefWidth="280.0" text="http://"
+                   promptText="http://"/>
         <Text fx:id="enter_url_message" fill="BLACK" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0"
               text="Please enter the server URL:" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="280.0"/>
     </Group>

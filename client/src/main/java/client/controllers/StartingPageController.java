@@ -39,28 +39,17 @@ public class StartingPageController implements Initializable {
         test_button.setOnMouseClicked(event -> healthCheck());
     }
 
-    private String validate_url(String url) {
-        if (url.startsWith("http")) {
-            return url;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("http://");
-        sb.append(url);
-        return sb.toString();
-    }
-
     public String getServer() {
-        if (url_input.getText().isBlank()) {
-            return "http://localhost:8080/";
+        if (url_input.getText().isBlank() || url_input.getText().equals(url_input.getPromptText())) {
+            return "localhost:8080";
         }
-        return validate_url(url_input.getText());
+        return url_input.getText().replace("http://", "");
     }
 
     public void validate() {
         String url = getServer();
 
-        if (serverUtils.healthCheck(url)) {
+        if (serverUtils.healthCheck("http://" + getServer() + "/")) {
             serverUtils.setServer(url);
             mainCtrl.showLoginPage();
         } else {
@@ -70,7 +59,7 @@ public class StartingPageController implements Initializable {
     }
 
     public void healthCheck() {
-        String url = getServer();
+        String url = "http://" + getServer() + "/";
 
         if (serverUtils.healthCheck(url)) {
             success_message.setVisible(true);
