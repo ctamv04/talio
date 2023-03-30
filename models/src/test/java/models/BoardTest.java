@@ -8,6 +8,67 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
+    // --------------------------------------------
+    // Touch all Constructors                     |
+    // --------------------------------------------
+
+    /***
+     * Test if the constructor works
+     */
+    @Test
+    void testConstructor0params() {
+        Board board=new Board();
+        assertNotNull(board);
+    }
+
+    /***
+     * Test if the constructor with one param works
+     */
+    @Test
+    void testConstructor1params() {
+        Board board=new Board("board");
+        assertNotNull(board);
+    }
+
+    /***
+     * Test if the constructor with two params works
+     */
+    @Test
+    void testConstructor2params() {
+        Board board=new Board("board",new ArrayList<>());
+        assertNotNull(board);
+    }
+
+    /***
+     * Test if the constructor with five params works
+     */
+    @Test
+    void testConstructor5params() {
+            Board board=new Board("board",new ArrayList<TaskList>(),"#000000","#000000");
+        assertNotNull(board);
+    }
+
+    // --------------------------------------------
+    // Getters and Setters                        |
+    // --------------------------------------------
+
+    @Test
+    void testGetTaskLists() {
+        Board board=new Board();
+        assertEquals(board.getTaskLists(),new ArrayList<>());
+    }
+
+    @Test
+    void getTags() {
+        Board board=new Board();
+        assertEquals(board.getTags(),new ArrayList<>());
+    }
+
+    // Yasir please move your getters and setters here, if I do it I steal your code :(
+
+    // --------------------------------------------
+    // Equals, HashCode & toString                |
+    // --------------------------------------------
 
     /**
      * Test if 2 equal are equal
@@ -77,49 +138,6 @@ class BoardTest {
         assertTrue(actual.contains("name=board"));
         assertTrue(actual.contains("taskLists=[]"));
         assertTrue(actual.contains("\n"));
-    }
-
-    /**
-     * Tests if the function gets the correct name
-     */
-    @Test
-    void getName() {
-        Board board1 = new Board("board");
-        assertEquals(board1.getName(), "board");
-    }
-    /**
-     * Tests if the function gets the correct TaskList list
-     */
-    @Test
-    void getTaskLists() {
-        List<TaskList> tasklistList = new ArrayList<>();
-        TaskList taskList1 = new TaskList("Name", null);
-        tasklistList.add(taskList1);
-        Board board1 = new Board("board", tasklistList);
-        assertEquals(tasklistList, board1.getTaskLists());
-    }
-
-    /**
-     * Tests if the function sets the correct TaskList list
-     */
-    @Test
-    void setTaskLists() {
-        Board board1 = new Board("board");
-        List<TaskList> tasklistList = new ArrayList<>();
-        TaskList taskList1 = new TaskList("Name", null);
-        tasklistList.add(taskList1);
-        board1.setTaskLists(tasklistList);
-        assertEquals(tasklistList, board1.getTaskLists());
-    }
-
-    /**
-     * Tests if the function sets the correct name
-     */
-    @Test
-    void setName() {
-        Board board1 = new Board("board");
-        board1.setName("DifferentName");
-        assertEquals(board1.getName(), "DifferentName");
     }
 
 }
