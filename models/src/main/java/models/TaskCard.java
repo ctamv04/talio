@@ -28,11 +28,6 @@ public class TaskCard {
     @JsonIgnore
     private TaskList taskList;
 
-//    @OneToMany(
-//            mappedBy = "task",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
     @ManyToMany(cascade = {CascadeType.ALL})
     private List<Tag> tags = new ArrayList<>();
 

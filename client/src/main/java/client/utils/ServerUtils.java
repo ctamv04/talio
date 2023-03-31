@@ -390,12 +390,24 @@ public class ServerUtils {
 //                .get(Long.class);
 //    }
 
-    public List<Tag> getBoardTags(Long cardID) {
+    /**
+     *
+     * @param cardID
+     * @return
+     */
+    public List<Tag> getBoardTags(Long cardID){
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tags/board/" + cardID)
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
+                .get(new GenericType<>(){});
+    }
+
+    public void updateTag(Long tagID, Tag tag){
+        ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/tags/" + tagID)
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .put(Entity.json(tag));
     }
 }

@@ -27,13 +27,10 @@ public class H2MemConfig {
             Board board2 = new Board("Board2");
             Board board3 = new Board("Board3");
 
-            List<Board> boards = new ArrayList<>();
-            boards.add(board1);
-
             List<Tag> tags = new ArrayList<>();
-            tags.add(new Tag("gaming", boards, "#000000"));
-            tags.add(new Tag("homework >:)", boards, "#FF0000"));
-            tags.add(new Tag("new", boards, "#0000FF"));
+            tags.add(new Tag("gaming", board1, "#000000"));
+            tags.add(new Tag("homework >:)", board1, "#FF0000"));
+            tags.add(new Tag("new", board1, "#0000FF"));
 
             board1.setTags(tags);
 

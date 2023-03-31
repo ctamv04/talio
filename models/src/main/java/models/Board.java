@@ -31,7 +31,11 @@ public class Board {
     @JsonIgnore
     private List<TaskList> taskLists = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Tag> tags = new ArrayList<>();
     private String backgroundColor = "#FFFFFF";
     private String fontColor = "#000000";
