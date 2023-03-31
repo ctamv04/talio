@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import server.repositories.TagRepository;
 import server.repositories.TaskCardRepository;
 import server.services.TagService;
-import server.services.TaskCardService;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
@@ -22,8 +21,9 @@ public class TagController {
 
     /**
      * Constructor Method
+     *
      * @param repoCard The injected repo of the object
-     * @param service The injected service of the object
+     * @param service  The injected service of the object
      */
     public TagController(TagRepository repo, TagService service, TaskCardRepository repoCard) {
 
@@ -35,15 +35,16 @@ public class TagController {
 
     /**
      * Returns the Tag List of the Board a TaskCard belongs to
+     *
      * @param cardID ID of the TaskCard
      * @return
      */
     @GetMapping("/board/{id}")
-    public ResponseEntity<List<Tag>> getBoardTags(@PathVariable("id") Long cardID){
+    public ResponseEntity<List<Tag>> getBoardTags(@PathVariable("id") Long cardID) {
 
         Optional<TaskCard> taskCard = repoCard.findById(cardID);
 
-        if(taskCard.isEmpty())
+        if (taskCard.isEmpty())
             return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok(taskCard.get().getTaskList().getBoard().getTags());
@@ -52,15 +53,16 @@ public class TagController {
 
     /**
      * Returns the Tag List of a TaskCard
+     *
      * @param cardID
      * @return
      */
     @GetMapping("/task/{id}")
-    public ResponseEntity<List<Tag>> getTaskTags(@PathVariable("id") Long cardID){
+    public ResponseEntity<List<Tag>> getTaskTags(@PathVariable("id") Long cardID) {
 
         Optional<TaskCard> taskCard = repoCard.findById(cardID);
 
-        if(taskCard.isEmpty())
+        if (taskCard.isEmpty())
             return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok(taskCard.get().getTags());
@@ -68,7 +70,6 @@ public class TagController {
     }
 
     /**
-     *
      * @return
      */
     @GetMapping("")
@@ -77,47 +78,43 @@ public class TagController {
     }
 
     /**
-     *
      * @param tagID
      * @return
      */
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getById(@PathVariable("id") Long tagID) {
 
-        Optional<Tag> tag= repo.findById(tagID);
-        if(tag.isEmpty())
+        Optional<Tag> tag = repo.findById(tagID);
+        if (tag.isEmpty())
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(tag.get());
     }
 
     /**
-     *
      * @param tag
      * @param boardID
      * @return
      */
     @PostMapping("")
     public ResponseEntity<Tag> add(@RequestBody Tag tag,
-                                        @PathParam("taskListId") Long boardID) {
+                                   @PathParam("boardId") Long boardID) {
 
         return service.add(tag, boardID);
     }
 
     /**
-     *
      * @param tagID
      * @param newTag
      * @return
      */
     @PutMapping("/{id}")
     public ResponseEntity<Tag> update(@PathVariable("id") Long tagID,
-                                           @RequestBody Tag newTag) {
+                                      @RequestBody Tag newTag) {
 
         return service.update(tagID, newTag);
     }
 
     /**
-     *
      * @param tagID
      * @return
      */
