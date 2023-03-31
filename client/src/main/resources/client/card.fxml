@@ -50,18 +50,14 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                         </Button>
-                        <HBox fx:id="newSubBox" opacity="0.0" prefHeight="33.0" prefWidth="528.0">
+                        <HBox fx:id="newSubBox" prefHeight="33.0" prefWidth="528.0">
                            <children>
-                              <TextField fx:id="newSub" minHeight="0.0" prefHeight="23.0" prefWidth="505.0">
+                              <TextField fx:id="newSub" minHeight="0.0" prefHeight="23.0" prefWidth="528.0">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </TextField>
-                              <Label fx:id="cancelNew" prefHeight="19.0" prefWidth="22.0" text="  X">
-                                 <HBox.margin>
-                                    <Insets left="3.0" top="3.0" />
-                                 </HBox.margin>
-                              </Label>
+                              <FontAwesomeIconView fx:id="cancelNew" glyphName="TIMES" onMouseClicked="#back" size="18" tabSize="10" wrappingWidth="14.166656494140625" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -88,7 +84,7 @@
                         <Insets left="5.0" right="5.0" />
                      </HBox.margin>
                   </Button>
-                  <ListView fx:id="tagList" prefHeight="25.0" prefWidth="416.0" />
+                  <ListView fx:id="tagList" prefHeight="25.0" prefWidth="422.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -107,7 +103,7 @@
          </font>
       </TextField>
       <FontAwesomeIconView fx:id="icon" glyphName="PENCIL" layoutX="29.0" layoutY="39.0" size="18" text="" />
-      <VBox layoutX="552.0" layoutY="358.0" prefHeight="154.0" prefWidth="127.0">
+      <VBox layoutX="539.0" layoutY="362.0" prefHeight="150.0" prefWidth="124.0">
          <children>
             <Label fx:id="backLabel" layoutX="10.0" layoutY="40.0" text="Background colour">
                <font>
