@@ -71,4 +71,8 @@ public class ViewFactory {
     public Pair<BoardDeletedController, Parent> createBoardDeleted() {
         return FXML.load(BoardDeletedController.class, "/client/boardDeleted.fxml");
     }
+
+    public Pair<BoardDeletedController, Parent> createCardDeleted() {
+        return FXML.load(BoardDeletedController.class, "/client/cardDeleted.fxml");
+    }
 }

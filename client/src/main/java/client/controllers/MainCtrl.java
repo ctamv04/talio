@@ -37,6 +37,7 @@ public class MainCtrl {
     private Stage adminLoginStage;
 
     private Stage deletedBoardStage;
+    private Stage deletedCardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
     private boolean isAdmin;
@@ -194,6 +195,20 @@ public class MainCtrl {
     public void closeDeletedBoard() {
         if (deletedBoardStage != null)
             deletedBoardStage.close();
+    }
+
+    public void showDeletedCard() {
+        var addDeleteCard = viewFactory.createCardDeleted();
+        deletedCardStage = new Stage(StageStyle.UNDECORATED);
+        deletedCardStage.setScene(new Scene(addDeleteCard.getValue()));
+        deletedCardStage.setTitle("Deleted card");
+        deletedCardStage.initModality(Modality.APPLICATION_MODAL);
+        deletedCardStage.showAndWait();
+    }
+
+    public void closeDeletedCard() {
+        if (deletedCardStage != null)
+            deletedCardStage.close();
     }
 
     public void updateRole() {
