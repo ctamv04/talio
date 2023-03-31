@@ -109,7 +109,15 @@ public class TaskCardTest {
 		t.setFontID("fontID");
 		assertEquals("fontID",t.getFontID());
 	}
-
+	/**
+	 *  Tests the setId function
+	 */
+	@Test
+	void  setID() {
+		TaskCard taskCard = new TaskCard();
+		taskCard.setId(1L);
+		assertEquals(1L, taskCard.getId());
+	}
 	@Test
 	public void getSetBackID() {
 		var t=new TaskCard();

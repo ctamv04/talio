@@ -253,8 +253,7 @@ public class ExtendedCardController implements Initializable{
         websocketUtils.registerForMessages("/topic/extended-taskcard/"+task_id, TaskCard.class, updatedTaskCard->{
             Platform.runLater(()->{
                 if(updatedTaskCard.getPosition()==-1){
-                    //TODO the extended task card gets deleted while used
-                    System.out.println("deleted");
+                    mainCtrl.closeCard();
                     stopWebsockets();
                 }
             });

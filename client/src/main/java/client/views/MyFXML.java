@@ -18,6 +18,7 @@ package client.views;
 import client.controllers.*;
 import client.controllers.popups.AddTaskListController;
 import client.controllers.popups.BoardDeletedController;
+import client.controllers.popups.CardDeletedController;
 import client.controllers.popups.EditBoardController;
 import client.utils.ServerUtils;
 import client.utils.WebsocketUtils;
@@ -107,6 +108,10 @@ public class MyFXML {
 
             if (type == BoardDeletedController.class)
                 return new BoardDeletedController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class));
+
+            if (type == CardDeletedController.class)
+                return new CardDeletedController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class));
 
             return injector.getInstance(type);
