@@ -11,6 +11,7 @@ class ExtendedCardControllerTest {
      */
     @Test
     void initialize() {
+
     }
 
     /**
