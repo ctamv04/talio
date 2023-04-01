@@ -18,6 +18,7 @@ import server.services.TagService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,8 +83,8 @@ public class TagControllerTest {
         board1.setTags(List.of(tag1, tag2));
         board2.setTags(List.of(tag3));
 
-        taskCard1.setTags(List.of(tag1, tag2));
-        taskCard2.setTags(List.of(tag3));
+        taskCard1.setTags(Set.of(tag1, tag2));
+        taskCard2.setTags(Set.of(tag3));
     }
 
     /**
@@ -127,7 +128,7 @@ public class TagControllerTest {
         Mockito.when(taskCardRepository.findById(1L)).thenReturn(Optional.of(taskCard2));
         Mockito.when(taskCardRepository.findById(3L)).thenReturn(Optional.empty());
 
-        assertEquals(List.of(tag3), sut.getTaskTags(1L).getBody());
+        assertEquals(Set.of(tag3), sut.getTaskTags(1L).getBody());
         assertEquals(BAD_REQUEST, sut.getTaskTags(3L).getStatusCode());
     }
 
