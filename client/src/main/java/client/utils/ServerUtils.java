@@ -28,6 +28,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import java.util.List;
+import java.util.Set;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -395,7 +396,7 @@ public class ServerUtils {
      * @param cardID
      * @return
      */
-    public List<Tag> getBoardTags(Long cardID){
+    public Set<Tag> getBoardTags(Long cardID){
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tags/board/" + cardID)
                 .request(APPLICATION_JSON) //
