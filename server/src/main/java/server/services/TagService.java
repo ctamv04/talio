@@ -31,9 +31,6 @@ public class TagService {
 
             tag.setName(newTag.getName());
             tag.setColor(newTag.getColor());
-            tag.setTasks(newTag.getTasks());
-            tag.setBoard(newTag.getBoard());
-            tag.setTasks(newTag.getTasks());
 
             return ResponseEntity.ok(repo.save(tag));
 
@@ -51,6 +48,7 @@ public class TagService {
         Board board = optional.get();
         board.getTags().add(tag);
         tag.setBoard(board);
+
         return ResponseEntity.ok(repo.save(tag));
     }
 

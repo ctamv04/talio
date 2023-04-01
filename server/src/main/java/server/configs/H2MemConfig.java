@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import server.repositories.BoardRepository;
+import server.repositories.TagRepository;
 import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 
@@ -20,7 +21,7 @@ public class H2MemConfig {
     @Bean
     CommandLineRunner commandLineRunner(BoardRepository boardRepository,
                                         TaskListRepository taskListRepository,
-                                        TaskCardRepository taskCardRepository) {
+                                        TaskCardRepository taskCardRepository, TagRepository tagRepository) {
         return args -> {
 
             Board board1 = new Board("Board1");
@@ -35,6 +36,7 @@ public class H2MemConfig {
             board1.setTags(tags);
 
             boardRepository.saveAll(List.of(board1, board2, board3));
+            tagRepository.saveAll(tags);
             for (int i = 0; i < 6; i++) {
                 Random random = new Random();
                 TaskList taskList = new TaskList(String.valueOf(random.nextInt(1000, 9999)), board1);
