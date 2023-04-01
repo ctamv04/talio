@@ -119,7 +119,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Success case for TaskCard retrieval
+     * Success case for TaskList retrieval
      */
     @Test
     public void getTaskCardTestSuccess() {
@@ -129,7 +129,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Success case for TaskCard retrieval
+     * Success case for mass TaskList retrieval
      */
     @Test
     public void getAllSuccess() {
@@ -138,7 +138,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Fail case for TaskCard retrieval
+     * Fail case for mass TaskList retrieval
      */
     @Test
     public void getAllFailure() {
@@ -147,7 +147,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Success case for TaskCard ID retrieval
+     * Success case for TaskList's TaskCard IDs retrieval
      */
     @Test
     public void getTaskCardsIdSuccess() {
@@ -156,7 +156,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Fail case for TaskCard ID retrieval
+     * Fail case for TaskList's IDs retrieval
      */
     @Test
     public void getTaskCardsIdFailure() {
@@ -165,7 +165,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Success case for TaskCard retrieval
+     * Success case for TaskList's TaskCards retrieval
      */
     @Test
     public void getTaskCardsSuccess() {
@@ -174,7 +174,7 @@ public class TaskListControllerTest {
     }
 
     /**
-     * Fail case for TaskCard retrieval
+     * Fail case for TaskList's TaskCards retrieval
      */
     @Test
     public void getTaskCardsFailure() {
