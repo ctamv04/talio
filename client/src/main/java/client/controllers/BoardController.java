@@ -20,8 +20,10 @@ import lombok.Data;
 import models.Board;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,8 +39,8 @@ public class BoardController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private AnchorPane anchor_pane;
-    private final Map<Long, Parent> taskListCache =new ConcurrentHashMap<>();
-    private final Map<Long, Parent> taskCardCache =new ConcurrentHashMap<>();
+    private final Map<Long, Parent> taskListCache = new ConcurrentHashMap<>();
+    private final Map<Long, Parent> taskCardCache = new ConcurrentHashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final StringProperty nameProperty = new SimpleStringProperty();
     @FXML
@@ -65,53 +67,53 @@ public class BoardController implements Initializable {
         addList_button.setOnMouseClicked(this::onAddListButton);
     }
 
-    public void onAddListButton(Event event){
+    public void onAddListButton(Event event) {
         overlay.setVisible(true);
         mainCtrl.showAddTaskListPage(board.getId());
         overlay.setVisible(false);
     }
 
-    public void initialiseScene(){
+    public void initialiseScene() {
         overlay.setVisible(false);
         board_parent.setHgap(30);
         board_parent.setVgap(30);
         anchor_pane.prefWidthProperty().bind(scrollPane.widthProperty());
         anchor_pane.prefHeightProperty().bind(scrollPane.heightProperty());
 
-        try{
-            board=serverUtils.getBoard(board.getId());
+        try {
+            board = serverUtils.getBoard(board.getId());
             nameProperty.set(board.getName());
             anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
                     CornerRadii.EMPTY, Insets.EMPTY)));
-            List<Long> ids=serverUtils.getTaskListsId(board.getId());
-            List<Parent> taskLists=boardUtils.convertScenesFromTaskListIds(ids,taskListCache,this,taskListControllers);
+            List<Long> ids = serverUtils.getTaskListsId(board.getId());
+            List<Parent> taskLists = boardUtils.convertScenesFromTaskListIds(ids, taskListCache, this, taskListControllers);
             board_parent.getChildren().setAll(taskLists);
             board_parent.getChildren().add(addList_button);
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             closePolling();
-            mainCtrl.showLoginPage();
+            mainCtrl.showMainPage();
         }
     }
 
-    private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
-    private final ExecutorService taskListIdsUpdatesExecutor=Executors.newSingleThreadExecutor();
+    private final ExecutorService detailUpdatesExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService taskListIdsUpdatesExecutor = Executors.newSingleThreadExecutor();
 
-    public void startLongPolling(){
+    public void startLongPolling() {
         boardUtils.registerDetailsUpdates(updatedBoard -> {
-            board=updatedBoard;
+            board = updatedBoard;
             Platform.runLater(() -> {
                 nameProperty.set(board.getName());
                 anchor_pane.setBackground(new Background(new BackgroundFill(Color.valueOf(board.getBackgroundColor()),
                         CornerRadii.EMPTY, Insets.EMPTY)));
             });
-        },board,detailUpdatesExecutor,this);
+        }, board, detailUpdatesExecutor, this);
         boardUtils.registerTaskListIdsUpdates(ids -> {
-            List<Parent> list = boardUtils.convertScenesFromTaskListIds(ids,taskListCache,this,taskListControllers);
-            Platform.runLater(()-> {
+            List<Parent> list = boardUtils.convertScenesFromTaskListIds(ids, taskListCache, this, taskListControllers);
+            Platform.runLater(() -> {
                 board_parent.getChildren().setAll(list);
                 board_parent.getChildren().add(addList_button);
             });
-        },board,taskListIdsUpdatesExecutor);
+        }, board, taskListIdsUpdatesExecutor);
     }
 
     public void closePolling() {
