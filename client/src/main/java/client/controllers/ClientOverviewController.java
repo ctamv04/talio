@@ -38,7 +38,7 @@ public class ClientOverviewController implements Initializable {
         ClientMenuController clientMenuController = menuPair.getKey();
 
         clientMenuController.getBoard_title().textProperty().bind(Bindings.concat("Talio | ",
-                boardController.namePropertyProperty(), " (#", board.getId(), ")"));
+                boardController.getNameProperty(), " (#", board.getId(), ")"));
         clientMenuController.getHome_button().setOnAction(event -> {
             boardController.closePolling();
             mainCtrl.showLoginPage();

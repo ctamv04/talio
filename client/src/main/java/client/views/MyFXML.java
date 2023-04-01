@@ -21,6 +21,7 @@ import client.controllers.popups.BoardDeletedController;
 import client.controllers.popups.CardDeletedController;
 import client.controllers.popups.EditBoardController;
 import client.controllers.ExtendedCardUtils;
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.WebsocketUtils;
 import com.google.inject.Injector;
@@ -80,7 +81,8 @@ public class MyFXML {
 
             if (type == BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
-                        injector.getInstance(MainCtrl.class), (Board) params[0]);
+                        injector.getInstance(MainCtrl.class), (Board) params[0],
+                        injector.getInstance(BoardUtils.class));
 
             if (type == ClientOverviewController.class)
                 return new ClientOverviewController(injector.getInstance(ServerUtils.class),
