@@ -32,4 +32,6 @@ dependencies {
 	implementation 'org.openjfx:javafx-fxml:19'
 
 	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
+	implementation 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
