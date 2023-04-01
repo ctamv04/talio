@@ -48,6 +48,7 @@ public class TagService {
         Board board = optional.get();
         board.getTags().add(tag);
         tag.setBoard(board);
+
         return ResponseEntity.ok(repo.save(tag));
     }
 
