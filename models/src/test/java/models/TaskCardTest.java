@@ -78,15 +78,6 @@ public class TaskCardTest {
 		assertEquals(l, t.getTaskList());
 	}
 
-//	@Test
-//	public void getSetTags() {
-//		var t=new TaskCard();
-//		var l=new ArrayList<Tag>();
-//		l.add(new Tag("tag",new ArrayList<>(),new ArrayList<>(),"#000000"));
-//		t.setTags(l);
-//		assertEquals(l,t.getTags());
-//	}
-
 	@Test
 	public void getSetPosition() {
 		var t=new TaskCard();

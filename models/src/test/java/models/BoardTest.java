@@ -52,12 +52,18 @@ class BoardTest {
     // Getters and Setters                        |
     // --------------------------------------------
 
+    /**
+     * Tests if the function gets the correct task list
+     */
     @Test
     void testGetTaskLists() {
         Board board=new Board();
         assertEquals(board.getTaskLists(),new ArrayList<>());
     }
 
+    /**
+     * Tests if the function gets the correct tags
+     */
     @Test
     void getTags() {
         Board board=new Board();
