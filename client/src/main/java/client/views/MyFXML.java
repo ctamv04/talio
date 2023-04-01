@@ -20,6 +20,7 @@ import client.controllers.popups.AddTaskListController;
 import client.controllers.popups.BoardDeletedController;
 import client.controllers.popups.CardDeletedController;
 import client.controllers.popups.EditBoardController;
+import client.controllers.ExtendedCardUtils;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.WebsocketUtils;
@@ -97,7 +98,7 @@ public class MyFXML {
 
             if (type == ExtendedCardController.class)
                 return new ExtendedCardController(injector.getInstance(ServerUtils.class) ,
-                        injector.getInstance(MainCtrl.class),(Long) params[0], injector.getInstance(WebsocketUtils.class));
+                        injector.getInstance(MainCtrl.class),(Long) params[0], injector.getInstance(WebsocketUtils.class), injector.getInstance(ExtendedCardUtils.class));
 
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),

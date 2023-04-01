@@ -24,7 +24,7 @@ public class Tag {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private Board board;
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(mappedBy = "tags")
     @JsonIgnore
     private List<TaskCard> tasks = new ArrayList<>();
 

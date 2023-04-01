@@ -11,6 +11,7 @@ import server.services.TagService;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/tags")
@@ -58,7 +59,7 @@ public class TagController {
      * @return
      */
     @GetMapping("/task/{id}")
-    public ResponseEntity<List<Tag>> getTaskTags(@PathVariable("id") Long cardID) {
+    public ResponseEntity<Set<Tag>> getTaskTags(@PathVariable("id") Long cardID) {
 
         Optional<TaskCard> taskCard = repoCard.findById(cardID);
 

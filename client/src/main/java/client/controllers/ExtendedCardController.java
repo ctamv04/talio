@@ -22,11 +22,8 @@ import models.TaskCard;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
-
-
 import java.net.URL;
 import java.util.*;
-
 
 public class ExtendedCardController implements Initializable{
 
@@ -36,9 +33,9 @@ public class ExtendedCardController implements Initializable{
     private final WebsocketUtils websocketUtils;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
-    private List<Tag> taskTags = new ArrayList<>();
-    private List<Tag> boardTags = new ArrayList<>();
-
+    private Set<Tag> taskTags = new HashSet<>();
+    private Set<Tag> boardTags = new HashSet<>();
+    ExtendedCardUtils utils;
     private boolean editFlag = false;
     @FXML
     private Label taskName;
@@ -63,7 +60,7 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private Button addTag;
     @FXML
-    private ListView tagList;
+    private ListView<HBox> tagList;
     @FXML
     private TextField editTitle2;
     @FXML
@@ -71,9 +68,9 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private HBox newSubBox;
     @FXML
-    private Label cancelNew;
+    private FontAwesomeIconView cancelNew;
     @FXML
-    private ListView subs;
+    private ListView<HBox> subs;
     @FXML
     private AnchorPane window;
     @FXML
@@ -81,15 +78,14 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private ColorPicker color_font;
     @FXML
-    private ListView tags;
-    @FXML
-    private ListView bTagList;
+    private ListView<Tag> bTagList;
     @FXML
     private FontAwesomeIconView cancelbTagList;
     @FXML
     private FontAwesomeIconView icon;
     @FXML
     private HBox bTagListBox;
+
     /**
      *
      * @param serverUtils
@@ -97,11 +93,12 @@ public class ExtendedCardController implements Initializable{
      * @param task_id
      */
     @Inject
-    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id, WebsocketUtils websocketUtils) {
+    public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id, WebsocketUtils websocketUtils, ExtendedCardUtils utils) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.task_id = task_id;
         this.websocketUtils = websocketUtils;
+        this.utils = utils;
     }
 
     /**
@@ -126,21 +123,17 @@ public class ExtendedCardController implements Initializable{
 
         color_back.setValue(Color.web(card.getBackID()));
         color_font.setValue(Color.web(card.getFontID()));
-        window.setStyle("-fx-background-color: " + card.getBackID() + ";");
-        taskName.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-        descLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-        subLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-        tagsLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-        backLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-        fontLabel.setStyle("-fx-text-fill: " + card.getFontID() + ";");
-        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
-        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID() + ";");
+        fontCustomization(card.getFontID());
+        backCustomization(card.getBackID());
 
         taskName.setText(card.getName());
         desc_box.setText(card.getDescription());
+        editTitle2.setText(taskName.getText());
 
         tagList.setOrientation(Orientation.HORIZONTAL);
         bTagListBox.toBack();
+
+        newSubBox.setOpacity(0);
 
         tempSubs = card.getSubs();
         boardTags = serverUtils.getBoardTags(card.getId());
@@ -212,26 +205,7 @@ public class ExtendedCardController implements Initializable{
         newSub.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER) {
 
-                if(editFlag && !newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
-
-                    var index = subs.getSelectionModel().getSelectedIndex();
-                    var old_key = ((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText();
-                    var old_value = ((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).isSelected();
-
-                    tempSubs.remove(old_key);
-                    tempSubs.put(newSub.getText(), old_value);
-
-                    subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
-                    subs.getItems().add(index, entryFactory(newSub.getText(), old_value));
-
-                    editFlag = false;
-
-                }else if(!newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
-                    tempSubs.put(newSub.getText(), false);
-
-                    subs.getItems().add(entryFactory(newSub.getText(), false));
-                }
-
+                editOrSave();
                 newSubBox.setOpacity(0);
             }
         });
@@ -250,8 +224,10 @@ public class ExtendedCardController implements Initializable{
     }
 
     private void startWebsockets() {
+
         websocketUtils.registerForMessages("/topic/extended-taskcard/"+task_id, TaskCard.class, updatedTaskCard->{
             Platform.runLater(()->{
+
                 if(updatedTaskCard.getPosition()==-1){
                     mainCtrl.closeCard();
                     stopWebsockets();
@@ -261,6 +237,7 @@ public class ExtendedCardController implements Initializable{
     }
 
     private void stopWebsockets(){
+
         websocketUtils.unsubscribeFromMessages("/topic/extended-taskcard/"+task_id);
     }
 
@@ -268,6 +245,7 @@ public class ExtendedCardController implements Initializable{
      *Closes the respective ExtendedTaskCard scene
      */
     public void back() {
+
         mainCtrl.closeCard();
     }
 
@@ -275,17 +253,8 @@ public class ExtendedCardController implements Initializable{
      *Saves the new information in the TaskCard
      */
     public void save() {
-        if(!editTitle2.getText().isBlank())
-            card.setName(editTitle2.getText());
 
-        if(!desc_box.getText().equals(card.getDescription()))
-            card.setDescription(desc_box.getText());
-
-        card.setSubs(tempSubs);
-        card.setTags(taskTags);
-
-        serverUtils.updateTaskCard(card.getId(), card);
-
+        utils.save(editTitle2.getText(), desc_box.getText(), tempSubs, taskTags, card);
         back();
     }
 
@@ -293,7 +262,7 @@ public class ExtendedCardController implements Initializable{
      *Allows the user to edit the title of the TaskCard by hovering on its title area
      */
     public void titleHoverIn() {
-        editTitle2.setText(taskName.getText());
+
         editTitle2.setOpacity(1);
         taskName.setOpacity(0);
     }
@@ -303,6 +272,7 @@ public class ExtendedCardController implements Initializable{
      *Saves the new title when the user hovers out of the TaskCard's title area
      */
     public void titleHoverOut() {
+
         editTitle2.setOpacity(0);
         taskName.setOpacity(1);
         taskName.setText(editTitle2.getText());
@@ -313,8 +283,8 @@ public class ExtendedCardController implements Initializable{
      */
     public void backChange() {
 
-        String color = colorConverter(color_back.getValue());
-        window.setStyle("-fx-background-color: " + color + ";");
+        String color = utils.colorConverter(color_back.getValue());
+        backCustomization(color);
         card.setBackID(color);
 
     }
@@ -324,32 +294,9 @@ public class ExtendedCardController implements Initializable{
      */
     public void fontChange() {
 
-        String color = colorConverter(color_font.getValue());
-        taskName.setStyle("-fx-text-fill: " + color + ";");
-        descLabel.setStyle("-fx-text-fill: " + color + ";");
-        subLabel.setStyle("-fx-text-fill: " + color + ";");
-        tagsLabel.setStyle("-fx-text-fill: " + color + ";");
-        backLabel.setStyle("-fx-text-fill: " + color + ";");
-        fontLabel.setStyle("-fx-text-fill: " + color + ";");
-        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
-        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
+        String color = utils.colorConverter(color_font.getValue());
+        fontCustomization(color);
         card.setFontID(color);
-    }
-
-    /**
-     * Method for converting Java Color classes to CSS compatible hex colour codes
-     *
-     * @param color input Color object
-     * @return String containing hex colour code
-     */
-    public String colorConverter(Color color){
-
-        //credit: http://www.java2s.com/example/java/javafx/javafx-color-to-css-color.html
-
-        return "rgba(" + Math.round(255 * color.getRed()) + ","
-                + Math.round(255 * color.getGreen()) + ","
-                + Math.round(255 * color.getBlue()) + ","
-                + color.getOpacity() + ")";
     }
 
     public HBox entryFactory(String a, Boolean b){
@@ -375,7 +322,7 @@ public class ExtendedCardController implements Initializable{
 
         edit.setOnMouseClicked(event -> {
             editFlag = true;
-            newSub.setText(((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText());
+            newSub.setText(((CheckBox) subs.getSelectionModel().getSelectedItem().getChildren().get(0)).getText());
             newSubBox.setOpacity(1);
             newSub.requestFocus();
         });
@@ -410,6 +357,45 @@ public class ExtendedCardController implements Initializable{
         box.setStyle("-fx-spacing: 5px; -fx-border-color: " + tag.getColor());
 
         return box;
+    }
+
+    public void fontCustomization(String color){
+
+        taskName.setStyle("-fx-text-fill: " + color + ";");
+        descLabel.setStyle("-fx-text-fill: " + color + ";");
+        subLabel.setStyle("-fx-text-fill: " + color + ";");
+        tagsLabel.setStyle("-fx-text-fill: " + color + ";");
+        backLabel.setStyle("-fx-text-fill: " + color + ";");
+        fontLabel.setStyle("-fx-text-fill: " + color + ";");
+        icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
+        backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
+    }
+
+    public void backCustomization(String color){
+
+        window.setStyle("-fx-background-color: " + color + ";");
+    }
+
+    public void editOrSave(){
+        if(editFlag && !newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
+
+            var index = subs.getSelectionModel().getSelectedIndex();
+            var old_key = ((CheckBox) subs.getSelectionModel().getSelectedItem().getChildren().get(0)).getText();
+            var old_value = ((CheckBox) subs.getSelectionModel().getSelectedItem().getChildren().get(0)).isSelected();
+
+            tempSubs.remove(old_key);
+            tempSubs.put(newSub.getText(), old_value);
+
+            subs.getItems().remove(subs.getSelectionModel().getSelectedItem());
+            subs.getItems().add(index, entryFactory(newSub.getText(), old_value));
+
+            editFlag = false;
+
+        }else if(!newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
+            tempSubs.put(newSub.getText(), false);
+
+            subs.getItems().add(entryFactory(newSub.getText(), false));
+        }
     }
 
 }
