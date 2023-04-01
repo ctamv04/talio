@@ -33,8 +33,8 @@ public class ExtendedCardController implements Initializable{
     private final WebsocketUtils websocketUtils;
     private TaskCard card;
     private Map<String, Boolean> tempSubs = new HashMap<>();
-    private List<Tag> taskTags = new ArrayList<>();
-    private List<Tag> boardTags = new ArrayList<>();
+    private Set<Tag> taskTags = new HashSet<>();
+    private Set<Tag> boardTags = new HashSet<>();
     ExtendedCardUtils utils;
     private boolean editFlag = false;
     @FXML
@@ -60,7 +60,7 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private Button addTag;
     @FXML
-    private ListView tagList;
+    private ListView<HBox> tagList;
     @FXML
     private TextField editTitle2;
     @FXML
@@ -70,7 +70,7 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private FontAwesomeIconView cancelNew;
     @FXML
-    private ListView subs;
+    private ListView<HBox> subs;
     @FXML
     private AnchorPane window;
     @FXML
@@ -78,9 +78,7 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private ColorPicker color_font;
     @FXML
-    private ListView tags;
-    @FXML
-    private ListView bTagList;
+    private ListView<Tag> bTagList;
     @FXML
     private FontAwesomeIconView cancelbTagList;
     @FXML
@@ -130,9 +128,12 @@ public class ExtendedCardController implements Initializable{
 
         taskName.setText(card.getName());
         desc_box.setText(card.getDescription());
+        editTitle2.setText(taskName.getText());
 
         tagList.setOrientation(Orientation.HORIZONTAL);
         bTagListBox.toBack();
+
+        newSubBox.setOpacity(0);
 
         tempSubs = card.getSubs();
         boardTags = serverUtils.getBoardTags(card.getId());
@@ -262,7 +263,6 @@ public class ExtendedCardController implements Initializable{
      */
     public void titleHoverIn() {
 
-        editTitle2.setText(taskName.getText());
         editTitle2.setOpacity(1);
         taskName.setOpacity(0);
     }
@@ -322,7 +322,7 @@ public class ExtendedCardController implements Initializable{
 
         edit.setOnMouseClicked(event -> {
             editFlag = true;
-            newSub.setText(((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText());
+            newSub.setText(((CheckBox) subs.getSelectionModel().getSelectedItem().getChildren().get(0)).getText());
             newSubBox.setOpacity(1);
             newSub.requestFocus();
         });
@@ -380,8 +380,8 @@ public class ExtendedCardController implements Initializable{
         if(editFlag && !newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
 
             var index = subs.getSelectionModel().getSelectedIndex();
-            var old_key = ((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).getText();
-            var old_value = ((CheckBox) ((HBox) subs.getSelectionModel().getSelectedItem()).getChildren().get(0)).isSelected();
+            var old_key = ((CheckBox) subs.getSelectionModel().getSelectedItem().getChildren().get(0)).getText();
+            var old_value = ((CheckBox) subs.getSelectionModel().getSelectedItem().getChildren().get(0)).isSelected();
 
             tempSubs.remove(old_key);
             tempSubs.put(newSub.getText(), old_value);

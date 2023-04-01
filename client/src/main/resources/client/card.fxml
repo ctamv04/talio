@@ -50,14 +50,14 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                         </Button>
-                        <HBox fx:id="newSubBox" prefHeight="33.0" prefWidth="528.0">
+                        <HBox fx:id="newSubBox" prefHeight="33.0" prefWidth="528.0" spacing="4.0">
                            <children>
                               <TextField fx:id="newSub" minHeight="0.0" prefHeight="23.0" prefWidth="528.0">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </TextField>
-                              <FontAwesomeIconView fx:id="cancelNew" glyphName="TIMES" onMouseClicked="#back" size="18" tabSize="10" wrappingWidth="14.166656494140625" />
+                              <FontAwesomeIconView fx:id="cancelNew" glyphName="TIMES" onMouseClicked="#back" size="16" tabSize="10" wrappingWidth="15.166656494140625" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />

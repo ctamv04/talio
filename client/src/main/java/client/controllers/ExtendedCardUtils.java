@@ -29,7 +29,7 @@ public class ExtendedCardUtils {
 
     }
 
-    public void save(String title, String description, Map<String, Boolean> tempSubs, List<Tag> taskTags, TaskCard card){
+    public void save(String title, String description, Map<String, Boolean> tempSubs, Set<Tag> taskTags, TaskCard card){
         if(!title.isBlank()) {
             card.setName(title);
         } else{
