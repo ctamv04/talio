@@ -1,53 +1,49 @@
-/*
- * Copyright 2021 Delft University of Technology
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package controllers;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
-import java.util.ArrayList;
 import java.util.List;
 
-//import mocks.TestBoardRepository;
-//import mocks.TestTaskListRepository;
 import models.Board;
 import models.TaskCard;
 import models.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import server.controllers.BoardController;
 import server.controllers.TaskListController;
+import server.repositories.TaskListRepository;
 import server.services.LongPollingService;
 import server.services.TaskListService;
 
 //public class TaskListControllerTest {
 //
-//    private TaskListController sut;
-//    private Board board;
-//    private final List<TaskList> tasks = new ArrayList<>();
-//
+//    @Mock
+//    private TaskListRepository listRepo;
+//    @Mock
+//    private LongPollingService longPollingMock;
+//    @Mock
+//    private TaskListService service;
+//    @InjectMocks
+//    private BoardController sut;
+
 //    /**
 //     *Setup method for the test methods
 //     */
 //    @BeforeEach
 //    public void setup() {
-//        board = new Board();
-//        TestBoardRepository board_repo = new TestBoardRepository();
-//        board_repo.save(board);
+//
+//        listRepo = Mockito.mock(TaskListRepository.class);
+//        service = Mockito.mock(TaskListService.class);
+//        longPollingMock = Mockito.mock(LongPollingService.class);
+//
+//        Board board = new Board();
+//        board.setId(1L);
+//
+//        TaskList list1 =
 //
 //        TestTaskListRepository repo = new TestTaskListRepository();
 //        TaskListService service = new TaskListService(repo, board_repo);
