@@ -37,16 +37,32 @@ public class EditBoardController implements Initializable{
         this.board = board;
     }
 
+    /**
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         backgroundColor.setValue(Color.valueOf(board.getBackgroundColor()));
         textColor.setValue(Color.valueOf(board.getFontColor()));
     }
 
+    /**
+     * Closes the edit board popup.
+     */
     public void back() {
         mainCtrl.closeEditBoard();
     }
 
+    /**
+     * Saves the changes to the board.
+     */
     public void save() {
         String name = board.getName();
         if (!board_name.getText().isBlank()) {
@@ -61,4 +77,6 @@ public class EditBoardController implements Initializable{
 
         back();
     }
+
+
 }

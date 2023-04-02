@@ -3,6 +3,7 @@ package client.controllers;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import com.google.inject.Stage;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -95,6 +97,10 @@ public class BoardController implements Initializable {
 
     private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
     private final ExecutorService taskListIdsUpdatesExecutor=Executors.newSingleThreadExecutor();
+
+    public FlowPane getBoard_parent() {
+        return board_parent;
+    }
 
     public void startLongPolling(){
         boardUtils.registerDetailsUpdates(updatedBoard -> {

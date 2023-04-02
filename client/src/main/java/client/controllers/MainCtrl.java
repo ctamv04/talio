@@ -18,6 +18,9 @@ package client.controllers;
 import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -29,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainCtrl {
+
+    private ClientOverviewController clientOverview;
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
@@ -103,10 +108,20 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
     public void showCard(Long cardID) {
         var card = viewFactory.createCard(cardID);
         cardStage = new Stage(StageStyle.UNDECORATED);
-        cardStage.setScene(new Scene(card.getValue()));
+        var scene = new Scene(card.getValue());
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals(KeyCode.ESCAPE)) {
+                card.getKey().back();
+            }
+        });
+        cardStage.setScene(scene);
         cardStage.setTitle("Card Details");
         cardStage.initModality(Modality.APPLICATION_MODAL);
         cardStage.showAndWait();
@@ -126,6 +141,10 @@ public class MainCtrl {
                 clientOverview.getKey().closePolling();
         });
         primaryStage.show();
+    }
+
+    public ClientOverviewController getClientOverview() {
+        return clientOverview;
     }
 
     public void closeAddBoard() {
@@ -164,8 +183,8 @@ public class MainCtrl {
         return viewFactory.createTaskList(taskListId, boardController);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
-        return viewFactory.createMinimizedCard(card_id);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, ListView<Long> cards) {
+        return viewFactory.createMinimizedCard(card_id, cards);
     }
 
     public void showAdminLogin() {
@@ -226,4 +245,5 @@ public class MainCtrl {
     public List<Board> getBoards() {
         return boards;
     }
+
 }

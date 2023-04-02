@@ -13,8 +13,13 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import models.Tag;
@@ -22,8 +27,10 @@ import models.TaskCard;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class ExtendedCardController implements Initializable{
 
@@ -120,6 +127,7 @@ public class ExtendedCardController implements Initializable{
         } catch (Exception e){
             e.printStackTrace();
         }
+
 
         color_back.setValue(Color.web(card.getBackID()));
         color_font.setValue(Color.web(card.getFontID()));
