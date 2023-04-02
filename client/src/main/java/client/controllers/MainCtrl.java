@@ -32,6 +32,7 @@ public class MainCtrl {
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
+    private Stage addTagStage;
     private Stage editBoardStage;
     private Stage cardStage;
     private Stage adminLoginStage;
@@ -46,19 +47,19 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
         this.viewFactory = viewFactory;
-        showStartingPage();
+        showLoginPage();
     }
 
-    public void showLoginPage() {
-        var loginPage = viewFactory.createLogin();
+    public void showMainPage() {
+        var loginPage = viewFactory.createMainPage();
         primaryScene.setRoot(loginPage.getValue());
         primaryStage.setTitle("Login Page");
         primaryStage.show();
     }
 
 
-    public void showStartingPage() {
-        var startingPage = viewFactory.createStartingPage();
+    public void showLoginPage() {
+        var startingPage = viewFactory.createLoginPage();
 
         if (primaryScene == null)
             primaryScene = new Scene(startingPage.getValue());
@@ -152,6 +153,19 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
+    public void showAddTagPage(Board board) {
+        var addTag = viewFactory.createAddTag(board);
+        addTagStage = new Stage(StageStyle.UNDECORATED);
+        addTagStage.setScene(new Scene(addTag.getValue()));
+        addTagStage.initModality(Modality.APPLICATION_MODAL);
+        addTagStage.showAndWait();
+    }
+
+    public void closeAddTagPage() {
+        if (addTagStage != null)
+            addTagStage.close();
+    }
+
     public Pair<ClientMenuController, Parent> createClientMenu(Board board, BoardController boardController) {
         return viewFactory.createClientMenu(board, boardController);
     }
@@ -180,7 +194,7 @@ public class MainCtrl {
     public void closeAdminLogin() {
         if (adminLoginStage != null)
             adminLoginStage.close();
-        showLoginPage();
+        showMainPage();
     }
 
     public void showDeletedBoard() {

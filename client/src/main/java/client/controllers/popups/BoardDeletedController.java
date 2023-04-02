@@ -1,6 +1,5 @@
 package client.controllers.popups;
 
-import client.controllers.LoginController;
 import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -28,6 +27,7 @@ public class BoardDeletedController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         done_button.setOnMouseClicked(event -> exit());
     }
+
     public void exit() {
         mainCtrl.closeDeletedBoard();
     }

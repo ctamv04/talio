@@ -5,13 +5,14 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class StartingPageController implements Initializable {
+public class LoginPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     @FXML
@@ -24,9 +25,11 @@ public class StartingPageController implements Initializable {
     private Text success_message;
     @FXML
     private Text fail_message;
+    @FXML
+    private Label url_label;
 
     @Inject
-    public StartingPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public LoginPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
     }
@@ -37,13 +40,15 @@ public class StartingPageController implements Initializable {
         fail_message.setVisible(false);
         done_button.setOnMouseClicked(event -> validate());
         test_button.setOnMouseClicked(event -> healthCheck());
+        System.out.println(url_input.getLayoutX() + " " + url_input.getLayoutY());
+        System.out.println(url_label.getLayoutX() + " " + url_label.getLayoutY());
     }
 
     public String getServer() {
-        if (url_input.getText().isBlank() || url_input.getText().equals(url_input.getPromptText())) {
+        if (url_input.getText().isBlank()) {
             return "localhost:8080";
         }
-        return url_input.getText().replace("http://", "");
+        return url_input.getText();
     }
 
     public void validate() {
@@ -51,7 +56,7 @@ public class StartingPageController implements Initializable {
 
         if (serverUtils.healthCheck("http://" + getServer() + "/")) {
             serverUtils.setServer(url);
-            mainCtrl.showLoginPage();
+            mainCtrl.showMainPage();
         } else {
             fail_message.setVisible(true);
             success_message.setVisible(false);
