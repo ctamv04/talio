@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefWidth="243.0" spacing="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController">
+<VBox alignment="CENTER" prefWidth="243.0" spacing="10.0" xmlns="http://javafx.com/javafx/19"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController" fx:id="root">
    <Pane>
       <children>
          <HBox alignment="CENTER_LEFT" layoutX="9.0" layoutY="5.0" spacing="10.0">

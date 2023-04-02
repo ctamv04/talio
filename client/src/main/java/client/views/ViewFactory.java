@@ -4,8 +4,11 @@ import client.controllers.*;
 import client.controllers.popups.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
+import javafx.scene.control.ListView;
 import javafx.util.Pair;
 import models.Board;
+
+import java.util.List;
 
 public class ViewFactory {
     private final MyFXML FXML;
@@ -18,8 +21,8 @@ public class ViewFactory {
         return FXML.load(BoardController.class, "/client/board.fxml", board);
     }
 
-    public Pair<StartingPageController, Parent> createStartingPage() {
-        return FXML.load(StartingPageController.class, "/client/startingPage.fxml");
+    public Pair<LoginPageController, Parent> createLoginPage() {
+        return FXML.load(LoginPageController.class, "/client/loginPage.fxml");
     }
 
     public Pair<ClientMenuController, Parent> createClientMenu(Board board, BoardController boardController) {
@@ -34,8 +37,8 @@ public class ViewFactory {
         return FXML.load(EditBoardController.class, "/client/editBoard.fxml", board);
     }
 
-    public Pair<LoginController, Parent> createLogin() {
-        return FXML.load(LoginController.class, "/client/loginPage.fxml");
+    public Pair<MainPageController, Parent> createMainPage() {
+        return FXML.load(MainPageController.class, "/client/mainPage.fxml");
     }
 
     public Pair<ClientOverviewController, Parent> createClientOverview(Board board) {
@@ -60,8 +63,8 @@ public class ViewFactory {
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", cardID);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
-        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, ListView<Long> cards) {
+        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id, cards);
     }
 
     public Pair<AddTaskListController, Parent> createAddTaskList(Long board_id) {
@@ -74,5 +77,9 @@ public class ViewFactory {
 
     public Pair<BoardDeletedController, Parent> createCardDeleted() {
         return FXML.load(BoardDeletedController.class, "/client/cardDeleted.fxml");
+    }
+
+    public Pair<AddTagController, Parent> createAddTag(Board board) {
+        return FXML.load(AddTagController.class, "/client/addTag.fxml", board);
     }
 }

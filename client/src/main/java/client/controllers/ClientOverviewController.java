@@ -50,7 +50,7 @@ public class ClientOverviewController implements Initializable {
         clientMenuController.getHome_button().setOnAction(event -> {
             boardController.setActive(false);
             boardController.closePolling();
-            mainCtrl.showLoginPage();
+            mainCtrl.showMainPage();
         });
         boardController.getChangeDetector().addListener(observable -> setBoardTitle());
 
