@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -23,7 +23,7 @@ public class ClientOverviewController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Board board;
     private BoardController boardController;
-    private TextField boardTitle;
+    private Label boardTitle;
     @FXML
     public BorderPane layout;
 
@@ -44,8 +44,7 @@ public class ClientOverviewController implements Initializable {
         layout.setCenter(boardPair.getValue());
 
         ClientMenuController clientMenuController=menuPair.getKey();
-        boardTitle=clientMenuController.getBoard_title();
-        boardTitle.prefWidthProperty().bind(boardTitle.textProperty().length().multiply(8.85));
+        boardTitle=clientMenuController.getBoardTitle();
         setBoardTitle();
 
         clientMenuController.getHome_button().setOnAction(event -> {
