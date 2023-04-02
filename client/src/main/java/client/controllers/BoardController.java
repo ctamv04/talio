@@ -5,8 +5,8 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,7 +40,7 @@ public class BoardController implements Initializable {
     private final Map<Long, Parent> taskListCache =new ConcurrentHashMap<>();
     private final Map<Long, Parent> taskCardCache =new ConcurrentHashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
-    private final StringProperty nameProperty = new SimpleStringProperty();
+    private final IntegerProperty changeDetector = new SimpleIntegerProperty(0);
     @FXML
     private FlowPane board_parent;
     @FXML
@@ -80,7 +80,7 @@ public class BoardController implements Initializable {
 
         try{
             board=serverUtils.getBoard(board.getId());
-            nameProperty.set(board.getName());
+            changeDetector.set(1-changeDetector.get());
             anchor_pane.setBackground(new Background(new BackgroundFill(Color.web(board.getBackgroundColor()),
                     CornerRadii.EMPTY, Insets.EMPTY)));
             List<Long> ids=serverUtils.getTaskListsId(board.getId());
@@ -100,7 +100,7 @@ public class BoardController implements Initializable {
         boardUtils.registerDetailsUpdates(updatedBoard -> {
             board=updatedBoard;
             Platform.runLater(() -> {
-                nameProperty.set(board.getName());
+                changeDetector.set(1-changeDetector.get());
                 anchor_pane.setBackground(new Background(new BackgroundFill(Color.valueOf(board.getBackgroundColor()),
                         CornerRadii.EMPTY, Insets.EMPTY)));
             });
