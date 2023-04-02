@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -35,6 +37,10 @@ public class TaskListController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskListId;
     private final BoardController boardController;
+
+    @FXML
+    private Pane root;
+
     @FXML
     public Pane indicator_pane;
     @FXML
@@ -48,6 +54,7 @@ public class TaskListController implements Initializable {
     private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
     private final Line line = new Line();
     private int entries = 0;
+
 
     @Inject
     public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskListId, BoardController boardController) {
@@ -83,7 +90,7 @@ public class TaskListController implements Initializable {
 
                         if (!boardController.getTaskCardCache().containsKey(item)) {
 
-                            var taskCardPair = mainCtrl.createMinimizedCard(item);
+                            var taskCardPair = mainCtrl.createMinimizedCard(item, taskCards);
 
                             boardController.getTaskCardCache().put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
@@ -95,20 +102,37 @@ public class TaskListController implements Initializable {
         });
 
         taskCards.setOnMouseClicked(event -> {
-
             if(event.getClickCount() == 2){
-                Long cardId = taskCards.getSelectionModel().getSelectedItem();
-                if (cardId != null) {
-                    taskCards.getSelectionModel().clearSelection();
-                    boardController.getOverlay().setVisible(true);
-                    mainCtrl.showCard(cardId);
-                    boardController.getOverlay().setVisible(false);
-                }
+                openEditWindow();
             }
-
         });
 
+        shortcuts();
         initialiseDragAndDrop();
+    }
+
+    private void shortcuts() {
+
+        taskCards.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ENTER:
+                    openEditWindow();
+                    break;
+                case DELETE:
+                case BACK_SPACE:
+                    serverUtils.deleteMinimizedCard(taskCards.getSelectionModel().getSelectedItem());
+                    break;
+            }
+        });
+    }
+
+    private void openEditWindow() {
+        Long cardId = taskCards.getSelectionModel().getSelectedItem();
+        if (cardId != null) {
+            boardController.getOverlay().setVisible(true);
+            mainCtrl.showCard(cardId);
+            boardController.getOverlay().setVisible(false);
+        }
     }
 
     private void initialiseScene() {

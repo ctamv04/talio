@@ -4,8 +4,11 @@ import client.controllers.*;
 import client.controllers.popups.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
+import javafx.scene.control.ListView;
 import javafx.util.Pair;
 import models.Board;
+
+import java.util.List;
 
 public class ViewFactory {
     private final MyFXML FXML;
@@ -60,8 +63,8 @@ public class ViewFactory {
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", cardID);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id) {
-        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, ListView<Long> cards) {
+        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id, cards);
     }
 
     public Pair<AddTaskListController, Parent> createAddTaskList(Long board_id) {

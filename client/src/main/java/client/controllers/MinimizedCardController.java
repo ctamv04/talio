@@ -5,9 +5,14 @@ import client.utils.WebsocketUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.effect.Bloom;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import models.TaskCard;
@@ -20,6 +25,9 @@ public class MinimizedCardController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskCardId;
     private final WebsocketUtils websocketUtils;
+
+    private final ListView<Long> cards;
+
     @FXML
     private Button close_button;
     @FXML
@@ -29,11 +37,12 @@ public class MinimizedCardController implements Initializable {
 
     @Inject
     public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId,
-                                   WebsocketUtils websocketUtils) {
+                                   WebsocketUtils websocketUtils, ListView<Long> cards) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskCardId = taskCardId;
         this.websocketUtils = websocketUtils;
+        this.cards = cards;
     }
 
     @Override
@@ -53,6 +62,7 @@ public class MinimizedCardController implements Initializable {
         }
     }
 
+
     private void startWebsockets() {
         websocketUtils.registerForMessages("/topic/taskcard/"+taskCardId, TaskCard.class, updatedTaskCard-> Platform.runLater(() -> {
             if (updatedTaskCard.getPosition() == -1) {
@@ -71,5 +81,16 @@ public class MinimizedCardController implements Initializable {
 
     public void delete() {
         serverUtils.deleteMinimizedCard(this.taskCardId);
+    }
+
+    public void Highlight() {
+        minBG.setEffect(new Bloom());
+        cards.requestFocus();
+        cards.getSelectionModel().select(this.taskCardId);
+    }
+
+    public void StopHighlight() {
+        minBG.setEffect(null);
+        cards.getSelectionModel().clearSelection();
     }
 }
