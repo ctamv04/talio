@@ -16,11 +16,7 @@
 package client.views;
 
 import client.controllers.*;
-import client.controllers.popups.AddTaskListController;
-import client.controllers.popups.BoardDeletedController;
-import client.controllers.popups.CardDeletedController;
-import client.controllers.popups.EditBoardController;
-import client.controllers.ExtendedCardUtils;
+import client.controllers.popups.*;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.WebsocketUtils;
@@ -80,6 +76,11 @@ public class MyFXML {
                 return new AddTaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
+            if (type == AddTagController.class)
+                return new AddTagController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), injector.getInstance(ExtendedCardUtils.class),
+                        (Board) params[0]);
+
             if (type == BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Board) params[0],
@@ -98,8 +99,8 @@ public class MyFXML {
                         injector.getInstance(MainCtrl.class), (Board) params[0]);
 
             if (type == ExtendedCardController.class)
-                return new ExtendedCardController(injector.getInstance(ServerUtils.class) ,
-                        injector.getInstance(MainCtrl.class),(Long) params[0], injector.getInstance(WebsocketUtils.class), injector.getInstance(ExtendedCardUtils.class));
+                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
+                        injector.getInstance(MainCtrl.class), (Long) params[0], injector.getInstance(WebsocketUtils.class), injector.getInstance(ExtendedCardUtils.class));
 
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),

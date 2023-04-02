@@ -1,11 +1,8 @@
 package client.controllers;
 
-import client.Main;
 import client.utils.ServerUtils;
-import client.views.MyModule;
 import client.views.ViewFactory;
 import com.google.inject.Injector;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -14,13 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.google.inject.Guice.createInjector;
-import static org.junit.jupiter.api.Assertions.*;
-
-class LoginControllerTest {
+class MainPageControllerTest {
 
     //create testing for the login controller
-    private LoginController loginController;
+    private MainPageController mainPageController;
     private Injector injector;
     private ViewFactory viewFactory;
     private MainCtrl mainCtrl;
@@ -51,5 +45,6 @@ class LoginControllerTest {
     }
 
     @Test
-    public void constructorTest() { }
+    public void constructorTest() {
+    }
 }

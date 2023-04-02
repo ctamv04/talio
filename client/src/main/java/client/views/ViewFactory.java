@@ -21,8 +21,8 @@ public class ViewFactory {
         return FXML.load(BoardController.class, "/client/board.fxml", board);
     }
 
-    public Pair<StartingPageController, Parent> createStartingPage() {
-        return FXML.load(StartingPageController.class, "/client/startingPage.fxml");
+    public Pair<LoginPageController, Parent> createLoginPage() {
+        return FXML.load(LoginPageController.class, "/client/loginPage.fxml");
     }
 
     public Pair<ClientMenuController, Parent> createClientMenu(Board board, BoardController boardController) {
@@ -37,8 +37,8 @@ public class ViewFactory {
         return FXML.load(EditBoardController.class, "/client/editBoard.fxml", board);
     }
 
-    public Pair<LoginController, Parent> createLogin() {
-        return FXML.load(LoginController.class, "/client/loginPage.fxml");
+    public Pair<MainPageController, Parent> createMainPage() {
+        return FXML.load(MainPageController.class, "/client/mainPage.fxml");
     }
 
     public Pair<ClientOverviewController, Parent> createClientOverview(Board board) {
@@ -77,5 +77,9 @@ public class ViewFactory {
 
     public Pair<BoardDeletedController, Parent> createCardDeleted() {
         return FXML.load(BoardDeletedController.class, "/client/cardDeleted.fxml");
+    }
+
+    public Pair<AddTagController, Parent> createAddTag(Board board) {
+        return FXML.load(AddTagController.class, "/client/addTag.fxml", board);
     }
 }

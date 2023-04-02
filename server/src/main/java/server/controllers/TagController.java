@@ -93,14 +93,13 @@ public class TagController {
 
     /**
      * @param tag
-     * @param boardID
+     * @param boardId
      * @return
      */
     @PostMapping("")
     public ResponseEntity<Tag> add(@RequestBody Tag tag,
-                                   @PathParam("boardId") Long boardID) {
-
-        return service.add(tag, boardID);
+                                   @PathParam("boardId") Long boardId) {
+        return service.add(tag, boardId);
     }
 
     /**

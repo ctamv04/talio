@@ -22,8 +22,10 @@ import lombok.Data;
 import models.Board;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,10 +99,6 @@ public class BoardController implements Initializable {
 
     private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
     private final ExecutorService taskListIdsUpdatesExecutor=Executors.newSingleThreadExecutor();
-
-    public FlowPane getBoard_parent() {
-        return board_parent;
-    }
 
     public void startLongPolling(){
         boardUtils.registerDetailsUpdates(updatedBoard -> {

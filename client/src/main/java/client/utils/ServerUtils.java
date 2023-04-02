@@ -392,23 +392,39 @@ public class ServerUtils {
 //    }
 
     /**
-     *
      * @param cardID
      * @return
      */
-    public Set<Tag> getBoardTags(Long cardID){
+    public Set<Tag> getBoardTags(Long cardID) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tags/board/" + cardID)
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<>(){});
+                .get(new GenericType<>() {
+                });
     }
 
-    public void updateTag(Long tagID, Tag tag){
+    public void updateTag(Long tagID, Tag tag) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("/api/tags/" + tagID)
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .put(Entity.json(tag));
+    }
+
+    /**
+     * Adds a new tag
+     *
+     * @param tag     new tag
+     * @param boardId id of a board for which tag is created
+     * @return new tag
+     */
+    public Tag addTag(Tag tag, Long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tags/")
+                .queryParam("boardId", boardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
     }
 }

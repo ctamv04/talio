@@ -17,7 +17,7 @@ import models.Board;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginController implements Initializable {
+public class MainPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     @FXML
@@ -52,7 +52,7 @@ public class LoginController implements Initializable {
      * @param mainCtrl the main controller
      */
     @Inject
-    public LoginController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
     }
@@ -94,7 +94,7 @@ public class LoginController implements Initializable {
 
         back_button.setOnMouseClicked(event -> {
             serverUtils.setServer("http://localhost:8080/");
-            mainCtrl.showStartingPage();
+            mainCtrl.showLoginPage();
         });
 
         window.setOnMouseClicked(event -> {
