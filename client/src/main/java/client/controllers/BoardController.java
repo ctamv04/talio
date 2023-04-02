@@ -41,6 +41,7 @@ public class BoardController implements Initializable {
     private final Map<Long, Parent> taskCardCache =new ConcurrentHashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final IntegerProperty changeDetector = new SimpleIntegerProperty(0);
+    private boolean isActive=true;
     @FXML
     private FlowPane board_parent;
     @FXML

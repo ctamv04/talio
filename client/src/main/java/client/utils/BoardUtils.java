@@ -49,8 +49,12 @@ public class BoardUtils {
                 if(response.getStatus()==400){
                     boardController.closePolling();
                     Platform.runLater(() -> {
-                        mainCtrl.showLoginPage();
-                        mainCtrl.showDeletedBoard();
+                        if(boardController.isActive()) {
+                            mainCtrl.showLoginPage();
+                            mainCtrl.showDeletedBoard();
+                        }
+                        else
+                            boardController.setActive(false);
                     });
                     return;
                 }
