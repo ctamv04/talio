@@ -82,6 +82,7 @@ class TaskCardServiceTest {
         assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
+    // Test whether a bad request is given when it should be
     @Test
     void testDeleteTaskCardBadRequest() {
         Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.empty());
@@ -89,6 +90,7 @@ class TaskCardServiceTest {
         assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
+    // Test whether a task card being deleted gives no warnings
     @Test
     void testDeleteExistingTaskCard() {
         TaskCard taskCard2=new TaskCard("taskCard2","Boo Bop",taskList);
@@ -99,6 +101,7 @@ class TaskCardServiceTest {
         assertEquals(response, ResponseEntity.ok().build());
     }
 
+    // Test whether a non-existing task card gives a bad request
     @Test
     void deleteNonExistingTaskCard() {
         // TaskCard not found
@@ -108,6 +111,7 @@ class TaskCardServiceTest {
         assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
+    // Test whether a task card being moved gives bad request when it should
     @Test
     void testSwapBetweenListsBadRequest() {
         // TaskCard not found
@@ -118,7 +122,7 @@ class TaskCardServiceTest {
         assertNull(response.getBody());
         assertEquals(BAD_REQUEST, response.getStatusCode());
 
-        // Tasklist not found
+        // TaskList not found
         TaskCard taskCard2=new TaskCard("taskCard2","Bee Beep2",taskList);
         Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard2));
         Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.empty());
@@ -138,6 +142,7 @@ class TaskCardServiceTest {
         assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
+    // Test whether a task card being moved gives no warnings
     @Test
     void testSwapBetweenDifferentLists() {
         // Set everything up
@@ -163,6 +168,7 @@ class TaskCardServiceTest {
         assertEquals(response, ResponseEntity.ok().build());
     }
 
+    // Test whether a task card being moved between the same list gives no warnings
     @Test
     void testSwapBetweenSameList() {
         // Set everything up
@@ -189,6 +195,7 @@ class TaskCardServiceTest {
         assertEquals(taskCard.getName(),response.getBody().getName());
     }
 
+    // Test whether traverseIdsListeners works
     @Test
     void testTraverseIdsListeners() {
         // Set everything up
@@ -215,6 +222,7 @@ class TaskCardServiceTest {
         assertTrue(ids.contains(taskCard.getId()));
     }
 
+    // Test whether convertTaskCardsToIds works
     @Test
     void testConvertTaskCardsToIds() {
         taskCard.setId(10000000L);
@@ -223,7 +231,7 @@ class TaskCardServiceTest {
         taskCard2.setId(10000001L);
         taskList.setTaskCards(new ArrayList<>(Arrays.asList(taskCard,taskCard2)));
 
-        // TaskList empty
+        // TaskList null -> null
         List<Long> actual=sut.convertTaskCardsToIds(null);
         List<Long> expected=null;
         assertEquals(expected,actual);
