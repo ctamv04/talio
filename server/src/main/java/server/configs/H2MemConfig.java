@@ -45,6 +45,8 @@ public class H2MemConfig {
                 taskListRepository.save(taskList);
                 for (int j = 0; j < 5; j++) {
                     TaskCard taskCard = new TaskCard(String.valueOf(random.nextInt(1000, 9999)), taskList, j);
+                    taskCard.setBackID("rgb("+random.nextInt(0,256)+","+random.nextInt(0,256)+","
+                            +random.nextInt(0,256)+")");
                     taskList.getTaskCards().add(taskCard);
 
                     Map<String, Boolean> a = new HashMap<>();
