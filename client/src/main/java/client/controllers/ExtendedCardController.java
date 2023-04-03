@@ -61,9 +61,9 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private TextArea desc_box;
     @FXML
-    private Button addSub;
+    private FontAwesomeIconView addSub;
     @FXML
-    private Button addTag;
+    private FontAwesomeIconView addTag;
     @FXML
     private ListView<HBox> tagList;
     @FXML
@@ -90,6 +90,10 @@ public class ExtendedCardController implements Initializable{
     private FontAwesomeIconView icon;
     @FXML
     private HBox bTagListBox;
+    @FXML
+    private Label warning1;
+    @FXML
+    private Label warning2;
 
     /**
      *
@@ -126,9 +130,11 @@ public class ExtendedCardController implements Initializable{
             e.printStackTrace();
         }
 
-
+        warning1.setStyle("-fx-text-fill: red");
+        warning2.setStyle("-fx-text-fill: red; -fx-text-alignment: right");
         color_back.setValue(Color.web(card.getBackID()));
         color_font.setValue(Color.web(card.getFontID()));
+
         fontCustomization(card.getFontID());
         backCustomization(card.getBackID());
 
@@ -227,6 +233,31 @@ public class ExtendedCardController implements Initializable{
         });
 
         startWebsockets();
+    }
+
+    @FXML
+    private void lengthCheck(){
+
+        if(desc_box.getText() != null && desc_box.getText().length() > 255){
+            warning2.setText("Description can't be over 255 characters long!");
+            warning2.setOpacity(1L);
+            desc_box.setText(desc_box.getText().substring(0, desc_box.getLength() - 1));
+        }else if(newSub.getText() != null && newSub.getText().length() > 255){
+            warning2.setText("Subtask title can't be over 255 characters long!");
+            warning2.setOpacity(1L);
+            newSub.setText(newSub.getText().substring(0, newSub.getLength() - 1));
+        }else{
+            warning2.setOpacity(0L);
+        }
+
+        if(editTitle2.getText() != null && editTitle2.getText().length() > 255){
+            warning1.setText("Title can't be over 255 characters long!");
+            warning1.setOpacity(1L);
+            editTitle2.setText(editTitle2.getText().substring(0, editTitle2.getLength() - 1));
+        }else{
+            warning1.setOpacity(0L);
+        }
+
     }
 
     private void startWebsockets() {
