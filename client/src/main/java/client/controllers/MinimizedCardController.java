@@ -73,36 +73,43 @@ public class MinimizedCardController implements Initializable {
             minBG.setStyle("-fx-background-color:" + taskCard.getBackID() +"; ");
             minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +taskCard.getFontID() + ";");
 
-            optionalStyling(taskCard);
+            descIndicator(taskCard);
+            subsIndicator(taskCard);
+            tagsIndicator(taskCard);
         }catch (WebApplicationException e){
             stopWebsockets();
         }
     }
 
-    private void optionalStyling(TaskCard card){
+    private void descIndicator(TaskCard card) {
 
-        if(card.getDescription() != null && !card.getDescription().isBlank())
+        if (card.getDescription() != null && !card.getDescription().isBlank())
             desc.setOpacity(1L);
         else
             desc.setOpacity(0L);
+    }
 
-        if(card.getSubs() != null && card.getSubs().size() > 0){
+    private void subsIndicator(TaskCard card) {
+
+        if (card.getSubs() != null && card.getSubs().size() > 0) {
 
             var subs = card.getSubs();
             AtomicInteger completed = new AtomicInteger();
             completed.set(0);
 
-            subs.forEach((a,b) -> {
-                if(b)
+            subs.forEach((a, b) -> {
+                if (b)
                     completed.getAndIncrement();
             });
 
             progress.setText(completed.get() + "/" + subs.size());
             progress.setOpacity(1L);
-        }else{
+        } else {
             progress.setOpacity(0L);
         }
+    }
 
+    private void tagsIndicator(TaskCard card) {
         if(card.getTags() != null && card.getTags().size() != 0){
             var tags = card.getTags();
             tag1.setStyle("-fx-background-color: transparent");
@@ -138,7 +145,9 @@ public class MinimizedCardController implements Initializable {
             minBG.setStyle("-fx-background-color:" + updatedTaskCard.getBackID() + "; ");
             minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" + updatedTaskCard.getFontID() + ";");
 
-            optionalStyling(updatedTaskCard);
+            descIndicator(updatedTaskCard);
+            subsIndicator(updatedTaskCard);
+            tagsIndicator(updatedTaskCard);
         }));
     }
 
