@@ -8,8 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.util.Pair;
 import models.Board;
 
-import java.util.List;
-
 public class ViewFactory {
     private final MyFXML FXML;
 
