@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import models.Tag;
@@ -40,7 +41,7 @@ public class ExtendedCardController implements Initializable{
     private Map<String, Boolean> tempSubs = new HashMap<>();
     private Set<Tag> taskTags = new HashSet<>();
     private Set<Tag> boardTags = new HashSet<>();
-    ExtendedCardUtils utils;
+    private ExtendedCardUtils utils;
     private boolean editFlag = false;
     @FXML
     private Label taskName;
@@ -96,10 +97,13 @@ public class ExtendedCardController implements Initializable{
     private Label warning2;
 
     /**
+     * Instantiation of ExtendedCardController using Dependency Injection
      *
-     * @param serverUtils
-     * @param mainCtrl
-     * @param task_id
+     * @param serverUtils ServerUtils DI
+     * @param mainCtrl MainCtrl DI
+     * @param task_id ID of current TaskCard
+     * @param websocketUtils WebsocketUtils DI
+     * @param utils ExtendedCardUtils DI
      */
     @Inject
     public ExtendedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long task_id, WebsocketUtils websocketUtils, ExtendedCardUtils utils) {
@@ -111,7 +115,7 @@ public class ExtendedCardController implements Initializable{
     }
 
     /**
-     * Handles stage initialization, populating the Subtask, Tag lists, and serves most user actions
+     * Handles stage initialization, calling secondary styling methods, and populating lists
      *
      * @param location
      * The location used to resolve relative paths for the root object, or
@@ -123,13 +127,57 @@ public class ExtendedCardController implements Initializable{
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         try{
             card = serverUtils.getTaskCard(task_id);
         } catch (Exception e){
             e.printStackTrace();
         }
 
+        tempSubs = card.getSubs();
+        boardTags = serverUtils.getBoardTags(card.getId());
+        taskTags = card.getTags();
+
+        initStyling();
+
+        bTagList.setItems(FXCollections.observableArrayList(boardTags));
+        bTagList.setCellFactory(a -> new ListCell<Tag>() {
+            @Override
+            protected void updateItem(Tag tag, boolean empty) {
+                super.updateItem(tag, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(tag.getName());
+                    setStyle("-fx-text-fill: " + tag.getColor());
+                }
+            }
+        });
+
+        if(taskTags != null && !taskTags.isEmpty()) {
+            List<HBox> graphic = new ArrayList<>();
+            taskTags.forEach((tag) -> {
+                HBox tagBox = tagEntryFactory(tag);
+                graphic.add(tagBox);
+            });
+            tagList.setItems(FXCollections.observableArrayList(graphic));
+        }
+
+        if(tempSubs != null || !tempSubs.isEmpty()){
+            List<HBox> graphic = new ArrayList<>();
+            tempSubs.forEach((a,b) -> {
+                HBox tagBox = entryFactory(a, b);
+                graphic.add(tagBox);
+            });
+            subs.setItems(FXCollections.observableArrayList(graphic));
+        }
+
+        startWebsockets();
+    }
+
+    /**
+     * Initial styling of window according to TaskCard fields
+     */
+    private void initStyling(){
         warning1.setStyle("-fx-text-fill: red");
         warning2.setStyle("-fx-text-fill: red; -fx-text-alignment: right");
         color_back.setValue(Color.web(card.getBackID()));
@@ -146,97 +194,95 @@ public class ExtendedCardController implements Initializable{
         bTagListBox.toBack();
 
         newSubBox.setOpacity(0);
-
-        tempSubs = card.getSubs();
-        boardTags = serverUtils.getBoardTags(card.getId());
-        taskTags = card.getTags();
-
-        bTagList.setItems(FXCollections.observableArrayList(boardTags));
-        bTagList.setCellFactory(a -> new ListCell<Tag>() {
-            @Override
-            protected void updateItem(Tag tag, boolean empty) {
-                super.updateItem(tag, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(tag.getName());
-                    setStyle("-fx-text-fill: " + tag.getColor());
-                }
-            }
-        });
-
-        bTagList.setOnMouseClicked(event -> {
-
-            var tag = (Tag) bTagList.getSelectionModel().getSelectedItem();
-            if(tag != null && !taskTags.contains(tag)){
-
-                taskTags.add(tag);
-
-                tagList.getItems().add(tagEntryFactory(tag));
-
-                bTagListBox.setOpacity(0);
-                bTagListBox.toBack();
-            }
-
-        });
-
-        if(taskTags != null && !taskTags.isEmpty()) {
-            List<HBox> graphic = new ArrayList<>();
-            taskTags.forEach((tag) -> {
-
-                HBox tagBox = tagEntryFactory(tag);
-
-                graphic.add(tagBox);
-            });
-
-            tagList.setItems(FXCollections.observableArrayList(graphic));
-        }
-
-        if(tempSubs != null || !tempSubs.isEmpty()){
-            List<HBox> graphic = new ArrayList<>();
-            tempSubs.forEach((a,b) -> {
-
-                HBox tagBox = entryFactory(a, b);
-
-                graphic.add(tagBox);
-            });
-
-            subs.setItems(FXCollections.observableArrayList(graphic));
-        }
-
-        addSub.setOnMouseClicked(event -> {
-            newSub.clear();
-            newSubBox.setOpacity(1);
-            newSub.requestFocus();
-        });
-
-        cancelNew.setOnMouseClicked(event -> {
-            newSubBox.setOpacity(0);
-        });
-
-        newSub.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER) {
-
-                editOrSave();
-                newSubBox.setOpacity(0);
-            }
-        });
-
-        addTag.setOnMouseClicked(event -> {
-            bTagListBox.setOpacity(1);
-            bTagListBox.toFront();
-        });
-
-        cancelbTagList.setOnMouseClicked(event -> {
-            bTagListBox.setOpacity(0);
-            bTagListBox.toBack();
-        });
-
-        startWebsockets();
     }
 
+    /**
+     * Cancel Board Tag selection process
+     */
     @FXML
-    private void lengthCheck(){
+    private void cancelSelectTag(){
+        bTagListBox.setOpacity(0);
+        bTagListBox.toBack();
+    }
+
+    /**
+     * Start Board Tag selection process
+     */
+    @FXML
+    private void addTag(){
+        bTagListBox.setOpacity(1);
+        bTagListBox.toFront();
+    }
+
+    /**
+     * Save new Board Tag to TaskCard
+     *
+     * @param event KeyEven of key pressed
+     */
+    @FXML
+    private void saveNewSub(KeyEvent event){
+        if(event.getCode() == KeyCode.ENTER) {
+
+            editOrSave();
+            newSubBox.setOpacity(0);
+        }
+    }
+
+    /**
+     * Display new Tag in the respective ListView component
+     */
+    @FXML
+    private void selectTag(){
+        var tag = (Tag) bTagList.getSelectionModel().getSelectedItem();
+        if(tag != null && !taskTags.contains(tag)){
+
+            taskTags.add(tag);
+
+            tagList.getItems().add(tagEntryFactory(tag));
+
+            bTagListBox.setOpacity(0);
+            bTagListBox.toBack();
+        }
+    }
+
+    /**
+     * Display SubTask creation prompt
+     */
+    @FXML
+    private void newSub(){
+        newSub.clear();
+        newSubBox.setOpacity(1);
+        newSub.requestFocus();
+    }
+
+    /**
+     * Cancel SubTask creation prompt
+     */
+    @FXML
+    private void cancelNewSub(){
+        newSubBox.setOpacity(0);
+    }
+
+    /**
+     * Enforce character limit to TaskCard Title
+     */
+    @FXML
+    private void lengthCheck1(){
+
+        if(editTitle2.getText() != null && editTitle2.getText().length() > 255){
+            warning1.setText("Title can't be over 255 characters long!");
+            warning1.setOpacity(1L);
+            editTitle2.setText(editTitle2.getText().substring(0, editTitle2.getLength() - 1));
+        }else{
+            warning1.setOpacity(0L);
+        }
+    }
+
+    /**
+     * Enforce character limit to TaskCard Description and SubTask names
+     */
+    @FXML
+    private void lengthCheck2(){
 
         if(desc_box.getText() != null && desc_box.getText().length() > 255){
             warning2.setText("Description can't be over 255 characters long!");
@@ -249,17 +295,11 @@ public class ExtendedCardController implements Initializable{
         }else{
             warning2.setOpacity(0L);
         }
-
-        if(editTitle2.getText() != null && editTitle2.getText().length() > 255){
-            warning1.setText("Title can't be over 255 characters long!");
-            warning1.setOpacity(1L);
-            editTitle2.setText(editTitle2.getText().substring(0, editTitle2.getLength() - 1));
-        }else{
-            warning1.setOpacity(0L);
-        }
-
     }
 
+    /**
+     * Start WebSockets for client - server communication
+     */
     private void startWebsockets() {
 
         websocketUtils.registerForMessages("/topic/extended-taskcard/"+task_id, TaskCard.class, updatedTaskCard->{
@@ -273,6 +313,9 @@ public class ExtendedCardController implements Initializable{
         });
     }
 
+    /**
+     * Stop WebSockets for client - server communication
+     */
     private void stopWebsockets(){
 
         websocketUtils.unsubscribeFromMessages("/topic/extended-taskcard/"+task_id);
@@ -336,6 +379,13 @@ public class ExtendedCardController implements Initializable{
         card.setFontID(color);
     }
 
+    /**
+     * Creates JavaFX entries to populate the Subtask ListView
+     *
+     * @param a Key of Map: Subtask name
+     * @param b Value of Map: Subtask state
+     * @return Complete entry for Subtask ListView
+     */
     public HBox entryFactory(String a, Boolean b){
 
         FontAwesomeIconView edit = new FontAwesomeIconView(FontAwesomeIcon.PENCIL);
@@ -375,6 +425,12 @@ public class ExtendedCardController implements Initializable{
         return box;
     }
 
+    /**
+     * Creates JavaFX entries to populate the Tag ListView
+     *
+     * @param tag TaskCard Tag
+     * @return Complete entry for Tag ListView
+     */
     public HBox tagEntryFactory(Tag tag){
 
         Label label = new Label(tag.getName());
@@ -396,6 +452,11 @@ public class ExtendedCardController implements Initializable{
         return box;
     }
 
+    /**
+     * Changes TaskCard font colors
+     *
+     * @param color Color selected in respective ColorPicker
+     */
     public void fontCustomization(String color){
 
         taskName.setStyle("-fx-text-fill: " + color + ";");
@@ -408,11 +469,19 @@ public class ExtendedCardController implements Initializable{
         backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
     }
 
+    /**
+     * Changes TaskCard background colors
+     *
+     * @param color Color selected in respective ColorPicker
+     */
     public void backCustomization(String color){
 
         window.setStyle("-fx-background-color: " + color + ";");
     }
 
+    /**
+     * Handles editing and saving SubTasks
+     */
     public void editOrSave(){
         if(editFlag && !newSub.getText().isBlank() && !tempSubs.containsKey(newSub.getText())){
 

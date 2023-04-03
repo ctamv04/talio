@@ -19,16 +19,27 @@ public class ExtendedCardUtils {
     private List<Tag> boardTags = new ArrayList<>();
     private boolean editFlag = false;
 
+    /**
+     * Instantiation of ExtendedCardUtils using Dependency Injection
+     *
+     * @param serverUtils ServerUtils DI
+     * @param mainCtrl MainCtrl DI
+     */
     @Inject
     public ExtendedCardUtils(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
     }
 
-    public void init(){
-
-    }
-
+    /**
+     * Saves new information to TaskCard
+     *
+     * @param title New title from appropriate JavaFX component
+     * @param description New description from appropriate JavaFX component
+     * @param tempSubs New SubTasks from appropriate JavaFX component
+     * @param taskTags New Tags from appropriate JavaFX component
+     * @param card Card object
+     */
     public void save(String title, String description, Map<String, Boolean> tempSubs, Set<Tag> taskTags, TaskCard card){
         if(!title.isBlank()) {
             card.setName(title);
