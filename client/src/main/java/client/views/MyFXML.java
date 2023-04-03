@@ -18,6 +18,7 @@ package client.views;
 import client.controllers.*;
 import client.controllers.popups.*;
 import client.utils.BoardUtils;
+import client.utils.ExtendedCardUtils;
 import client.utils.ServerUtils;
 import client.utils.WebsocketUtils;
 import com.google.inject.Injector;

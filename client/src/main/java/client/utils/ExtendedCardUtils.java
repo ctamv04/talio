@@ -1,4 +1,4 @@
-package client.controllers;
+package client.utils;
 
 import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
