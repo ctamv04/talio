@@ -76,6 +76,15 @@ public class TaskCardService {
         return ResponseEntity.ok(taskCardRepository.save(taskCard));
     }
 
+    /***
+     * Put a taskCard in a different list
+     * @param id The id of the taskCard
+     * @param pos The position in the new list
+     * @param idList1 The id of the old list
+     * @param idList2 The id of the new list
+     * @param idListeners The listeners of the lists
+     * @return A response based on the existence of the taskCard and the lists
+     */
     @Transactional
     public ResponseEntity<TaskCard> swapBetweenLists(Long id, int pos, Long idList1, Long idList2,
                                                      Map<Long, Map<Object, Consumer<List<Long>>>> idListeners) {
