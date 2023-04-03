@@ -29,7 +29,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TextArea fx:id="desc_box" onKeyTyped="#lengthCheck" prefHeight="67.0" prefWidth="627.0">
+                  <TextArea fx:id="desc_box" onKeyTyped="#lengthCheck2" prefHeight="67.0" prefWidth="627.0">
                      <VBox.margin>
                         <Insets top="8.0" />
                      </VBox.margin>
@@ -48,14 +48,14 @@
                               <Insets />
                            </HBox.margin>
                         </Label>
-                        <FontAwesomeIconView fx:id="addSub" glyphName="PLUS" size="18">
+                        <FontAwesomeIconView fx:id="addSub" glyphName="PLUS" onMouseClicked="#newSub" size="18">
                            <HBox.margin>
                               <Insets left="4.0" top="2.0" />
                            </HBox.margin>
                         </FontAwesomeIconView>
                         <HBox fx:id="newSubBox" prefHeight="9.0" prefWidth="528.0" spacing="4.0">
                            <children>
-                              <TextField fx:id="newSub" minHeight="0.0" onKeyTyped="#lengthCheck" prefHeight="23.0" prefWidth="508.0">
+                              <TextField fx:id="newSub" minHeight="0.0" onKeyPressed="#saveNewSub" onKeyTyped="#lengthCheck2" prefHeight="23.0" prefWidth="508.0">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
@@ -63,7 +63,7 @@
                                     <Insets />
                                  </HBox.margin>
                               </TextField>
-                              <FontAwesomeIconView fx:id="cancelNew" glyphName="TIMES" onMouseClicked="#back" size="16" tabSize="10" text="" wrappingWidth="15.166656494140625">
+                              <FontAwesomeIconView fx:id="cancelNew" glyphName="TIMES" onMouseClicked="#cancelNewSub" size="16" tabSize="10" text="" wrappingWidth="15.166656494140625">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin></FontAwesomeIconView>
@@ -88,7 +88,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <FontAwesomeIconView fx:id="addTag" glyphName="PLUS" size="18">
+                  <FontAwesomeIconView fx:id="addTag" glyphName="PLUS" onMouseClicked="#addTag" size="18">
                      <HBox.margin>
                         <Insets left="4.0" top="2.0" />
                      </HBox.margin>
@@ -112,7 +112,7 @@
             </HBox>
          </children>
       </VBox>
-      <TextField fx:id="editTitle2" layoutX="49.0" layoutY="7.0" onKeyTyped="#lengthCheck" onMouseEntered="#titleHoverIn" onMouseExited="#titleHoverOut" opacity="0.0" prefHeight="52.0" prefWidth="98.0">
+      <TextField fx:id="editTitle2" layoutX="49.0" layoutY="7.0" onKeyTyped="#lengthCheck1" onMouseEntered="#titleHoverIn" onMouseExited="#titleHoverOut" opacity="0.0" prefHeight="52.0" prefWidth="98.0">
          <font>
             <Font size="25.0" />
          </font>
@@ -144,8 +144,8 @@
       </VBox>
       <HBox fx:id="bTagListBox" layoutX="92.0" layoutY="319.0" opacity="0.0" prefHeight="85.0" prefWidth="147.0">
          <children>
-            <ListView fx:id="bTagList" prefHeight="85.0" prefWidth="143.0" />
-            <FontAwesomeIconView fx:id="cancelbTagList" glyphName="TIMES" tabSize="10" wrappingWidth="14.166641235351562">
+            <ListView fx:id="bTagList" onMouseClicked="#selectTag" prefHeight="85.0" prefWidth="143.0" />
+            <FontAwesomeIconView fx:id="cancelbTagList" glyphName="TIMES" onMouseClicked="#cancelSelectTag" tabSize="10" wrappingWidth="14.166641235351562">
                <HBox.margin>
                   <Insets left="2.0" />
                </HBox.margin>
