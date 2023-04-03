@@ -14,12 +14,22 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 import models.Board;
 
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class MainPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+
+    private final String file_path;
+
     @FXML
     private Text invalid_text;
     @FXML
@@ -55,6 +65,7 @@ public class MainPageController implements Initializable {
     public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
+        this.file_path = "../client/src/main/java/client/sessions_info/" + serverUtils.getAddress() + ".txt";
     }
 
     /***
@@ -69,6 +80,22 @@ public class MainPageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (mainCtrl.getBoards().isEmpty()) {
+            try {
+                loadState();
+            } catch (FileNotFoundException e) {
+                System.out.println("State for current session was not found");
+            }
+        }
+
+        mainCtrl.getPrimaryStage().setOnCloseRequest(event -> {
+            try {
+                saveState();
+            } catch (IOException e) {
+                System.out.println("State was not saved");
+            }
+        });
+
         overlay.setVisible(false);
         buttonBox.setOpacity(0L);
 
@@ -86,13 +113,20 @@ public class MainPageController implements Initializable {
             overlay.setVisible(false);
         });
 
-        if (mainCtrl.isAdmin()) {
+        if (mainCtrl.getIsAdmin()) {
             admin_login_button.setVisible(false);
         } else {
             admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
         }
 
         back_button.setOnMouseClicked(event -> {
+            try {
+                saveState();
+            } catch (IOException e) {
+                System.out.println("State was not saved");
+            }
+            mainCtrl.setIsAdmin(false);
+            mainCtrl.getBoards().clear();
             serverUtils.setServer("http://localhost:8080/");
             mainCtrl.showLoginPage();
         });
@@ -110,11 +144,12 @@ public class MainPageController implements Initializable {
      * user can see boards it created or accessed before.
      */
     private void setVisibleBoards() {
-        if (mainCtrl.isAdmin()) {
+        if (mainCtrl.getIsAdmin()) {
             boards_view.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
         } else {
             boards_view.setItems(FXCollections.observableArrayList(mainCtrl.getBoards()));
         }
+
         boards_view.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Board> call(ListView<Board> param) {
@@ -179,5 +214,55 @@ public class MainPageController implements Initializable {
 
     public AnchorPane getOverlay() {
         return overlay;
+    }
+
+    /**
+     * Saves state of the current session. Called when user leaves the main page or exits the app.
+     *
+     * @throws IOException exception
+     */
+    public void saveState() throws IOException {
+        Path dir = Paths.get("../client/src/main/java/client/sessions_info/");
+        System.out.println(dir.getParent());
+        if (!Files.exists(dir)) {
+            Files.createDirectory(dir);
+        }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file_path));
+        String result;
+        if (!mainCtrl.getIsAdmin()) {
+            result = String.join(" ", mainCtrl.getBoards().stream().
+                    map(x -> String.valueOf(x.getId())).toArray(String[]::new));
+        } else {
+            result = "@";
+        }
+
+        writer.write(result);
+        writer.close();
+    }
+
+    /**
+     * Loads state for the current session.
+     *
+     * @throws FileNotFoundException thrown if no file is found
+     */
+    public void loadState() throws FileNotFoundException {
+        File fileObj = new File(file_path);
+        Scanner reader = new Scanner(fileObj);
+        if (reader.hasNextLine()) {
+            String[] rawData = reader.nextLine().split(" ");
+
+            if (rawData[0].equals("@")) {
+                mainCtrl.setIsAdmin(true);
+            } else {
+                List<Long> ids = new ArrayList<>();
+                for (String id : rawData) {
+                    ids.add(Long.valueOf(id));
+                }
+                mainCtrl.setBoards(serverUtils.getBoardsByIds(ids));
+            }
+        }
+
+        reader.close();
     }
 }
