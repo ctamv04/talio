@@ -45,6 +45,8 @@ public class MainPageController implements Initializable {
     @FXML
     private Button delBoard;
     @FXML
+    private Button leaveBoard;
+    @FXML
     private Button enterBoard;
     @FXML
     private VBox buttonBox;
@@ -185,6 +187,11 @@ public class MainPageController implements Initializable {
     public void boardClicked(MouseEvent event) {
         Board board = boards_view.getSelectionModel().getSelectedItem();
 
+        if(mainCtrl.getIsAdmin()){
+            leaveBoard.setOpacity(0L);
+            leaveBoard.toBack();
+        }
+
         if (board != null) {
             Long boardID = board.getId();
 
@@ -193,8 +200,25 @@ public class MainPageController implements Initializable {
 
             buttonBox.setOpacity(1L);
             enterBoard.setOnMouseClicked(eventTwo -> joinBoard(boardID));
+            delBoard.setOnMouseClicked(eventTwo -> {
 
-            delBoard.setOnMouseClicked(eventTwo -> serverUtils.deleteBoard(boardID));
+                serverUtils.deleteBoard(boardID);
+                buttonBox.setOpacity(0L);
+            });
+
+            leaveBoard.setOnMouseClicked(eventTow -> {
+
+                boards_view.getItems().remove(board);
+                buttonBox.setOpacity(0L);
+
+                mainCtrl.getBoards().remove(board);
+
+//                try {
+//                    saveState();
+//                } catch (IOException e) {
+//                    System.out.println("State was not saved");
+//                }
+            });
         }
     }
 
