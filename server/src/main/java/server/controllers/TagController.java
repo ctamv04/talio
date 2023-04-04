@@ -21,10 +21,11 @@ public class TagController {
     private final TagService service;
 
     /**
-     * Constructor Method
+     * Instantiation of TagController using Dependency Injection
      *
-     * @param repoCard The injected repo of the object
-     * @param service  The injected service of the object
+     * @param repo TagRepository DI
+     * @param service TagService DI
+     * @param repoCard TaskCardRepository DI
      */
     public TagController(TagRepository repo, TagService service, TaskCardRepository repoCard) {
 
@@ -35,10 +36,10 @@ public class TagController {
     }
 
     /**
-     * Returns the Tag List of the Board a TaskCard belongs to
+     * Get Board Tags of some TaskCard
      *
-     * @param cardID ID of the TaskCard
-     * @return
+     * @param cardID TaskCard ID
+     * @return List of Tags
      */
     @GetMapping("/board/{id}")
     public ResponseEntity<List<Tag>> getBoardTags(@PathVariable("id") Long cardID) {
@@ -53,10 +54,10 @@ public class TagController {
     }
 
     /**
-     * Returns the Tag List of a TaskCard
+     * Get TaskCard Tags of some TaskCard
      *
-     * @param cardID
-     * @return
+     * @param cardID TaskCard ID
+     * @return Set of Tags
      */
     @GetMapping("/task/{id}")
     public ResponseEntity<Set<Tag>> getTaskTags(@PathVariable("id") Long cardID) {
@@ -71,7 +72,9 @@ public class TagController {
     }
 
     /**
-     * @return
+     * Get all Tags
+     *
+     * @return List of Tags
      */
     @GetMapping("")
     public List<Tag> getAll() {
@@ -79,8 +82,10 @@ public class TagController {
     }
 
     /**
-     * @param tagID
-     * @return
+     * Get Tag by ID
+     *
+     * @param tagID Tag ID
+     * @return Tag
      */
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getById(@PathVariable("id") Long tagID) {
@@ -92,9 +97,11 @@ public class TagController {
     }
 
     /**
-     * @param tag
-     * @param boardId
-     * @return
+     * Add Tag to A bOARD
+     *
+     * @param tag Tag
+     * @param boardId Board ID
+     * @return HTTP confirmation
      */
     @PostMapping("")
     public ResponseEntity<Tag> add(@RequestBody Tag tag,
@@ -103,9 +110,11 @@ public class TagController {
     }
 
     /**
-     * @param tagID
-     * @param newTag
-     * @return
+     * Update Tag
+     *
+     * @param tagID Tag ID
+     * @param newTag New Tag
+     * @return HTTP confirmation
      */
     @PutMapping("/{id}")
     public ResponseEntity<Tag> update(@PathVariable("id") Long tagID,
@@ -115,8 +124,10 @@ public class TagController {
     }
 
     /**
-     * @param tagID
-     * @return
+     * Delete Tag
+     *
+     * @param tagID Tag ID
+     * @return HTTP confirmation
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Tag> delete(@PathVariable("id") Long tagID) {

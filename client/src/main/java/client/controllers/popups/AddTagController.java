@@ -1,6 +1,6 @@
 package client.controllers.popups;
 
-import client.controllers.ExtendedCardUtils;
+import client.utils.ExtendedCardUtils;
 import client.controllers.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
