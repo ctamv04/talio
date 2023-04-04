@@ -114,6 +114,21 @@ public class ServerUtils {
     }
 
     /**
+     * Returns boards with specified ids
+     *
+     * @param ids list of ids
+     * @return list of boards
+     */
+    public List<Board> getBoardsByIds(List<Long> ids) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/boards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(ids, APPLICATION_JSON), new GenericType<>() {
+                });
+    }
+
+    /**
      * Removes the board with a given id
      *
      * @param boardId id of the board
