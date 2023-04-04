@@ -13,7 +13,9 @@ import server.repositories.TaskCardRepository;
 import server.repositories.TaskListRepository;
 import server.services.TaskCardService;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -28,6 +30,7 @@ class TaskCardServiceTest {
     private TaskCardService sut;
     private TaskList taskList;
     private TaskCard taskCard;
+    private Map<Long, Map<Object, Consumer<List<Long>>>> idsListeners = new ConcurrentHashMap<>();
 
     @BeforeEach
     public void setup() {
@@ -77,5 +80,166 @@ class TaskCardServiceTest {
         ResponseEntity<TaskCard> response=sut.add(taskCard,10000000L);
         assertNull(response.getBody());
         assertEquals(BAD_REQUEST, response.getStatusCode());
+    }
+
+    // Test whether a bad request is given when it should be
+    @Test
+    void testDeleteTaskCardBadRequest() {
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.empty());
+        ResponseEntity<TaskCard> response=sut.delete(10000000L);
+        assertEquals(BAD_REQUEST, response.getStatusCode());
+    }
+
+    // Test whether a task card being deleted gives no warnings
+    @Test
+    void testDeleteExistingTaskCard() {
+        TaskCard taskCard2=new TaskCard("taskCard2","Boo Bop",taskList);
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard));
+        Mockito.when(mockTaskCardRepository.findById(20000000L)).thenReturn(Optional.of(taskCard2));
+        Mockito.when(mockTaskListRepository.getTaskCardsId(taskList.getId())).thenReturn(new ArrayList<>(Arrays.asList(taskCard, taskCard2)));
+        ResponseEntity<TaskCard> response=sut.delete(10000000L);
+        assertEquals(response, ResponseEntity.ok().build());
+    }
+
+    // Test whether a non-existing task card gives a bad request
+    @Test
+    void deleteNonExistingTaskCard() {
+        // TaskCard not found
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.empty());
+        ResponseEntity<TaskCard> response=sut.delete(10000000L);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
+    }
+
+    // Test whether a task card being moved gives bad request when it should
+    @Test
+    void testSwapBetweenListsBadRequest() {
+        // TaskCard not found
+        TaskList taskList2=new TaskList("taskList2",new Board("board2"));
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.empty());
+        Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.of(taskList2));
+        ResponseEntity<TaskCard> response=sut.swapBetweenLists(10000000L,1,1L, 1L, idsListeners);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
+
+        // TaskList not found
+        TaskCard taskCard2=new TaskCard("taskCard2","Bee Beep2",taskList);
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard2));
+        Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.empty());
+        response=sut.swapBetweenLists(10000000L,1,1L, 1L, idsListeners);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
+
+        // Pos < 0
+        Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.of(taskList2));
+        response=sut.swapBetweenLists(10000000L,-1,1L, 1L, idsListeners);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
+
+        // taskList does not contain taskCard
+        response=sut.swapBetweenLists(10000000L,1,1L, 1L, idsListeners);
+        assertNull(response.getBody());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
+    }
+
+    // Test whether a task card being moved gives no warnings
+    @Test
+    void testSwapBetweenDifferentLists() {
+        // Set everything up
+        TaskList taskList2=new TaskList("taskList2",new Board("board")); // 2L
+        TaskCard taskCard2=new TaskCard("taskCard2","Bee Beep2",taskList); // 10000000L
+        taskCard.setId(10000000L);
+        taskCard2.setId(20000000L);
+        taskList.setId(1L);
+        taskList2.setId(2L);
+        taskList.setTaskCards(new ArrayList<>(Arrays.asList(taskCard2, taskCard, new TaskCard())));
+        taskList2.setTaskCards(new ArrayList<>(Arrays.asList(new TaskCard(), new TaskCard())));
+
+        // Mock everything
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard));
+        Mockito.when(mockTaskCardRepository.findById(20000000L)).thenReturn(Optional.of(taskCard2));
+        Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.of(taskList));
+        Mockito.when(mockTaskListRepository.findById(2L)).thenReturn(Optional.of(taskList2));
+        Mockito.when(mockTaskListRepository.getTaskCardsId(taskList.getId())).thenReturn(taskList.getTaskCards());
+        Mockito.when(mockTaskListRepository.getTaskCardsId(taskList2.getId())).thenReturn(taskList2.getTaskCards());
+
+        // Test if it works :)
+        ResponseEntity<TaskCard> response=sut.swapBetweenLists(10000000L,0,1L, 2L, idsListeners);
+        assertEquals(response, ResponseEntity.ok().build());
+    }
+
+    // Test whether a task card being moved between the same list gives no warnings
+    @Test
+    void testSwapBetweenSameList() {
+        // Set everything up
+        TaskList taskList1=new TaskList("taskList1",new Board("board")); // 1L
+        taskList1.setId(1L);
+        taskList1.setTaskCards(new ArrayList<>(Arrays.asList(taskCard, new TaskCard())));
+
+        // Mock everything
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard));
+        Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.of(taskList1));
+        Mockito.when(mockTaskCardRepository.save(Mockito.any())).thenReturn(taskCard);
+        Mockito.when(mockTaskListRepository.getTaskCardsId(taskList1.getId())).thenReturn(taskList1.getTaskCards());
+
+        // Test if it works for index<pos
+        ResponseEntity<TaskCard> response=sut.swapBetweenLists(10000000L,1,1L, 1L, idsListeners);
+        assertNotNull(response.getBody());
+        assertEquals(taskCard.getName(),response.getBody().getName());
+
+        // Test if it works for index>pos
+        taskList1.getTaskCards().set(0, new TaskCard());
+        taskList1.getTaskCards().set(1, taskCard);
+        response=sut.swapBetweenLists(10000000L,0,1L, 1L, idsListeners);
+        assertNotNull(response.getBody());
+        assertEquals(taskCard.getName(),response.getBody().getName());
+    }
+
+    // Test whether traverseIdsListeners works
+    @Test
+    void testTraverseIdsListeners() {
+        // Set everything up
+        ArrayList<Long> ids=new ArrayList<>();
+        Map<Object, Consumer<List<Long>>> listeners=new ConcurrentHashMap<>();
+        Consumer<List<Long>> consumer= longs -> {
+            for (Long id : longs) {
+                ids.add(id);
+            }
+        };
+        listeners.put("test",consumer);
+        taskList.setId(1L);
+        taskCard.setId(10000000L);
+        taskList.setTaskCards(new ArrayList<>(Arrays.asList(taskCard)));
+
+        // Mock everything
+        Mockito.when(mockTaskCardRepository.findById(10000000L)).thenReturn(Optional.of(taskCard));
+        Mockito.when(mockTaskListRepository.findById(1L)).thenReturn(Optional.of(taskList));
+        Mockito.when(mockTaskListRepository.getTaskCardsId(taskList.getId())).thenReturn(taskList.getTaskCards());
+
+        // Test if it works :)
+        sut.traverseIdsListeners(listeners,taskList);
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains(taskCard.getId()));
+    }
+
+    // Test whether convertTaskCardsToIds works
+    @Test
+    void testConvertTaskCardsToIds() {
+        taskCard.setId(10000000L);
+        taskCard.setTaskList(taskList);
+        TaskCard taskCard2=new TaskCard("taskCard2","Bee Beep2",taskList);
+        taskCard2.setId(10000001L);
+        taskList.setTaskCards(new ArrayList<>(Arrays.asList(taskCard,taskCard2)));
+
+        // TaskList null -> null
+        List<Long> actual=sut.convertTaskCardsToIds(null);
+        List<Long> expected=null;
+        assertEquals(expected,actual);
+
+        // TaskList filled with TaskCards
+        expected=new ArrayList<>(Arrays.asList(10000000L, 10000001L));
+        actual=sut.convertTaskCardsToIds(taskList.getTaskCards());
+
+        assertEquals(expected, actual);
     }
 }

@@ -47,8 +47,9 @@ public class MainCtrl {
     private Stage deletedCardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
+
     private boolean isAdmin;
-    private List<Board> boards = new ArrayList<>();
+    private List<Board> boards;
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -58,6 +59,7 @@ public class MainCtrl {
         if(iconResource!=null)
             this.primaryStage.getIcons().add(new Image(iconResource.toString()));
 
+        this.boards = new ArrayList<>();
         showLoginPage();
     }
 
@@ -250,11 +252,11 @@ public class MainCtrl {
             deletedCardStage.close();
     }
 
-    public void updateRole() {
-        this.isAdmin = true;
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
-    public boolean isAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
@@ -266,4 +268,7 @@ public class MainCtrl {
         return boards;
     }
 
+    public void setBoards(List<Board> boards) {
+        this.boards = boards;
+    }
 }
