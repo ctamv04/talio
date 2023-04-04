@@ -200,7 +200,7 @@ class TaskCardServiceTest {
     void testTraverseIdsListeners() {
         // Set everything up
         ArrayList<Long> ids=new ArrayList<>();
-        Map<Object, Consumer<List<Long>>> listeners=new HashMap<>();
+        Map<Object, Consumer<List<Long>>> listeners=new ConcurrentHashMap<>();
         Consumer<List<Long>> consumer= longs -> {
             for (Long id : longs) {
                 ids.add(id);

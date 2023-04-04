@@ -162,10 +162,8 @@ public class TaskCardService {
                 for(var x: taskCards)
                     ids.add(x.getId());
                 consumer.accept(ids);
-//                listeners.remove(key);
-//                This was giving ConcurrentModificationException
+                listeners.remove(key);
             });
-            listeners.clear();
         }
     }
 
