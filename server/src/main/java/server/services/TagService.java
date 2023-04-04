@@ -17,12 +17,25 @@ public class TagService {
     private final TagRepository repo;
     private final BoardRepository repoBoard;
 
+    /**
+     * Instantiation of TagController using Dependency Injection
+     *
+     * @param repo TagRepository DI
+     * @param repoBoard BoardRepository DI
+     */
     public TagService(TagRepository repo,
                       BoardRepository repoBoard) {
         this.repo = repo;
         this.repoBoard = repoBoard;
     }
 
+    /**
+     * Update Tag
+     *
+     * @param tagID Tag ID
+     * @param newTag New Tag
+     * @return HTTP confirmation
+     */
     @Transactional
     public ResponseEntity<Tag> update(@PathVariable("id") Long tagID,
                                            @RequestBody Tag newTag) {
@@ -37,6 +50,13 @@ public class TagService {
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    /**
+     * Add Tag
+     *
+     * @param tag Tag
+     * @param boardID Board ID
+     * @return HTTP confirmation
+     */
     @Transactional
     public ResponseEntity<Tag> add(Tag tag, Long boardID) {
 
@@ -52,6 +72,12 @@ public class TagService {
         return ResponseEntity.ok(repo.save(tag));
     }
 
+    /**
+     * Delete Tag
+     *
+     * @param tagID Tag ID
+     * @return HTTP confirmation
+     */
     @Transactional
     public ResponseEntity<Tag> delete(Long tagID) {
 

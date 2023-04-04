@@ -8,8 +8,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -37,12 +35,10 @@ public class TaskListController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskListId;
     private final BoardController boardController;
-
     @FXML
     private Pane root;
-
     @FXML
-    public Pane indicator_pane;
+    private Pane indicator_pane;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -50,7 +46,7 @@ public class TaskListController implements Initializable {
     @FXML
     private TextField editTaskList_Name;
     @FXML
-    public ListView<Long> taskCards;
+    private ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
     private final Line line = new Line();
     private int entries = 0;
@@ -200,7 +196,8 @@ public class TaskListController implements Initializable {
 
         content.putString(taskCards.getSelectionModel().getSelectedItem().toString() + " " + taskListId);
 
-        WritableImage snapshot = boardController.getTaskCardCache().get(taskCards.getSelectionModel().getSelectedItem()).snapshot(new SnapshotParameters(), null);
+        WritableImage snapshot = boardController.getTaskCardCache().get(taskCards.getSelectionModel().getSelectedItem()).
+                snapshot(new SnapshotParameters(), null);
         ImageView dragView = new ImageView(snapshot);
         dragView.setTranslateX(event.getX());
         dragView.setTranslateY(event.getY());

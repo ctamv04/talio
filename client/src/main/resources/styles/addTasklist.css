@@ -3,6 +3,7 @@
 }
 .save_button {
     -fx-background-color: #000;
+    -fx-text-fill: #FFF;
 }
 .back_button {
     -fx-background-color: #00000000;

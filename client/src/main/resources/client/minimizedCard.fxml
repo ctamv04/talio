@@ -15,7 +15,7 @@
          <FontAwesomeIconView glyphName="TIMES" size="10" />
       </graphic>
    </Button>
-   <Text fx:id="card_name" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="52.205078125">
+   <Text fx:id="card_name" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="116.205078125">
       <font>
          <Font size="18.0" />
       </font>
