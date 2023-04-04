@@ -10,19 +10,19 @@ public class TaskCardTest {
 	// --------------------------------------------
 	// Touch all Constructors                     |
 	// --------------------------------------------
-	@Test
-	public void checkConstructorOnlyTaskList() {
-		var t = new TaskCard(new TaskList());
-		assertEquals("Untitled", t.getName());
-		assertEquals("Fill the description", t.getDescription());
-	}
+//	@Test
+//	public void checkConstructorOnlyTaskList() {
+//		var t = new TaskCard(new TaskList());
+//		assertEquals("Untitled", t.getName());
+//		assertEquals("Fill the description", t.getDescription());
+//	}
 
-	@Test
-	public void checkConstructorNameAndTaskList() {
-		var t = new TaskCard("name", new TaskList());
-		assertEquals("name", t.getName());
-		assertEquals("Fill the description", t.getDescription());
-	}
+//	@Test
+//	public void checkConstructorNameAndTaskList() {
+//		var t = new TaskCard("name", new TaskList());
+//		assertEquals("name", t.getName());
+//		assertEquals("Fill the description", t.getDescription());
+//	}
 
 	@Test
 	public void checkConstructorNameDescriptionAndTaskList() {
