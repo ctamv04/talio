@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.effect.Bloom;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import models.Tag;
@@ -22,7 +21,6 @@ import models.TaskCard;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class MinimizedCardController implements Initializable {
     private final ServerUtils serverUtils;
@@ -71,7 +69,7 @@ public class MinimizedCardController implements Initializable {
             TaskCard taskCard = serverUtils.getTaskCard(taskCardId);
             card_name.setText(taskCard.getName());
             minBG.setStyle("-fx-background-color:" + taskCard.getBackID() +"; ");
-            minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" +taskCard.getFontID() + ";");
+            card_name.setStyle("-fx-fill:" +taskCard.getFontID() + ";");
 
             descIndicator(taskCard);
             subsIndicator(taskCard);
@@ -83,10 +81,12 @@ public class MinimizedCardController implements Initializable {
 
     private void descIndicator(TaskCard card) {
 
-        if (card.getDescription() != null && !card.getDescription().isBlank())
+        if (card.getDescription() != null && !card.getDescription().isBlank()) {
+            desc.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + card.getFontID());
             desc.setOpacity(1L);
-        else
+        }else {
             desc.setOpacity(0L);
+        }
     }
 
     private void subsIndicator(TaskCard card) {
@@ -103,6 +103,7 @@ public class MinimizedCardController implements Initializable {
             });
 
             progress.setText(completed.get() + "/" + subs.size());
+            progress.setStyle("-fx-text-fill: " + card.getFontID());
             progress.setOpacity(1L);
         } else {
             progress.setOpacity(0L);
@@ -143,7 +144,7 @@ public class MinimizedCardController implements Initializable {
             }
             card_name.setText(updatedTaskCard.getName());
             minBG.setStyle("-fx-background-color:" + updatedTaskCard.getBackID() + "; ");
-            minBG.getChildrenUnmodifiable().get(0).setStyle("-fx-fill:" + updatedTaskCard.getFontID() + ";");
+            card_name.setStyle("-fx-fill:" +updatedTaskCard.getFontID() + ";");
 
             descIndicator(updatedTaskCard);
             subsIndicator(updatedTaskCard);

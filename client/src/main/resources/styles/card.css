@@ -1,0 +1,5 @@
+.color-picker .text
+{ -fx-fill: #fff; -fx-font-weight: bold;}
+
+.color-picker
+{ -fx-background-color: #000;}
