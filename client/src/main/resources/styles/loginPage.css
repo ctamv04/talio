@@ -2,18 +2,11 @@
     -fx-background: #383838;
 }
 
-.create_board_vbox {
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 12px;
-}
-
-.visited_boards_vbox {
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 12px;
-}
-
 .button {
-    -fx-color: #383838;
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 12px;
+    -fx-background-color: #000;
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+}
+.button:hover {
+    -fx-cursor: hand;
 }
