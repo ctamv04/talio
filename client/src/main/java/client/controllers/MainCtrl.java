@@ -19,6 +19,7 @@ import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -53,6 +54,11 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
         this.viewFactory = viewFactory;
+
+        var iconResource=getClass().getResource("/images/icon.png");
+        if(iconResource!=null)
+            this.primaryStage.getIcons().add(new Image(iconResource.toString()));
+
         this.boards = new ArrayList<>();
         showLoginPage();
     }

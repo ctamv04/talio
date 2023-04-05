@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -49,7 +50,7 @@ public class MainPageController implements Initializable {
     @FXML
     private VBox buttonBox;
     @FXML
-    private AnchorPane window;
+    private StackPane window;
     @FXML
     private Button admin_login_button;
     @FXML

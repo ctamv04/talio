@@ -42,6 +42,7 @@ public class MyFXML {
         this.injector = injector;
     }
 
+    @SuppressWarnings("unused")
     public <T> Pair<T, Parent> load(Class<T> c, String url, Object... params) {
         try {
             var loader = new FXMLLoader(getClass().getResource(url),
