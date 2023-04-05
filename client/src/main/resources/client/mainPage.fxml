@@ -14,8 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<StackPane fx:controller="client.controllers.MainPageController" fx:id="window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.MainPageController">
    <children>
       <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0">
          <children>
@@ -72,7 +71,7 @@
                                <Button fx:id="leaveBoard" mnemonicParsing="false" prefWidth="75.0" text="Leave" />
                               <Button fx:id="delBoard" mnemonicParsing="false" prefWidth="75.0" text="Delete">
                                  <VBox.margin>
-                                    <Insets top="5.0" />
+                                    <Insets />
                                  </VBox.margin>
                               </Button>
                            </children>

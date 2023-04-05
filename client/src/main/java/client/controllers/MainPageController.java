@@ -203,7 +203,9 @@ public class MainPageController implements Initializable {
             enterBoard.setOnMouseClicked(eventTwo -> joinBoard(boardID));
             delBoard.setOnMouseClicked(eventTwo -> {
 
+                boards_view.getItems().remove(board);
                 serverUtils.deleteBoard(boardID);
+                mainCtrl.getBoards().remove(board);
                 buttonBox.setOpacity(0L);
             });
 
@@ -213,12 +215,6 @@ public class MainPageController implements Initializable {
                 buttonBox.setOpacity(0L);
 
                 mainCtrl.getBoards().remove(board);
-
-//                try {
-//                    saveState();
-//                } catch (IOException e) {
-//                    System.out.println("State was not saved");
-//                }
             });
         }
     }
