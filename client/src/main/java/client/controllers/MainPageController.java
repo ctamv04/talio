@@ -190,7 +190,7 @@ public class MainPageController implements Initializable {
 
         if(mainCtrl.getIsAdmin()){
             leaveBoard.setOpacity(0L);
-            leaveBoard.toBack();
+            leaveBoard.setDisable(true);
         }
 
         if (board != null) {
@@ -213,6 +213,8 @@ public class MainPageController implements Initializable {
 
                 boards_view.getItems().remove(board);
                 buttonBox.setOpacity(0L);
+                leaveBoard.setDisable(false);
+
 
                 mainCtrl.getBoards().remove(board);
             });
