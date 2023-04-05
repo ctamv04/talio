@@ -41,7 +41,7 @@ public class ExtendedCardController implements Initializable{
     private Map<String, Boolean> tempSubs = new HashMap<>();
     private Set<Tag> taskTags = new HashSet<>();
     private Set<Tag> boardTags = new HashSet<>();
-    private ExtendedCardUtils utils;
+    private final ExtendedCardUtils utils;
     private boolean editFlag = false;
     @FXML
     private Label taskName;
@@ -372,7 +372,7 @@ public class ExtendedCardController implements Initializable{
     /**
      * Changes the font colour of the ExtendedTaskCard
      */
-    public void fontChange() {
+    public void fontChangee() {
 
         String color = utils.colorConverter(color_font.getValue());
         fontCustomization(color);
@@ -467,6 +467,8 @@ public class ExtendedCardController implements Initializable{
         fontLabel.setStyle("-fx-text-fill: " + color + ";");
         icon.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
         backButton.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
+        addSub.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
+        addTag.setStyle("-fx-font-family: FontAwesome; -fx-fill: " + color + ";");
     }
 
     /**
