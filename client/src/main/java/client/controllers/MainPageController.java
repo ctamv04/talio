@@ -68,7 +68,7 @@ public class MainPageController implements Initializable {
     public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
-        this.file_path = "../client/src/main/java/client/sessions_info/" + serverUtils.getAddress() + ".txt";
+        this.file_path = "../client/src/main/java/client/sessions_info/" + serverUtils.getAddress().replace(':', '_') + ".txt";
     }
 
     /***
@@ -188,7 +188,7 @@ public class MainPageController implements Initializable {
     public void boardClicked(MouseEvent event) {
         Board board = boards_view.getSelectionModel().getSelectedItem();
 
-        if(mainCtrl.getIsAdmin()){
+        if (mainCtrl.getIsAdmin()) {
             leaveBoard.setOpacity(0L);
             leaveBoard.setDisable(true);
         }

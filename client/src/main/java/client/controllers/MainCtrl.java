@@ -15,6 +15,7 @@
  */
 package client.controllers;
 
+import client.controllers.popups.EditBoardController;
 import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -55,8 +56,8 @@ public class MainCtrl {
         this.primaryStage = primaryStage;
         this.viewFactory = viewFactory;
 
-        var iconResource=getClass().getResource("/images/icon.png");
-        if(iconResource!=null)
+        var iconResource = getClass().getResource("/images/icon.png");
+        if (iconResource != null)
             this.primaryStage.getIcons().add(new Image(iconResource.toString()));
 
         this.boards = new ArrayList<>();
@@ -180,10 +181,10 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public void showAddTagPage(Board board) {
-        var addTag = viewFactory.createAddTag(board);
+    public void showUpdateTagPage(EditBoardController editBoardController, Board board, Long tagId) {
+        var updateTag = viewFactory.createUpdateTag(editBoardController, board, tagId);
         addTagStage = new Stage(StageStyle.UNDECORATED);
-        addTagStage.setScene(new Scene(addTag.getValue()));
+        addTagStage.setScene(new Scene(updateTag.getValue()));
         addTagStage.initModality(Modality.APPLICATION_MODAL);
         addTagStage.showAndWait();
     }

@@ -1,7 +1,7 @@
 package client.controllers.popups;
 
-import client.utils.ExtendedCardUtils;
 import client.controllers.MainCtrl;
+import client.utils.ExtendedCardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
@@ -15,11 +15,13 @@ import models.Tag;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AddTagController implements Initializable {
+public class UpdateTagController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private final ExtendedCardUtils utils;
+    private final EditBoardController editBoardController;
     private final Board board;
+    private Long tagId;
 
     @FXML
     private TextField tag_name_input;
@@ -31,11 +33,15 @@ public class AddTagController implements Initializable {
     private ColorPicker color;
 
     @Inject
-    public AddTagController(ServerUtils serverUtils, MainCtrl mainCtrl, ExtendedCardUtils utils, Board board) {
+    public UpdateTagController(ServerUtils serverUtils, MainCtrl mainCtrl, ExtendedCardUtils utils,
+                               EditBoardController editBoardController, Board board,
+                               Long tagId) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.utils = utils;
+        this.editBoardController = editBoardController;
         this.board = board;
+        this.tagId = tagId;
     }
 
     @Override
@@ -52,7 +58,15 @@ public class AddTagController implements Initializable {
         }
 
         tag.setColor(utils.colorConverter(color.getValue()));
-        serverUtils.addTag(tag, board.getId());
+        if (tagId >= 0) {
+            tag.setId(tagId);
+            Tag updated = serverUtils.updateTag(tagId, tag);
+            System.out.println("updated: " + updated);
+            editBoardController.getTags().put(tagId, tag);
+        } else {
+            serverUtils.addTag(tag, board.getId());
+            editBoardController.getTags().put(tag.getId(), tag);
+        }
         mainCtrl.closeAddTagPage();
     }
 }

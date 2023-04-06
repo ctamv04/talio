@@ -77,7 +77,11 @@ public class ViewFactory {
         return FXML.load(BoardDeletedController.class, "/client/cardDeleted.fxml");
     }
 
-    public Pair<AddTagController, Parent> createAddTag(Board board) {
-        return FXML.load(AddTagController.class, "/client/addTag.fxml", board);
+    public Pair<UpdateTagController, Parent> createUpdateTag(EditBoardController editBoardController,
+                                                             Board board, Long tagId) {
+        System.out.println(tagId);
+        if (tagId != null)
+            return FXML.load(UpdateTagController.class, "/client/addTag.fxml", editBoardController, board, tagId);
+        return null;
     }
 }

@@ -78,10 +78,10 @@ public class MyFXML {
                 return new AddTaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-            if (type == AddTagController.class)
-                return new AddTagController(injector.getInstance(ServerUtils.class),
+            if (type == UpdateTagController.class)
+                return new UpdateTagController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), injector.getInstance(ExtendedCardUtils.class),
-                        (Board) params[0]);
+                        (EditBoardController) params[0], (Board) params[1], (long) params[2]);
 
             if (type == BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),

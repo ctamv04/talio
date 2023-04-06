@@ -56,6 +56,7 @@ public class ServerUtils {
 
     /**
      * Get the address of the server
+     *
      * @return The address of the server
      */
     public String getAddress() {
@@ -198,8 +199,9 @@ public class ServerUtils {
 
     /**
      * Swap the task card between lists
-     * @param id The id of the card
-     * @param pos The future position
+     *
+     * @param id      The id of the card
+     * @param pos     The future position
      * @param idList1 The initial list
      * @param idList2 The future list
      */
@@ -316,6 +318,7 @@ public class ServerUtils {
 
     /**
      * Register for the long polling for board updates
+     *
      * @param id The id of the board
      * @return The response of the long polling
      */
@@ -329,6 +332,7 @@ public class ServerUtils {
 
     /**
      * Register for the long polling for board's tasklists updates
+     *
      * @param id The id of the board
      * @return The response of the long polling
      */
@@ -342,6 +346,7 @@ public class ServerUtils {
 
     /**
      * Register for the long polling for taskList's task cards updates
+     *
      * @param id The id of the taskList
      * @return The response of the long polling
      */
@@ -355,6 +360,7 @@ public class ServerUtils {
 
     /**
      * Register for the long polling for taskList updates
+     *
      * @param taskListId The id of the taskList
      * @return The response of the long polling
      */
@@ -407,15 +413,16 @@ public class ServerUtils {
 
     /**
      * Update the tag
+     *
      * @param tagID The id of the tag
-     * @param tag The new tag
+     * @param tag   The new tag
      */
-    public void updateTag(Long tagID, Tag tag) {
-        ClientBuilder.newClient(new ClientConfig()) //
+    public Tag updateTag(Long tagID, Tag tag) {
+        return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("/api/tags/" + tagID)
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .put(Entity.json(tag));
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.json(tag), Tag.class);
     }
 
     /**
@@ -424,12 +431,25 @@ public class ServerUtils {
      * @param tag     new tag
      * @param boardId id of a board for which tag is created
      */
-    public void addTag(Tag tag, Long boardId) {
-        ClientBuilder.newClient(new ClientConfig())
+    public Tag addTag(Tag tag, Long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tags/")
                 .queryParam("boardId", boardId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
+    }
+
+    /**
+     * Delets tag by id
+     *
+     * @param tagId tag id
+     */
+    public void deleteTag(Long tagId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tags/" + tagId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
     }
 }
