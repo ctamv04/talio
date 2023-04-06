@@ -17,7 +17,7 @@
             prefHeight="200.0" prefWidth="300.0" styleClass="layout" stylesheets="@../styles/addTasklist.css"
             xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.controllers.popups.UpdateTagController">
-    <Text layoutX="31.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add tag">
+    <Text fx:id="text" layoutX="31.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add tag">
         <font>
             <Font size="25.0"/>
         </font>

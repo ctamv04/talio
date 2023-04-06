@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import models.Board;
+import models.Tag;
 import models.TaskList;
 
 import java.util.ArrayList;
@@ -181,8 +182,8 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public void showUpdateTagPage(EditBoardController editBoardController, Board board, Long tagId) {
-        var updateTag = viewFactory.createUpdateTag(editBoardController, board, tagId);
+    public void showUpdateTagPage(EditBoardController editBoardController, Tag tag) {
+        var updateTag = viewFactory.createUpdateTag(editBoardController, tag);
         addTagStage = new Stage(StageStyle.UNDECORATED);
         addTagStage.setScene(new Scene(updateTag.getValue()));
         addTagStage.initModality(Modality.APPLICATION_MODAL);

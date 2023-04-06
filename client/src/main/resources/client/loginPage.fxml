@@ -11,37 +11,51 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" stylesheets="@../styles/startingPage.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.LoginPageController">
-   <children>
-      <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="welcome_msg" text="WELCOME TO TALIO" textAlignment="CENTER" textOrigin="TOP" wrappingWidth="204.79998779296875">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font></Text>
-            <FontAwesomeIconView glyphName="CHILD" size="30" text="" />
-         </children>
-      </HBox>
-      <Group styleClass="text-id">
-         <children>
-            <Label fx:id="url_label" layoutY="26.94921875" prefHeight="25.0" text="http://" />
-            <TextField fx:id="url_input" layoutX="50.0" layoutY="26.94921875" prefHeight="25.0" prefWidth="280.0" promptText="Server URL" />
-            <Text fx:id="enter_url_message" fill="BLACK" layoutX="50.0" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter the server URL:" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="280.0" />
-         </children>
-      </Group>
-      <Button fx:id="done_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="170.0" text="Connect" textAlignment="CENTER">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font></Button>
-      <Button fx:id="test_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="170.0" text="Test" textAlignment="CENTER">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font></Button>
-      <StackPane alignment="TOP_CENTER" prefHeight="150.0" prefWidth="200.0">
-         <children>
-            <Text fx:id="success_message" fill="GREEN" strokeType="OUTSIDE" strokeWidth="0.0" text="Connection established!" textAlignment="CENTER" wrappingWidth="600.0" />
-            <Text fx:id="fail_message" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="No connection!" textAlignment="CENTER" wrappingWidth="600.0" />
-         </children>
-      </StackPane>
-   </children>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" spacing="20.0" stylesheets="@../styles/startingPage.css"
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="client.controllers.LoginPageController">
+    <children>
+        <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="welcome_msg" text="WELCOME TO TALIO"
+                      textAlignment="CENTER" textOrigin="TOP" wrappingWidth="204.79998779296875">
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                </Text>
+                <FontAwesomeIconView glyphName="CHILD" size="30" text=""/>
+            </children>
+        </HBox>
+        <Group styleClass="text-id">
+            <children>
+                <Label fx:id="url_label" layoutY="26.94921875" prefHeight="25.0" text="http://"/>
+                <TextField fx:id="url_input" layoutX="50.0" layoutY="26.94921875" prefHeight="25.0" prefWidth="280.0"
+                           text="localhost:8080" promptText="Server URL"/>
+                <Text fx:id="enter_url_message" fill="BLACK" layoutX="50.0" layoutY="12.0" strokeType="OUTSIDE"
+                      strokeWidth="0.0" text="Please enter the server URL:" textAlignment="CENTER" textOrigin="CENTER"
+                      wrappingWidth="280.0"/>
+            </children>
+        </Group>
+        <Button fx:id="done_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="170.0" text="Connect"
+                textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Button>
+        <Button fx:id="test_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="170.0" text="Test"
+                textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Button>
+        <StackPane alignment="TOP_CENTER" prefHeight="150.0" prefWidth="200.0">
+            <children>
+                <Text fx:id="success_message" fill="GREEN" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Connection established!" textAlignment="CENTER" wrappingWidth="600.0"/>
+                <Text fx:id="fail_message" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="No connection!"
+                      textAlignment="CENTER" wrappingWidth="600.0"/>
+            </children>
+        </StackPane>
+    </children>
 </VBox>
