@@ -52,9 +52,9 @@ public class LoginPageController implements Initializable {
     }
 
     public void validate() {
-        String url = getServer();
+        String url = url_input.getText();
 
-        if (serverUtils.healthCheck("http://" + getServer() + "/")) {
+        if (serverUtils.healthCheck("http://" + url_input.getText() + "/")) {
             serverUtils.setServer(url);
             mainCtrl.showMainPage();
         } else {
@@ -64,7 +64,7 @@ public class LoginPageController implements Initializable {
     }
 
     public void healthCheck() {
-        String url = "http://" + getServer() + "/";
+        String url = "http://" + url_input.getText() + "/";
 
         if (serverUtils.healthCheck(url)) {
             success_message.setVisible(true);
