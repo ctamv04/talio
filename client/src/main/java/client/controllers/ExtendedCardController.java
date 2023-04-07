@@ -236,8 +236,8 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private void saveNewSub(){
 
-            editOrSave();
-            newSubBox.setOpacity(0);
+        editOrSave();
+        newSubBox.setOpacity(0);
     }
 
     /**
