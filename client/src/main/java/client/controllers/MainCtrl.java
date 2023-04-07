@@ -19,8 +19,7 @@ import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -197,8 +196,8 @@ public class MainCtrl {
         return viewFactory.createTaskList(taskListId, boardController);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, ListView<Long> cards) {
-        return viewFactory.createMinimizedCard(card_id, cards);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, BoardController boardController) {
+        return viewFactory.createMinimizedCard(card_id, boardController);
     }
 
     public void showAdminLogin() {
@@ -258,6 +257,10 @@ public class MainCtrl {
 
     public List<Board> getBoards() {
         return boards;
+    }
+
+    public Scene getPrimaryScene() {
+        return primaryScene;
     }
 
 }
