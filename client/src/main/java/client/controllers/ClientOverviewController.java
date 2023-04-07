@@ -8,8 +8,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -17,6 +16,7 @@ import models.Board;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientOverviewController implements Initializable {
     private final ServerUtils serverUtils;
@@ -69,6 +69,7 @@ public class ClientOverviewController implements Initializable {
             clipboard.setContent(content);
         });
     }
+
 
     public void setBoardTitle(){
         boardTitle.setText("Talio | "+boardController.getBoard().getName()+" (#"+board.getId()+")");

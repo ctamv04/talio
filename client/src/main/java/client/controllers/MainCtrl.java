@@ -41,6 +41,8 @@ public class MainCtrl {
     private Stage cardStage;
     private Stage adminLoginStage;
 
+    private Stage shortcutsStage;
+
     private Stage deletedBoardStage;
     private Stage deletedCardStage;
     private ViewFactory viewFactory;
@@ -92,6 +94,21 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
+    public void showShortcutsPage() {
+        var shortcuts = viewFactory.createShortcutsMenu();
+        shortcutsStage = new Stage(StageStyle.UNDECORATED);
+        var scene = new Scene(shortcuts.getValue());
+        shortcutsStage.setScene(scene);
+        shortcutsStage.setTitle("Shortcuts");
+        shortcutsStage.initModality(Modality.APPLICATION_MODAL);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals(KeyCode.L)) {
+                closeShortcuts();
+            }
+        });
+        shortcutsStage.showAndWait();
+    }
+
     public void showEditBoardPage(Board board) {
         var editBoard = viewFactory.createEditBoard(board);
         editBoardStage = new Stage(StageStyle.UNDECORATED);
@@ -130,6 +147,12 @@ public class MainCtrl {
     public void closeCard() {
         if (cardStage != null)
             cardStage.close();
+    }
+
+    public void closeShortcuts() {
+        if (shortcutsStage != null) {
+            shortcutsStage.close();
+        }
     }
 
     public void showClientOverview(Board board) {

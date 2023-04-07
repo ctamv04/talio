@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class BoardController implements Initializable {
     private final MainCtrl mainCtrl;
     private Board board;
     private BoardUtils boardUtils;
+    private boolean shortcutsOpen;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -67,7 +69,21 @@ public class BoardController implements Initializable {
         initialiseScene();
         startLongPolling();
 
+
+        shortcutsOpen = false;
+        mainCtrl.getPrimaryScene().getAccelerators().put(KeyCombination.valueOf("K"), this::openShortcuts);
+
         addList_button.setOnMouseClicked(this::onAddListButton);
+    }
+
+    private void openShortcuts() {
+        if (shortcutsOpen) {
+            shortcutsOpen = false;
+            mainCtrl.closeShortcuts();
+        } else {
+            shortcutsOpen = true;
+            mainCtrl.showShortcutsPage();
+        }
     }
 
     public void onAddListButton(Event event){
