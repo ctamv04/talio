@@ -78,7 +78,11 @@ public class UpdateTagController implements Initializable {
             tag.setId(this.tag.getId());
             editBoardController.getTags().put(this.tag.getId(), tag);
         } else {
-            Long id = Collections.max(editBoardController.getTags().keySet()) + 1;
+            Long id = 1L;
+            if (!editBoardController.getTags().isEmpty()) {
+                id += Collections.max(editBoardController.getTags().keySet());
+            }
+            
             tag.setId(id);
             editBoardController.getTags().put(id, tag);
         }
