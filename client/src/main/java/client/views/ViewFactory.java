@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 import javafx.util.Pair;
 import models.Board;
+import models.Tag;
 
 public class ViewFactory {
     private final MyFXML FXML;
@@ -77,7 +78,7 @@ public class ViewFactory {
         return FXML.load(BoardDeletedController.class, "/client/cardDeleted.fxml");
     }
 
-    public Pair<AddTagController, Parent> createAddTag(Board board) {
-        return FXML.load(AddTagController.class, "/client/addTag.fxml", board);
+    public Pair<UpdateTagController, Parent> createUpdateTag(EditBoardController editBoardController, Tag tag) {
+        return FXML.load(UpdateTagController.class, "/client/addTag.fxml", editBoardController, tag);
     }
 }

@@ -30,6 +30,7 @@ import javafx.util.BuilderFactory;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import models.Board;
+import models.Tag;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -78,10 +79,10 @@ public class MyFXML {
                 return new AddTaskListController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0]);
 
-            if (type == AddTagController.class)
-                return new AddTagController(injector.getInstance(ServerUtils.class),
+            if (type == UpdateTagController.class)
+                return new UpdateTagController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), injector.getInstance(ExtendedCardUtils.class),
-                        (Board) params[0]);
+                        (EditBoardController) params[0], (Tag) params[1]);
 
             if (type == BoardController.class)
                 return new BoardController(injector.getInstance(ServerUtils.class),
