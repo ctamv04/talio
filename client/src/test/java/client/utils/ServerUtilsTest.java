@@ -3,13 +3,16 @@ package client.utils;
 import client.utils.ServerUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import models.Board;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
+import org.mockserver.model.Body;
 
 import java.util.List;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -78,7 +81,7 @@ public class ServerUtilsTest {
     }
 
     @Test
-    public void testGetBoardsByIds() {
+    public void testGetBoardsByIds() throws JsonProcessingException {
         // Set up expected
         List<Board> expectedBoards=List.of(
                 new Board("Board1"),
@@ -90,14 +93,18 @@ public class ServerUtilsTest {
         expectedBoards.get(2).setId(3L);
 
         // Set up mocking
-        mockServer.when(request().withMethod("POST").withPath("api/boards/boards"))
+        List<Long> ids=List.of(1L,2L,3L);
+        var id = ids.toString();
+        var test = objectMapper.writeValueAsString(ids);
+        var test2 = String.valueOf(Entity.entity(ids, APPLICATION_JSON));
+        mockServer.when(request().withMethod("POST").withPath("api/boards/boards").withBody(String.valueOf(Entity.entity(ids, APPLICATION_JSON))))
                 .respond(response()
                         .withStatusCode(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(expectedBoards.toString()));
 
         // Get actual, check
-        List<Board> actualBoards = sut.getBoardsByIds(List.of(1L,2L,3L));
+        var actualBoards = sut.getBoardsByIds(List.of(1L,2L,3L));
         assertEquals(expectedBoards,actualBoards);
     }
 
