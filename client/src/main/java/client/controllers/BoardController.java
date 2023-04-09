@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import lombok.Data;
@@ -67,7 +68,22 @@ public class BoardController implements Initializable {
         initialiseScene();
         startLongPolling();
 
+        mainCtrl.getPrimaryScene().getAccelerators().put(KeyCombination.valueOf("?"), this::showShortcuts);
+
+        mainCtrl.getPrimaryScene().setOnMouseClicked(event -> {
+            mainCtrl.closeShortcuts();
+        });
+
         addList_button.setOnMouseClicked(this::onAddListButton);
+    }
+
+    /**
+     * Show shortcuts and overlay.
+     */
+    private void showShortcuts() {
+        overlay.setVisible(true);
+        mainCtrl.showShortcutsPage();
+        overlay.setVisible(false);
     }
 
     public void onAddListButton(Event event){

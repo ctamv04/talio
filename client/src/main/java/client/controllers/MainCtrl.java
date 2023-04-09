@@ -21,8 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -44,6 +43,8 @@ public class MainCtrl {
     private Stage editBoardStage;
     private Stage cardStage;
     private Stage adminLoginStage;
+
+    private Stage shortcutsStage;
 
     private Stage deletedBoardStage;
     private Stage deletedCardStage;
@@ -103,6 +104,15 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
+    public void showShortcutsPage() {
+        var shortcuts = viewFactory.createShortcutsMenu();
+        shortcutsStage = new Stage(StageStyle.UNDECORATED);
+        var scene = new Scene(shortcuts.getValue());
+        shortcutsStage.setScene(scene);
+        shortcutsStage.setTitle("Shortcuts");
+        shortcutsStage.showAndWait();
+    }
+
     public void showEditBoardPage(Board board) {
         var editBoard = viewFactory.createEditBoard(board);
         editBoardStage = new Stage(StageStyle.UNDECORATED);
@@ -141,6 +151,12 @@ public class MainCtrl {
     public void closeCard() {
         if (cardStage != null)
             cardStage.close();
+    }
+
+    public void closeShortcuts() {
+        if (shortcutsStage != null) {
+            shortcutsStage.close();
+        }
     }
 
     public void showClientOverview(Board board) {
@@ -207,8 +223,8 @@ public class MainCtrl {
         return viewFactory.createTaskList(taskListId, boardController);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, ListView<Long> cards) {
-        return viewFactory.createMinimizedCard(card_id, cards);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, BoardController boardController) {
+        return viewFactory.createMinimizedCard(card_id, boardController);
     }
 
     public void showAdminLogin() {
@@ -268,6 +284,10 @@ public class MainCtrl {
 
     public List<Board> getBoards() {
         return boards;
+    }
+
+    public Scene getPrimaryScene() {
+        return primaryScene;
     }
 
     public void setBoards(List<Board> boards) {
