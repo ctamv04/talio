@@ -20,7 +20,7 @@ public class TaskCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name="Untitled";
-    private String description="Fill the description";
+    private String description="";
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private TaskList taskList;

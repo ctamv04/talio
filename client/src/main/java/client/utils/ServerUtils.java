@@ -37,10 +37,6 @@ public class ServerUtils {
     private String SERVER;
     private String address;
 
-    public String getAddress() {
-        return address;
-    }
-
     /**
      * Constructor for server utils with no parameters. Port is set to default 8080
      */
@@ -52,9 +48,19 @@ public class ServerUtils {
     /**
      * Sets the server url
      */
+    @SuppressWarnings("all")
     public void setServer(String address) {
         SERVER = "http://" + address + "/";
         this.address = address;
+    }
+
+    /**
+     * Get the address of the server
+     *
+     * @return The address of the server
+     */
+    public String getAddress() {
+        return address;
     }
 
     /**
@@ -97,7 +103,7 @@ public class ServerUtils {
      *
      * @param id id of the board
      * @return board
-     * @throws WebApplicationException
+     * @throws WebApplicationException if the id was not found
      */
     public Board getBoard(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -109,10 +115,26 @@ public class ServerUtils {
     }
 
     /**
+     * Returns boards with specified ids
+     *
+     * @param ids list of ids
+     * @return list of boards
+     */
+    public List<Board> getBoardsByIds(List<Long> ids) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/boards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(ids, APPLICATION_JSON), new GenericType<>() {
+                });
+    }
+
+    /**
      * Removes the board with a given id
      *
      * @param boardId id of the board
      */
+    @SuppressWarnings("all")
     public void deleteBoard(Long boardId) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/" + boardId)
@@ -124,7 +146,7 @@ public class ServerUtils {
      *
      * @param id id of the tasklist
      * @return tasklist
-     * @throws WebApplicationException
+     * @throws WebApplicationException if the id was not found
      */
     public TaskList getTaskList(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -140,7 +162,7 @@ public class ServerUtils {
      *
      * @param taskID id of the taskcard
      * @return taskcard
-     * @throws WebApplicationException
+     * @throws WebApplicationException if the id was not found
      */
     public TaskCard getTaskCard(Long taskID) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -175,6 +197,14 @@ public class ServerUtils {
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
+    /**
+     * Swap the task card between lists
+     *
+     * @param id      The id of the card
+     * @param pos     The future position
+     * @param idList1 The initial list
+     * @param idList2 The future list
+     */
     public void swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/swap/" + id + "/" + pos)
@@ -188,40 +218,11 @@ public class ServerUtils {
      *
      * @param taskID ID of the TaskCard
      */
+    @SuppressWarnings("all")
     public void deleteMinimizedCard(Long taskID) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasks/" + taskID)
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
-    }
-
-    /**
-     * Returns tasklists for a given board
-     *
-     * @param boardId id of the board
-     * @return list of tasklists
-     */
-    public List<TaskList> getTaskLists(Long boardId) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/taskLists/" + boardId)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {
-                });
-    }
-
-    /**
-     * Returns taskcards for a given tasklist
-     *
-     * @param taskListId id of the tasklist
-     * @return list of taskcards
-     */
-    public List<TaskCard> getTaskCards(Long taskListId) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tasklists/taskCards/" + taskListId)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {
-                });
     }
 
     /**
@@ -259,10 +260,9 @@ public class ServerUtils {
      * Removes tasklist wth a given id
      *
      * @param taskListId id of the tasklist
-     * @return removed tasklist
      */
-    public TaskList removeTaskList(Long taskListId) {
-        return ClientBuilder.newClient(new ClientConfig())
+    public void removeTaskList(Long taskListId) {
+        ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/" + taskListId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -274,7 +274,7 @@ public class ServerUtils {
      *
      * @param boardId id of the board
      * @return list of ids
-     * @throws WebApplicationException
+     * @throws WebApplicationException if the id was not found
      */
     public List<Long> getTaskListsId(Long boardId) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig())
@@ -290,7 +290,7 @@ public class ServerUtils {
      *
      * @param listId id of the tasklist
      * @return list of ids
-     * @throws WebApplicationException
+     * @throws WebApplicationException if the id was not found
      */
     public List<Long> getTaskCardsId(Long listId) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig())
@@ -306,10 +306,9 @@ public class ServerUtils {
      *
      * @param taskList new tasklist
      * @param boardId  id of the board
-     * @return tasklist
      */
-    public TaskList addTaskList(TaskList taskList, Long boardId) {
-        return ClientBuilder.newClient(new ClientConfig())
+    public void addTaskList(TaskList taskList, Long boardId) {
+        ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/tasklists/")
                 .queryParam("boardId", boardId)
                 .request(APPLICATION_JSON)
@@ -317,6 +316,12 @@ public class ServerUtils {
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
+    /**
+     * Register for the long polling for board updates
+     *
+     * @param id The id of the board
+     * @return The response of the long polling
+     */
     public Response getBoardUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/" + id + "/details-updates") //
@@ -325,6 +330,12 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
+    /**
+     * Register for the long polling for board's tasklists updates
+     *
+     * @param id The id of the board
+     * @return The response of the long polling
+     */
     public Response getTaskListIdsUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasklists/" + id + "/ids-updates") //
@@ -333,6 +344,12 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
+    /**
+     * Register for the long polling for taskList's task cards updates
+     *
+     * @param id The id of the taskList
+     * @return The response of the long polling
+     */
     public Response getTaskCardIdsUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/" + id + "/ids-updates") //
@@ -341,6 +358,12 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
+    /**
+     * Register for the long polling for taskList updates
+     *
+     * @param taskListId The id of the taskList
+     * @return The response of the long polling
+     */
     public Response getTaskListUpdates(Long taskListId) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasklists/" + taskListId + "/details-updates") //
@@ -363,14 +386,6 @@ public class ServerUtils {
                 });
     }
 
-    public Response getTaskCardUpdates(Long taskCardId) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasks/" + taskCardId + "/details-updates") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(Response.class);
-    }
-
     /**
      * Updates the TaskList with a specified ID
      *
@@ -383,17 +398,9 @@ public class ServerUtils {
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
-    //    public Long getBoardId(Long cardId){
-    //        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/tasks/board/" + cardId)
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .get(Long.class);
-//    }
-
     /**
-     * @param cardID
-     * @return
+     * @param cardID The id of the card
+     * @return The set of tags
      */
     public Set<Tag> getBoardTags(Long cardID) {
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -404,12 +411,18 @@ public class ServerUtils {
                 });
     }
 
-    public void updateTag(Long tagID, Tag tag) {
-        ClientBuilder.newClient(new ClientConfig()) //
+    /**
+     * Update the tag
+     *
+     * @param tagID The id of the tag
+     * @param tag   The new tag
+     */
+    public Tag updateTag(Long tagID, Tag tag) {
+        return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("/api/tags/" + tagID)
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .put(Entity.json(tag));
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.json(tag), Tag.class);
     }
 
     /**
@@ -417,7 +430,6 @@ public class ServerUtils {
      *
      * @param tag     new tag
      * @param boardId id of a board for which tag is created
-     * @return new tag
      */
     public Tag addTag(Tag tag, Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -426,5 +438,18 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
+    }
+
+    /**
+     * Delets tag by id
+     *
+     * @param tagId tag id
+     */
+    public void deleteTag(Long tagId) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tags/" + tagId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
     }
 }

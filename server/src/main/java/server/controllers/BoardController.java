@@ -61,6 +61,18 @@ public class BoardController {
     }
 
     /**
+     * Get by ids method
+     *
+     * @param ids list of ids
+     * @return response with list of boards
+     */
+    @PostMapping("/boards")
+    public ResponseEntity<List<Board>> getByIds(@RequestBody List<Long> ids) {
+        List<Board> boards = boardRepository.findAllById(ids);
+        return ResponseEntity.ok(boards);
+    }
+
+    /**
      * Get task lists ids of the board
      *
      * @param id The id of the board containing the task lists

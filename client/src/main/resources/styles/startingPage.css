@@ -4,18 +4,12 @@
 }
 
 .button {
-    -fx-color: #383838;
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 12px;
-}
-
-.text-id {
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 15px;
-}
-
-.welcome_msg {
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 20px;
+    -fx-background-color: #000;
+    -fx-text-fill: #FFF;
     -fx-font-weight: bold;
+
+}
+
+.button:hover {
+    -fx-cursor: hand;
 }

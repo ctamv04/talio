@@ -15,16 +15,19 @@
  */
 package client.controllers;
 
+import client.controllers.popups.EditBoardController;
 import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import models.Board;
+import models.Tag;
 import models.TaskList;
 
 import java.util.ArrayList;
@@ -47,12 +50,19 @@ public class MainCtrl {
     private Stage deletedCardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
+
     private boolean isAdmin;
-    private List<Board> boards = new ArrayList<>();
+    private List<Board> boards;
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
         this.viewFactory = viewFactory;
+
+        var iconResource = getClass().getResource("/images/icon.png");
+        if (iconResource != null)
+            this.primaryStage.getIcons().add(new Image(iconResource.toString()));
+
+        this.boards = new ArrayList<>();
         showLoginPage();
     }
 
@@ -188,10 +198,10 @@ public class MainCtrl {
             addTaskListStage.close();
     }
 
-    public void showAddTagPage(Board board) {
-        var addTag = viewFactory.createAddTag(board);
+    public void showUpdateTagPage(EditBoardController editBoardController, Tag tag) {
+        var updateTag = viewFactory.createUpdateTag(editBoardController, tag);
         addTagStage = new Stage(StageStyle.UNDECORATED);
-        addTagStage.setScene(new Scene(addTag.getValue()));
+        addTagStage.setScene(new Scene(updateTag.getValue()));
         addTagStage.initModality(Modality.APPLICATION_MODAL);
         addTagStage.showAndWait();
     }
@@ -260,11 +270,11 @@ public class MainCtrl {
             deletedCardStage.close();
     }
 
-    public void updateRole() {
-        this.isAdmin = true;
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
-    public boolean isAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
@@ -280,4 +290,7 @@ public class MainCtrl {
         return primaryScene;
     }
 
+    public void setBoards(List<Board> boards) {
+        this.boards = boards;
+    }
 }
