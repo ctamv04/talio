@@ -1,5 +1,8 @@
-package client.controllers;
+package client.utils;
 
+import client.controllers.BoardController;
+import client.controllers.MainCtrl;
+import client.controllers.TaskListController;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import javafx.scene.Parent;

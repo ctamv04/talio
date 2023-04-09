@@ -94,10 +94,7 @@ public class ServerUtilsTest {
 
         // Set up mocking
         List<Long> ids=List.of(1L,2L,3L);
-        var id = ids.toString();
-        var test = objectMapper.writeValueAsString(ids);
-        var test2 = String.valueOf(Entity.entity(ids, APPLICATION_JSON));
-        mockServer.when(request().withMethod("POST").withPath("api/boards/boards").withBody(String.valueOf(Entity.entity(ids, APPLICATION_JSON))))
+        mockServer.when(request().withMethod("POST").withPath("/api/boards/boards").withBody(objectMapper.writeValueAsString(ids)))
                 .respond(response()
                         .withStatusCode(200)
                         .withHeader("Content-Type", "application/json")
