@@ -25,9 +25,6 @@ public class TaskCard {
     @JsonIgnore
     private TaskList taskList;
 
-    @Column(name = "task_list_id", insertable = false, updatable = false)
-    private Long taskListId;
-
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
@@ -151,9 +148,5 @@ public class TaskCard {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
-    }
-
-    public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
     }
 }

@@ -91,10 +91,11 @@ public class TaskListController implements Initializable {
 
                         if (!boardController.getTaskCardCache().containsKey(item)) {
 
-                            var taskCardPair = mainCtrl.createMinimizedCard(item, boardController);
+                            var taskCardPair = mainCtrl.createMinimizedCard(item, boardController, TaskListController.this);
 
                             boardController.getTaskCardCache().put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
+                            boardController.getMinimizedCardControllerMap().put(item,taskCardPair.getKey());
                         }
                         setGraphic(boardController.getTaskCardCache().get(item));
                     }
@@ -297,6 +298,9 @@ public class TaskListController implements Initializable {
             success = true;
             taskCards.getSelectionModel().clearSelection();
             taskList_name.getParent().requestFocus();
+            boardController.getMinimizedCardControllerMap().get(id).setTaskListController(
+                    boardController.getTaskListControllerMap().get(taskListId)
+            );
         }
         event.setDropCompleted(success);
         event.consume();

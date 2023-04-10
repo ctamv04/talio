@@ -28,7 +28,8 @@ public class MinimizedCardController implements Initializable {
     private final Long taskCardId;
     private final WebsocketUtils websocketUtils;
 
-    private BoardController boardController;
+    private final BoardController boardController;
+    private TaskListController taskListController;
 
 
     @FXML
@@ -52,12 +53,14 @@ public class MinimizedCardController implements Initializable {
 
     @Inject
     public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId,
-                                   WebsocketUtils websocketUtils, BoardController boardController) {
+                                   WebsocketUtils websocketUtils, BoardController boardController,
+                                   TaskListController taskListController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskCardId = taskCardId;
         this.websocketUtils = websocketUtils;
         this.boardController = boardController;
+        this.taskListController = taskListController;
     }
 
     @Override
@@ -164,26 +167,16 @@ public class MinimizedCardController implements Initializable {
 
     public void Highlight() {
         minBG.setEffect(new Bloom(0.1));
-        TaskListController controller = getTaskListController();
-        controller.taskCards.requestFocus();
-        controller.taskCards.getSelectionModel().select(this.taskCardId);
+        taskListController.taskCards.requestFocus();
+        taskListController.taskCards.getSelectionModel().select(this.taskCardId);
     }
 
     public void StopHighlight() {
         minBG.setEffect(null);
-        TaskListController controller = getTaskListController();
-        controller.taskCards.getSelectionModel().clearSelection();
+        taskListController.taskCards.getSelectionModel().clearSelection();
     }
 
-    private TaskListController getTaskListController() {
-        TaskCard card = serverUtils.getTaskCard(taskCardId);
-        Long listId = card.getTaskListId();
-        return boardController.getTaskListControllers().stream().filter(cntrl -> cntrl.getTaskListId().equals(listId)).findFirst().get();
+    public void setTaskListController(TaskListController taskListController) {
+        this.taskListController = taskListController;
     }
-
-    public Long getTaskCardId() {
-        return taskCardId;
-    }
-
-
 }

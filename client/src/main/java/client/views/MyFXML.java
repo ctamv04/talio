@@ -24,7 +24,6 @@ import client.utils.WebsocketUtils;
 import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.ListView;
 import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 import javafx.util.Callback;
@@ -108,7 +107,8 @@ public class MyFXML {
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0],
-                        injector.getInstance(WebsocketUtils.class), (BoardController) params[1]);
+                        injector.getInstance(WebsocketUtils.class), (BoardController) params[1],
+                        (TaskListController) params[2]);
 
             if (type == TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),

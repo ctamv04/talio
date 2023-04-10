@@ -85,6 +85,7 @@ public class MainCtrl {
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle("Starting Page");
         primaryStage.setMaximized(true);
+        startingPage.getValue().requestFocus();
         primaryStage.show();
     }
 
@@ -223,8 +224,9 @@ public class MainCtrl {
         return viewFactory.createTaskList(taskListId, boardController);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, BoardController boardController) {
-        return viewFactory.createMinimizedCard(card_id, boardController);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, BoardController boardController,
+                                                                     TaskListController taskListController) {
+        return viewFactory.createMinimizedCard(card_id, boardController, taskListController);
     }
 
     public void showAdminLogin() {

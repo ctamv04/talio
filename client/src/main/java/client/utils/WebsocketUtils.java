@@ -1,6 +1,7 @@
 package client.utils;
 
 import com.google.inject.Inject;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -40,17 +41,18 @@ public class WebsocketUtils {
         return null;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     public <T> void registerForMessages(String destination, Class<T> type, Consumer<T> consumer){
         if(session==null)
             return;
         subscriptions.put(destination,session.subscribe(destination, new StompFrameHandler() {
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            @NonNull
+            public Type getPayloadType(@NonNull StompHeaders headers) {
                 return type;
             }
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
                 consumer.accept((T) payload);
             }
         }));
