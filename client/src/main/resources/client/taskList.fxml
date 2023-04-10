@@ -13,41 +13,40 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefWidth="243.0" spacing="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController">
-   <Pane>
-      <children>
-         <HBox alignment="CENTER_LEFT" layoutX="9.0" layoutY="5.0" spacing="10.0">
-            <children>
-             <Label fx:id="taskList_name" text="Label">
-                  <font>
-                     <Font size="14.0" />
-                  </font>
-             </Label>
-               <FontAwesomeIconView glyphName="PENCIL" />
-            </children>
-         </HBox>
-         <TextField fx:id="editTaskList_Name" onMouseEntered="#editTaskListNameHoverIn" onMouseExited="#editTaskListNameHoverOut" opacity="0.0" prefHeight="30.0" prefWidth="211.0">
-            <font>
-               <Font size="14.0" />
-            </font>
-            <padding>
-               <Insets bottom="5.0" left="9.0" top="5.0" />
-            </padding>
-            <cursor>
-               <Cursor fx:constant="TEXT" />
-            </cursor>
-         </TextField>
-       <Button layoutX="217.0" layoutY="3.0" mnemonicParsing="false" onAction="#removeTaskList" prefHeight="14.0" prefWidth="17.0" styleClass="close-button">
-           <graphic>
-               <FontAwesomeIconView glyphName="TIMES" size="10" />
-           </graphic>
-       </Button>
-      </children>
-   </Pane>
+<VBox fx:id="root" alignment="CENTER" prefWidth="243.0" spacing="10.0" stylesheets="@../styles/board.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.TaskListController">
+    <Pane>
+        <HBox alignment="CENTER_LEFT" layoutX="9.0" layoutY="5.0" spacing="10.0">
+            <Label fx:id="taskList_name" text="Label">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+            <FontAwesomeIconView glyphName="PENCIL"/>
+        </HBox>
+        <TextField fx:id="editTaskList_Name" onMouseEntered="#editTaskListNameHoverIn"
+                   onMouseExited="#editTaskListNameHoverOut" opacity="0.0" prefHeight="30.0" prefWidth="211.0">
+           <font>
+               <Font size="14.0"/>
+           </font>
+           <padding>
+               <Insets bottom="5.0" left="9.0" top="5.0"/>
+           </padding>
+           <cursor>
+               <Cursor fx:constant="TEXT"/>
+           </cursor>
+        </TextField>
+        <Button layoutX="217.0" layoutY="3.0" mnemonicParsing="false" onAction="#removeTaskList" prefHeight="14.0"
+                prefWidth="17.0" style="-fx-background-color: #000;" styleClass="close-button">
+            <graphic>
+                <FontAwesomeIconView glyphName="TIMES" size="10" style="-fx-fill: #fff; -fx-font-family: FontAwesome;"
+                                     styleClass="button"/>
+            </graphic>
+        </Button>
+    </Pane>
     <ScrollPane fx:id="scrollPane" prefHeight="300.0" prefWidth="243.0" vbarPolicy="ALWAYS">
         <Pane fx:id="indicator_pane" prefHeight="302.0" prefWidth="230.0">
             <ListView fx:id="taskCards" prefHeight="400.0" prefWidth="228.0" />
         </Pane>
     </ScrollPane>
-   <Button mnemonicParsing="false" onAction="#addTaskCard" text="Add " />
+   <Button mnemonicParsing="false" onAction="#addTaskCard" style="-fx-background-color: #000; -fx-text-fill: #fff; -fx-font-weight: bold;" text="Add " />
 </VBox>

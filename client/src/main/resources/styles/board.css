@@ -1,3 +1,6 @@
 .layout{
     -fx-background-color: blue;
 }
+.button:hover {
+    -fx-cursor: hand
+}
