@@ -67,6 +67,9 @@ public class MinimizedCardController implements Initializable {
         startWebsockets();
     }
 
+    /**
+     *
+     */
     private void initializeScene() {
         try {
             TaskCard taskCard = serverUtils.getTaskCard(taskCardId);
@@ -82,6 +85,10 @@ public class MinimizedCardController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @param card
+     */
     private void descIndicator(TaskCard card) {
 
         if (card.getDescription() != null && !card.getDescription().isBlank()) {
@@ -92,6 +99,10 @@ public class MinimizedCardController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @param card
+     */
     private void subsIndicator(TaskCard card) {
 
         if (card.getSubs() != null && card.getSubs().size() > 0) {
@@ -113,6 +124,10 @@ public class MinimizedCardController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @param card
+     */
     private void tagsIndicator(TaskCard card) {
         if(card.getTags() != null && card.getTags().size() != 0){
             var tags = card.getTags();
@@ -126,17 +141,27 @@ public class MinimizedCardController implements Initializable {
                 if( i == 0 && ((Tag) tagArray[i]).getColor() != null)
                     tag1.setStyle("-fx-background-color: " + ((Tag) tagArray[i]).getColor());
 
-                if( i == 1 && ((Tag) tagArray[i]).getColor() != null)
-                    tag2.setStyle("-fx-background-color: " + ((Tag) tagArray[i]).getColor());
-
-                if( i == 2 && ((Tag) tagArray[i]).getColor() != null)
-                    tag3.setStyle("-fx-background-color: " + ((Tag) tagArray[i]).getColor());
+                tagsIndicatorHelper(tagArray, i);
             }
 
             tagBox.setOpacity(1L);
         }else{
             tagBox.setOpacity(0L);
         }
+    }
+
+    /**
+     *
+     * @param tagArray
+     * @param index
+     */
+    private void tagsIndicatorHelper(Object[] tagArray, int index){
+
+        if( index == 1 && ((Tag) tagArray[index]).getColor() != null)
+            tag2.setStyle("-fx-background-color: " + ((Tag) tagArray[index]).getColor());
+
+        if( index == 2 && ((Tag) tagArray[index]).getColor() != null)
+            tag3.setStyle("-fx-background-color: " + ((Tag) tagArray[index]).getColor());
     }
 
     private void startWebsockets() {
@@ -159,17 +184,20 @@ public class MinimizedCardController implements Initializable {
         websocketUtils.unsubscribeFromMessages("/topic/taskcard/"+taskCardId);
     }
 
+    /**
+     *
+     */
     public void delete() {
         serverUtils.deleteMinimizedCard(this.taskCardId);
     }
 
     public void Highlight() {
-        taskListController.taskCards.requestFocus();
-        taskListController.taskCards.getSelectionModel().select(this.taskCardId);
+        taskListController.getTaskCards().requestFocus();
+        taskListController.getTaskCards().getSelectionModel().select(this.taskCardId);
     }
 
     public void StopHighlight() {
-        taskListController.taskCards.getSelectionModel().clearSelection();
+        taskListController.getTaskCards().getSelectionModel().clearSelection();
     }
 
     public void setTaskListController(TaskListController taskListController) {

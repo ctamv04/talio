@@ -46,7 +46,7 @@ public class TaskListController implements Initializable {
     @FXML
     private TextField editTaskList_Name;
     @FXML
-    public ListView<Long> taskCards;
+    private ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
     private final Line line = new Line();
     private int entries = 0;
@@ -393,5 +393,13 @@ public class TaskListController implements Initializable {
         updatedTaskList.setName(taskList_name.getText());
         serverUtils.updateTaskList(taskListId, updatedTaskList);
 
+    }
+
+    /**
+     * Gets the taskCards list view.
+     * @return taskCards list view.
+     */
+    public ListView<Long> getTaskCards() {
+        return taskCards;
     }
 }
