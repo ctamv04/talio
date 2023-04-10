@@ -243,30 +243,6 @@ public class MainPageController implements Initializable {
     }
 
     /**
-     * Saves state of the current session. Called when user leaves the main page or exits the app.
-     *
-     * @throws IOException exception
-     */
-    public void saveState() throws IOException {
-        Path dir = Paths.get("../client/src/main/java/client/sessions_info/");
-        if (!Files.exists(dir)) {
-            Files.createDirectory(dir);
-        }
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file_path));
-        String result;
-        if (!mainCtrl.getIsAdmin()) {
-            result = String.join(" ", mainCtrl.getBoards().stream().
-                map(x -> String.valueOf(x.getId())).toArray(String[]::new));
-        } else {
-            result = "@";
-        }
-
-        writer.write(result);
-        writer.close();
-    }
-
-    /**
      * Loads state for the current session.
      *
      * @throws FileNotFoundException thrown if no file is found
@@ -277,17 +253,34 @@ public class MainPageController implements Initializable {
         if (reader.hasNextLine()) {
             String[] rawData = reader.nextLine().split(" ");
 
-            if (rawData[0].equals("@")) {
-                mainCtrl.setIsAdmin(true);
-            } else {
-                List<Long> ids = new ArrayList<>();
-                for (String id : rawData) {
-                    ids.add(Long.valueOf(id));
-                }
-                mainCtrl.setBoards(serverUtils.getBoardsByIds(ids));
+            List<Long> ids = new ArrayList<>();
+            for (String id : rawData) {
+                ids.add(Long.valueOf(id));
             }
+            mainCtrl.setBoards(serverUtils.getBoardsByIds(ids));
         }
 
         reader.close();
+    }
+
+    /**
+     * Saves state of the current session. Called when user leaves the main page or exits the app.
+     *
+     * @throws IOException exception
+     */
+    public void saveState() throws IOException {
+        if (!mainCtrl.getIsAdmin()) {
+            Path dir = Paths.get("../client/src/main/java/client/sessions_info/");
+            if (!Files.exists(dir)) {
+                Files.createDirectory(dir);
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file_path));
+            String result = String.join(" ", mainCtrl.getBoards().stream().
+                map(x -> String.valueOf(x.getId())).toArray(String[]::new));
+
+            writer.write(result);
+            writer.close();
+        }
     }
 }
