@@ -10,8 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.effect.Bloom;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -166,13 +164,11 @@ public class MinimizedCardController implements Initializable {
     }
 
     public void Highlight() {
-        minBG.setEffect(new Bloom(0.1));
         taskListController.taskCards.requestFocus();
         taskListController.taskCards.getSelectionModel().select(this.taskCardId);
     }
 
     public void StopHighlight() {
-        minBG.setEffect(null);
         taskListController.taskCards.getSelectionModel().clearSelection();
     }
 

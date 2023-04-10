@@ -16,7 +16,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
@@ -24,7 +23,6 @@ import models.TaskList;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +35,7 @@ public class TaskListController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskListId;
     private final BoardController boardController;
+    @FXML
     private Pane root;
     @FXML
     private Pane indicator_pane;
@@ -51,11 +50,6 @@ public class TaskListController implements Initializable {
     private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
     private final Line line = new Line();
     private int entries = 0;
-
-    private final Runnable moveDownRunnable = () -> {
-        Platform.runLater(this::moveDown);
-    };
-
 
     @Inject
     public TaskListController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskListId, BoardController boardController) {
@@ -111,69 +105,55 @@ public class TaskListController implements Initializable {
 
         shortcuts();
         initialiseDragAndDrop();
-    }
 
-    /**
-     * Moves the card up one position.
-     */
-    public void moveUp() {
-        Long cardId = taskCards.getSelectionModel().getSelectedItem();
-        System.out.println(cardId);
-        if (cardId != null) {
-            TaskCard card = serverUtils.getTaskCard(cardId);
-            int pos = card.getPosition();
+        taskCards.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+                taskCards.getSelectionModel().selectFirst();
+        });
+        taskCards.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue)
+                taskCards.getSelectionModel().clearSelection();
+        });
 
-            System.out.println(pos);
-
-            if (pos != 0) {
-                pos--;
+        KeyCombination keyCombinationUp = new KeyCodeCombination(KeyCode.UP, KeyCombination.SHIFT_DOWN);
+        KeyCombination keyCombinationDown = new KeyCodeCombination(KeyCode.DOWN, KeyCombination.SHIFT_DOWN);
+        root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(taskCards.getSelectionModel().getSelectedItem()==null)
+                return;
+            if (keyCombinationUp.match(event)) {
+                int index=taskCards.getSelectionModel().getSelectedIndex();
+                if(index==0)
+                    return;
+                serverUtils.swapBetweenLists(taskCards.getSelectionModel().getSelectedItem(),index-1,taskListId,taskListId);
+                event.consume();
             }
-
-            serverUtils.swapBetweenLists(cardId, pos, taskListId, taskListId);
-            System.out.println(pos);
-        }
-    }
-
-    /**
-     * Moves the card down one position.
-     */
-    public void moveDown() {
-        System.out.println("down");
-        Long cardId = taskCards.getSelectionModel().getSelectedItem();
-
-        if (cardId != null) {
-            TaskCard card = serverUtils.getTaskCard(cardId);
-            int pos = card.getPosition();
-
-            System.out.println(pos);
-
-            if (pos != taskCardControllers.size() - 1) {
-                pos++;
+            if (keyCombinationDown.match(event)) {
+                int index=taskCards.getSelectionModel().getSelectedIndex();
+                if(index==taskCards.getItems().size()-1)
+                    return;
+                serverUtils.swapBetweenLists(taskCards.getSelectionModel().getSelectedItem(),index+1,taskListId,taskListId);
+                event.consume();
             }
-
-            serverUtils.swapBetweenLists(cardId, pos, taskListId, taskListId);
-            System.out.println(pos);
-        }
+        });
     }
 
     /**
      * Sets up keyboard shortcuts.
      */
     private void shortcuts() {
-        KeyCombination downKey = new KeyCodeCombination(KeyCode.I);
-        mainCtrl.getPrimaryScene().getAccelerators().put(downKey, this::moveDown);
-        KeyCombination upKey = new KeyCodeCombination(KeyCode.O);
-        mainCtrl.getPrimaryScene().getAccelerators().put(upKey, this::moveUp);
-
-
         taskCards.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ENTER:
                     openEditWindow();
                     break;
+                case LEFT:
+                case RIGHT:
+                    taskCards.getSelectionModel().clearSelection();
+                    break;
                 case DELETE:
                 case BACK_SPACE:
-                    serverUtils.deleteMinimizedCard(taskCards.getSelectionModel().getSelectedItem());
+                    if(taskCards.getSelectionModel().getSelectedItem()!=null)
+                        serverUtils.deleteMinimizedCard(taskCards.getSelectionModel().getSelectedItem());
                     break;
             }
         });
@@ -413,13 +393,5 @@ public class TaskListController implements Initializable {
         updatedTaskList.setName(taskList_name.getText());
         serverUtils.updateTaskList(taskListId, updatedTaskList);
 
-    }
-
-    /**
-     * taskListId's getter.
-     * @return the taskListID.
-     */
-    public Long getTaskListId() {
-        return taskListId;
     }
 }
