@@ -68,10 +68,6 @@ public class BoardController implements Initializable {
 
         mainCtrl.getPrimaryScene().getAccelerators().put(KeyCombination.valueOf("?"), this::showShortcuts);
 
-        mainCtrl.getPrimaryScene().setOnMouseClicked(event -> {
-            mainCtrl.closeShortcuts();
-        });
-
         addList_button.setOnMouseClicked(this::onAddListButton);
     }
 

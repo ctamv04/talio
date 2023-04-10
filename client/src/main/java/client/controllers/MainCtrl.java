@@ -109,6 +109,12 @@ public class MainCtrl {
         var scene = new Scene(shortcuts.getValue());
         shortcutsStage.setScene(scene);
         shortcutsStage.setTitle("Shortcuts");
+        shortcutsStage.initModality(Modality.APPLICATION_MODAL);
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals(KeyCode.SLASH)) {
+                closeShortcuts();
+            }
+        });
         shortcutsStage.showAndWait();
     }
 
