@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Bloom;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -27,7 +26,8 @@ public class MinimizedCardController implements Initializable {
     private final Long taskCardId;
     private final WebsocketUtils websocketUtils;
 
-    private BoardController boardController;
+    private final BoardController boardController;
+    private TaskListController taskListController;
 
 
     @FXML
@@ -51,12 +51,14 @@ public class MinimizedCardController implements Initializable {
 
     @Inject
     public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId,
-                                   WebsocketUtils websocketUtils, BoardController boardController) {
+                                   WebsocketUtils websocketUtils, BoardController boardController,
+                                   TaskListController taskListController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskCardId = taskCardId;
         this.websocketUtils = websocketUtils;
         this.boardController = boardController;
+        this.taskListController = taskListController;
     }
 
     @Override
@@ -189,30 +191,16 @@ public class MinimizedCardController implements Initializable {
         serverUtils.deleteMinimizedCard(this.taskCardId);
     }
 
-    @FXML
-    private void Highlight() {
-        minBG.setEffect(new Bloom(0.1));
-        TaskListController controller = getTaskListController();
-        controller.getTaskCards().requestFocus();
-        controller.getTaskCards().getSelectionModel().select(this.taskCardId);
+    public void Highlight() {
+        taskListController.getTaskCards().requestFocus();
+        taskListController.getTaskCards().getSelectionModel().select(this.taskCardId);
     }
 
-    @FXML
-    private void StopHighlight() {
-        minBG.setEffect(null);
-        TaskListController controller = getTaskListController();
-        controller.getTaskCards().getSelectionModel().clearSelection();
+    public void StopHighlight() {
+        taskListController.getTaskCards().getSelectionModel().clearSelection();
     }
 
-    private TaskListController getTaskListController() {
-        TaskCard card = serverUtils.getTaskCard(taskCardId);
-        Long listId = card.getTaskListId();
-        return boardController.getTaskListControllers().stream().filter(cntrl -> cntrl.getTaskListId().equals(listId)).findFirst().get();
+    public void setTaskListController(TaskListController taskListController) {
+        this.taskListController = taskListController;
     }
-
-    public Long getTaskCardId() {
-        return taskCardId;
-    }
-
-
 }

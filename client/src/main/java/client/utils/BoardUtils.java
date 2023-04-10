@@ -33,6 +33,7 @@ public class BoardUtils {
                 var taskListPair = mainCtrl.createTaskList(id, boardController);
                 taskListControllers.add(taskListPair.getKey());
                 taskListCache.put(id, taskListPair.getValue());
+                boardController.getTaskListControllerMap().put(id,taskListPair.getKey());
             }
             list.add(taskListCache.get(id));
         }

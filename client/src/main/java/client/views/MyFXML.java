@@ -107,7 +107,8 @@ public class MyFXML {
             if (type == MinimizedCardController.class)
                 return new MinimizedCardController(injector.getInstance(ServerUtils.class),
                         injector.getInstance(MainCtrl.class), (Long) params[0],
-                        injector.getInstance(WebsocketUtils.class), (BoardController) params[1]);
+                        injector.getInstance(WebsocketUtils.class), (BoardController) params[1],
+                        (TaskListController) params[2]);
 
             if (type == TaskListController.class)
                 return new TaskListController(injector.getInstance(ServerUtils.class),

@@ -21,10 +21,7 @@ import lombok.Data;
 import models.Board;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,6 +39,8 @@ public class BoardController implements Initializable {
     private AnchorPane anchor_pane;
     private final Map<Long, Parent> taskListCache =new ConcurrentHashMap<>();
     private final Map<Long, Parent> taskCardCache =new ConcurrentHashMap<>();
+    private final Map<Long, TaskListController> taskListControllerMap=new ConcurrentHashMap<>();
+    private final Map<Long, MinimizedCardController> minimizedCardControllerMap=new ConcurrentHashMap<>();
     private final List<TaskListController> taskListControllers = new ArrayList<>();
     private final IntegerProperty changeDetector = new SimpleIntegerProperty(0);
     private boolean isActive=true;
