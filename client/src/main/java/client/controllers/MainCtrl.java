@@ -19,7 +19,6 @@ import client.controllers.popups.EditBoardController;
 import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.stage.Modality;
@@ -133,6 +132,10 @@ public class MainCtrl {
         return primaryStage;
     }
 
+    /**
+     * Shows the task card details page.
+     * @param cardID The id of the task to be shown.
+     */
     public void showCard(Long cardID) {
         var card = viewFactory.createCard(cardID);
         cardStage = new Stage(StageStyle.UNDECORATED);

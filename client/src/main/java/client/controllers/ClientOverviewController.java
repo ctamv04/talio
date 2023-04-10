@@ -16,7 +16,6 @@ import models.Board;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientOverviewController implements Initializable {
     private final ServerUtils serverUtils;
@@ -25,7 +24,7 @@ public class ClientOverviewController implements Initializable {
     private BoardController boardController;
     private Label boardTitle;
     @FXML
-    public BorderPane layout;
+    private BorderPane layout;
 
     @Inject
     public ClientOverviewController(ServerUtils serverUtils, MainCtrl mainCtrl, Board board) {
@@ -34,6 +33,16 @@ public class ClientOverviewController implements Initializable {
         this.board = board;
     }
 
+    /**
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         var boardPair = mainCtrl.createBoard(board);

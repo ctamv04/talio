@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.effect.Bloom;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -190,17 +189,19 @@ public class MinimizedCardController implements Initializable {
         serverUtils.deleteMinimizedCard(this.taskCardId);
     }
 
-    public void Highlight() {
+    @FXML
+    private void Highlight() {
         minBG.setEffect(new Bloom(0.1));
         TaskListController controller = getTaskListController();
-        controller.taskCards.requestFocus();
-        controller.taskCards.getSelectionModel().select(this.taskCardId);
+        controller.getTaskCards().requestFocus();
+        controller.getTaskCards().getSelectionModel().select(this.taskCardId);
     }
 
-    public void StopHighlight() {
+    @FXML
+    private void StopHighlight() {
         minBG.setEffect(null);
         TaskListController controller = getTaskListController();
-        controller.taskCards.getSelectionModel().clearSelection();
+        controller.getTaskCards().getSelectionModel().clearSelection();
     }
 
     private TaskListController getTaskListController() {
