@@ -20,21 +20,20 @@ import client.views.ViewFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import models.Board;
 import models.Tag;
-import models.TaskList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainCtrl {
 
-    private ClientOverviewController clientOverview;
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
@@ -46,7 +45,6 @@ public class MainCtrl {
     private Stage shortcutsStage;
 
     private Stage deletedBoardStage;
-    private Stage deletedCardStage;
     private ViewFactory viewFactory;
     private Scene primaryScene;
 
@@ -72,7 +70,9 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-
+    /**
+     * Shows login page
+     */
     public void showLoginPage() {
         var startingPage = viewFactory.createLoginPage();
 
@@ -85,13 +85,6 @@ public class MainCtrl {
         primaryStage.setTitle("Starting Page");
         primaryStage.setMaximized(true);
         startingPage.getValue().requestFocus();
-        primaryStage.show();
-    }
-
-    public void showTaskList(TaskList selectedItem, BoardController boardController) {
-        var taskList = viewFactory.createTaskList(selectedItem.getId(), boardController);
-        primaryStage.setScene(new Scene(taskList.getValue()));
-        primaryStage.setTitle("TaskList");
         primaryStage.show();
     }
 
@@ -122,19 +115,13 @@ public class MainCtrl {
         editBoardStage.showAndWait();
     }
 
-    public void showBoard(Board selectedItem) {
-        var board = viewFactory.createBoard(selectedItem);
-        primaryStage.setScene(new Scene(board.getValue()));
-        primaryStage.setTitle("Board");
-        primaryStage.show();
-    }
-
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
     /**
      * Shows the task card details page.
+     *
      * @param cardID The id of the task to be shown.
      */
     public void showCard(Long cardID) {
@@ -172,10 +159,6 @@ public class MainCtrl {
                 clientOverview.getKey().closePolling();
         });
         primaryStage.show();
-    }
-
-    public ClientOverviewController getClientOverview() {
-        return clientOverview;
     }
 
     public void closeAddBoard() {
@@ -259,20 +242,6 @@ public class MainCtrl {
     public void closeDeletedBoard() {
         if (deletedBoardStage != null)
             deletedBoardStage.close();
-    }
-
-    public void showDeletedCard() {
-        var addDeleteCard = viewFactory.createCardDeleted();
-        deletedCardStage = new Stage(StageStyle.UNDECORATED);
-        deletedCardStage.setScene(new Scene(addDeleteCard.getValue()));
-        deletedCardStage.setTitle("Deleted card");
-        deletedCardStage.initModality(Modality.APPLICATION_MODAL);
-        deletedCardStage.showAndWait();
-    }
-
-    public void closeDeletedCard() {
-        if (deletedCardStage != null)
-            deletedCardStage.close();
     }
 
     public void setIsAdmin(boolean isAdmin) {

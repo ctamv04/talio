@@ -74,11 +74,13 @@ public class TagControllerTest {
         tag1 = new Tag("tag1", board1);
         tag2 = new Tag("tag2", board1);
         tag3 = new Tag("tag3", board2);
-        tags = new ArrayList<Tag>() {{
-            add(tag1);
-            add(tag2);
-            add(tag3);
-        }};
+        tags = new ArrayList<Tag>() {
+            {
+                add(tag1);
+                add(tag2);
+                add(tag3);
+            }
+        };
 
         board1.setTags(List.of(tag1, tag2));
         board2.setTags(List.of(tag3));
