@@ -46,7 +46,9 @@ public class ServerUtils {
     }
 
     /**
-     * Sets the server url
+     * Constructor for server utils with a given address
+     *
+     * @param address address of the server
      */
     @SuppressWarnings("all")
     public void setServer(String address) {
@@ -412,10 +414,10 @@ public class ServerUtils {
     }
 
     /**
-     * Update the tag
-     *
-     * @param tagID The id of the tag
-     * @param tag   The new tag
+     * Updates the tag
+     * @param tagID id of the tag
+     * @param tag updated tag
+     * @return returns the updated tag
      */
     public Tag updateTag(Long tagID, Tag tag) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -426,10 +428,10 @@ public class ServerUtils {
     }
 
     /**
-     * Adds a new tag
-     *
-     * @param tag     new tag
-     * @param boardId id of a board for which tag is created
+     * Adds a new tag to the board
+     * @param tag tag to be added
+     * @param boardId id of the board
+     * @return returns the added tag
      */
     public Tag addTag(Tag tag, Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())

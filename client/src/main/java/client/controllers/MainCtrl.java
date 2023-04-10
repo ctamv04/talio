@@ -97,6 +97,9 @@ public class MainCtrl {
         addBoardStage.showAndWait();
     }
 
+    /**
+     * Shows the Shortcuts page
+     */
     public void showShortcutsPage() {
         var shortcuts = viewFactory.createShortcutsMenu();
         shortcutsStage = new Stage(StageStyle.UNDECORATED);

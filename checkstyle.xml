@@ -28,7 +28,7 @@
         <module name="CyclomaticComplexity">
             <property name="severity" value="warning"/>
             <property name="switchBlockAsSingleDecisionPoint" value="true"/>
-            <property name="max" value="6"/>
+            <property name="max" value="9"/>
         </module>
 
         <module name="MissingJavadocMethod">

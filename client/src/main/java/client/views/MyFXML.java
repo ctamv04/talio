@@ -58,10 +58,10 @@ public class MyFXML {
     public <T> Pair<T, Parent> load(Class<T> c, String url, Object... params) {
         try {
             var loader = new FXMLLoader(getClass().getResource(url),
-                null,
-                null,
-                new MyFactory(params),
-                StandardCharsets.UTF_8);
+                    null,
+                    null,
+                    new MyFactory(params),
+                    StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
@@ -92,52 +92,46 @@ public class MyFXML {
         @Override
         public Object call(Class<?> type) {
 
-            if (type == AddTaskListController.class)
-                return new AddTaskListController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Long) params[0]);
+            switch (type.getSimpleName()) {
+                case "AddTaskListController":
+                    return new AddTaskListController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Long) params[0]);
+                case "UpdateTagController":
+                    return new UpdateTagController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), injector.getInstance(ExtendedCardUtils.class),
+                            (EditBoardController) params[0], (Tag) params[1]);
+                case "BoardController":
+                    return new BoardController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Board) params[0],
+                            injector.getInstance(BoardUtils.class));
+                case "ClientOverviewController":
+                    return new ClientOverviewController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Board) params[0]);
+                case "ClientMenuController":
+                    return new ClientMenuController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Board) params[0], (BoardController) params[1]);
+                case "EditBoardController":
+                    return new EditBoardController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Board) params[0]);
+                case "ExtendedCardController":
+                    return new ExtendedCardController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Long) params[0], injector.getInstance(WebsocketUtils.class),
+                            injector.getInstance(ExtendedCardUtils.class));
+                case "MinimizedCardController":
+                    return new MinimizedCardController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Long) params[0],
+                            injector.getInstance(WebsocketUtils.class), (BoardController) params[1],
+                            (TaskListController) params[2]);
+                case "TaskListController":
+                    return new TaskListController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class), (Long) params[0], (BoardController) params[1]);
+                case "BoardDeletedController":
+                    return new BoardDeletedController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class));
+                default:
+                    return injector.getInstance(type);
+            }
 
-            if (type == UpdateTagController.class)
-                return new UpdateTagController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), injector.getInstance(ExtendedCardUtils.class),
-                    (EditBoardController) params[0], (Tag) params[1]);
-
-            if (type == BoardController.class)
-                return new BoardController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Board) params[0],
-                    injector.getInstance(BoardUtils.class));
-
-            if (type == ClientOverviewController.class)
-                return new ClientOverviewController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Board) params[0]);
-
-            if (type == ClientMenuController.class)
-                return new ClientMenuController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Board) params[0], (BoardController) params[1]);
-
-            if (type == EditBoardController.class)
-                return new EditBoardController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Board) params[0]);
-
-            if (type == ExtendedCardController.class)
-                return new ExtendedCardController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Long) params[0], injector.getInstance(WebsocketUtils.class),
-                    injector.getInstance(ExtendedCardUtils.class));
-
-            if (type == MinimizedCardController.class)
-                return new MinimizedCardController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Long) params[0],
-                    injector.getInstance(WebsocketUtils.class), (BoardController) params[1],
-                    (TaskListController) params[2]);
-
-            if (type == TaskListController.class)
-                return new TaskListController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class), (Long) params[0], (BoardController) params[1]);
-
-            if (type == BoardDeletedController.class)
-                return new BoardDeletedController(injector.getInstance(ServerUtils.class),
-                    injector.getInstance(MainCtrl.class));
-
-            return injector.getInstance(type);
         }
     }
 }

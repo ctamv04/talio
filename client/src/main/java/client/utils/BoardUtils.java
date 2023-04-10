@@ -25,6 +25,14 @@ public class BoardUtils {
         this.serverUtils = serverUtils;
     }
 
+    /**
+     * Converts a list of task list ids to a list of scenes
+     * @param ids list of task list ids
+     * @param taskListCache cache of task list ids and scenes
+     * @param boardController board controller
+     * @param taskListControllers list of task list controllers
+     * @return list of scenes
+     */
     public List<Parent> convertScenesFromTaskListIds(List<Long> ids, Map<Long, Parent> taskListCache,
                                                      BoardController boardController, List<TaskListController> taskListControllers) {
         List<Parent> list = new ArrayList<>();
@@ -40,6 +48,13 @@ public class BoardUtils {
         return list;
     }
 
+    /**
+     * Registers a consumer to be called when the board is updated
+     * @param consumer consumer to be called
+     * @param board board to be updated
+     * @param detailUpdatesExecutor executor service to be used
+     * @param boardController board controller
+     */
     public void registerDetailsUpdates(Consumer<Board> consumer, Board board,
                                        ExecutorService detailUpdatesExecutor, BoardController boardController){
         detailUpdatesExecutor.submit(()->{

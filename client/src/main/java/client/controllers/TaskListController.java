@@ -114,7 +114,10 @@ public class TaskListController implements Initializable {
             if(!newValue)
                 taskCards.getSelectionModel().clearSelection();
         });
+        keyCombinationsShortcuts();
+    }
 
+    private void keyCombinationsShortcuts() {
         KeyCombination keyCombinationUp = new KeyCodeCombination(KeyCode.UP, KeyCombination.SHIFT_DOWN);
         KeyCombination keyCombinationDown = new KeyCodeCombination(KeyCode.DOWN, KeyCombination.SHIFT_DOWN);
         root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
