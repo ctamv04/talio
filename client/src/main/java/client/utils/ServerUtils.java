@@ -72,11 +72,11 @@ public class ServerUtils {
     public boolean healthCheck(String server) {
         try {
             ClientBuilder.newClient(new ClientConfig())
-                .property(ClientProperties.CONNECT_TIMEOUT, 1000)
-                .target(server).path("api/server") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get();
+                    .property(ClientProperties.CONNECT_TIMEOUT, 1000)
+                    .target(server).path("api/server") //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .get();
         } catch (Exception e) {
             return false;
         }
@@ -91,11 +91,11 @@ public class ServerUtils {
      */
     public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/boards") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/boards") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -107,11 +107,11 @@ public class ServerUtils {
      */
     public Board getBoard(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/boards/" + id) //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/boards/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -122,11 +122,11 @@ public class ServerUtils {
      */
     public List<Board> getBoardsByIds(List<Long> ids) {
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/boards/boards")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(ids, APPLICATION_JSON), new GenericType<>() {
-            });
+                .target(SERVER).path("api/boards/boards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(ids, APPLICATION_JSON), new GenericType<>() {
+                });
     }
 
     /**
@@ -137,8 +137,8 @@ public class ServerUtils {
     @SuppressWarnings("all")
     public void deleteBoard(Long boardId) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/boards/" + boardId)
-            .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
+                .target(SERVER).path("api/boards/" + boardId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
     /**
@@ -150,11 +150,11 @@ public class ServerUtils {
      */
     public TaskList getTaskList(Long id) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/tasklists/" + id) //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/tasklists/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -166,11 +166,11 @@ public class ServerUtils {
      */
     public TaskCard getTaskCard(Long taskID) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/tasks/" + taskID) //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/tasks/" + taskID) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -181,8 +181,8 @@ public class ServerUtils {
      */
     public void updateTaskCard(Long taskID, TaskCard updated) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasks/" + taskID)
-            .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+                .target(SERVER).path("api/tasks/" + taskID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
     /**
@@ -193,8 +193,8 @@ public class ServerUtils {
      */
     public void updateBoard(Long boardId, Board updated) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/boards/" + boardId)
-            .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+                .target(SERVER).path("api/boards/" + boardId)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
     /**
@@ -207,10 +207,10 @@ public class ServerUtils {
      */
     public void swapBetweenLists(Long id, int pos, Long idList1, Long idList2) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasks/swap/" + id + "/" + pos)
-            .queryParam("list1", idList1)
-            .queryParam("list2", idList2)
-            .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(new Board()));
+                .target(SERVER).path("api/tasks/swap/" + id + "/" + pos)
+                .queryParam("list1", idList1)
+                .queryParam("list2", idList2)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(new Board()));
     }
 
     /**
@@ -221,8 +221,8 @@ public class ServerUtils {
     @SuppressWarnings("all")
     public void deleteMinimizedCard(Long taskID) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasks/" + taskID)
-            .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
+                .target(SERVER).path("api/tasks/" + taskID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).delete();
     }
 
     /**
@@ -234,10 +234,10 @@ public class ServerUtils {
     @SuppressWarnings("all")
     public Board addBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/boards")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(board, APPLICATION_JSON), Board.class);
+                .target(SERVER).path("api/boards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(board, APPLICATION_JSON), Board.class);
     }
 
     /**
@@ -250,10 +250,10 @@ public class ServerUtils {
     public TaskCard addTaskCard(TaskCard card, Long taskListId) {
 
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasks/").queryParam("taskListId", taskListId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(card, APPLICATION_JSON), TaskCard.class);
+                .target(SERVER).path("api/tasks/").queryParam("taskListId", taskListId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(card, APPLICATION_JSON), TaskCard.class);
     }
 
     /**
@@ -263,10 +263,10 @@ public class ServerUtils {
      */
     public void removeTaskList(Long taskListId) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasklists/" + taskListId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .delete(TaskList.class);
+                .target(SERVER).path("api/tasklists/" + taskListId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete(TaskList.class);
     }
 
     /**
@@ -278,11 +278,11 @@ public class ServerUtils {
      */
     public List<Long> getTaskListsId(Long boardId) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/boards/" + boardId + "/tasklists")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/boards/" + boardId + "/tasklists")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -294,11 +294,11 @@ public class ServerUtils {
      */
     public List<Long> getTaskCardsId(Long listId) throws WebApplicationException {
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasklists/" + listId + "/taskcards")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/tasklists/" + listId + "/taskcards")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -309,11 +309,11 @@ public class ServerUtils {
      */
     public void addTaskList(TaskList taskList, Long boardId) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasklists/")
-            .queryParam("boardId", boardId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
+                .target(SERVER).path("api/tasklists/")
+                .queryParam("boardId", boardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
     /**
@@ -324,10 +324,10 @@ public class ServerUtils {
      */
     public Response getBoardUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/boards/" + id + "/details-updates") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(Response.class);
+                .target(SERVER).path("api/boards/" + id + "/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
     }
 
     /**
@@ -338,10 +338,10 @@ public class ServerUtils {
      */
     public Response getTaskListIdsUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/tasklists/" + id + "/ids-updates") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(Response.class);
+                .target(SERVER).path("api/tasklists/" + id + "/ids-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
     }
 
     /**
@@ -352,10 +352,10 @@ public class ServerUtils {
      */
     public Response getTaskCardIdsUpdates(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/tasks/" + id + "/ids-updates") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(Response.class);
+                .target(SERVER).path("api/tasks/" + id + "/ids-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
     }
 
     /**
@@ -366,10 +366,10 @@ public class ServerUtils {
      */
     public Response getTaskListUpdates(Long taskListId) {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/tasklists/" + taskListId + "/details-updates") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(Response.class);
+                .target(SERVER).path("api/tasklists/" + taskListId + "/details-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
     }
 
     /**
@@ -379,11 +379,11 @@ public class ServerUtils {
      */
     public String getPassword() {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/server") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/server") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -394,8 +394,8 @@ public class ServerUtils {
      */
     public void updateTaskList(Long tasklistID, TaskList updated) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tasklists/" + tasklistID)
-            .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
+                .target(SERVER).path("api/tasklists/" + tasklistID)
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON).put(Entity.json(updated));
     }
 
     /**
@@ -404,11 +404,11 @@ public class ServerUtils {
      */
     public Set<Tag> getBoardTags(Long cardID) {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/tags/board/" + cardID)
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
+                .target(SERVER).path("api/tags/board/" + cardID)
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
     }
 
     /**
@@ -416,14 +416,13 @@ public class ServerUtils {
      *
      * @param tagID The id of the tag
      * @param tag   The new tag
-     * @return updated tag
      */
     public Tag updateTag(Long tagID, Tag tag) {
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("/api/tags/" + tagID)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .put(Entity.json(tag), Tag.class);
+                .target(SERVER).path("/api/tags/" + tagID)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.json(tag), Tag.class);
     }
 
     /**
@@ -431,15 +430,14 @@ public class ServerUtils {
      *
      * @param tag     new tag
      * @param boardId id of a board for which tag is created
-     * @return new tag
      */
     public Tag addTag(Tag tag, Long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tags/")
-            .queryParam("boardId", boardId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
+                .target(SERVER).path("api/tags/")
+                .queryParam("boardId", boardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
     }
 
     /**
@@ -449,9 +447,9 @@ public class ServerUtils {
      */
     public void deleteTag(Long tagId) {
         ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/tags/" + tagId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .delete();
+                .target(SERVER).path("api/tags/" + tagId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
     }
 }

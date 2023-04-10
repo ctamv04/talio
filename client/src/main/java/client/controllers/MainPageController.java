@@ -83,7 +83,21 @@ public class MainPageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        configure_state();
+        if (mainCtrl.getBoards().isEmpty()) {
+            try {
+                loadState();
+            } catch (FileNotFoundException e) {
+                System.out.println("State for current session was not found");
+            }
+        }
+
+        mainCtrl.getPrimaryStage().setOnCloseRequest(event -> {
+            try {
+                saveState();
+            } catch (IOException e) {
+                System.out.println("State was not saved");
+            }
+        });
 
         overlay.setVisible(false);
         buttonBox.setOpacity(0L);
@@ -124,24 +138,6 @@ public class MainPageController implements Initializable {
             if (event.getTarget() != buttonBox && event.getTarget() != boards_view)
                 buttonBox.setOpacity(0);
 
-        });
-    }
-
-    private void configure_state() {
-        if (mainCtrl.getBoards().isEmpty()) {
-            try {
-                loadState();
-            } catch (FileNotFoundException e) {
-                System.out.println("State for current session was not found");
-            }
-        }
-
-        mainCtrl.getPrimaryStage().setOnCloseRequest(event -> {
-            try {
-                saveState();
-            } catch (IOException e) {
-                System.out.println("State was not saved");
-            }
         });
     }
 
@@ -259,7 +255,7 @@ public class MainPageController implements Initializable {
         String result;
         if (!mainCtrl.getIsAdmin()) {
             result = String.join(" ", mainCtrl.getBoards().stream().
-                map(x -> String.valueOf(x.getId())).toArray(String[]::new));
+                    map(x -> String.valueOf(x.getId())).toArray(String[]::new));
         } else {
             result = "@";
         }
