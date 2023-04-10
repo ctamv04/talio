@@ -55,7 +55,7 @@
                         </FontAwesomeIconView>
                         <HBox fx:id="newSubBox" prefHeight="9.0" prefWidth="528.0" spacing="4.0">
                            <children>
-                              <TextField fx:id="newSub" minHeight="0.0" onKeyPressed="#saveNewSub" onKeyTyped="#lengthCheck2" prefHeight="23.0" prefWidth="508.0">
+                              <TextField fx:id="newSub" minHeight="0.0" onKeyPressed="#saveNewSubKey" onKeyTyped="#lengthCheck2" prefHeight="23.0" prefWidth="508.0">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
@@ -67,6 +67,7 @@
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin></FontAwesomeIconView>
+                              <FontAwesomeIconView fx:id="saveNew" glyphName="CHECK" onMouseClicked="#saveNewSub" size="16" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />

@@ -90,6 +90,8 @@ public class ExtendedCardController implements Initializable{
     @FXML
     private FontAwesomeIconView icon;
     @FXML
+    private FontAwesomeIconView saveNew;
+    @FXML
     private HBox bTagListBox;
     @FXML
     private Label warning1;
@@ -215,17 +217,27 @@ public class ExtendedCardController implements Initializable{
     }
 
     /**
-     * Save new Board Tag to TaskCard
+     * Save new Board Tag to TaskCard (Keyboard shortcut version)
      *
      * @param event KeyEven of key pressed
      */
     @FXML
-    private void saveNewSub(KeyEvent event){
+    private void saveNewSubKey(KeyEvent event){
         if(event.getCode() == KeyCode.ENTER) {
 
             editOrSave();
             newSubBox.setOpacity(0);
         }
+    }
+
+    /**
+     * Save new Board Tag to TaskCard (Button version)
+     */
+    @FXML
+    private void saveNewSub(){
+
+        editOrSave();
+        newSubBox.setOpacity(0);
     }
 
     /**

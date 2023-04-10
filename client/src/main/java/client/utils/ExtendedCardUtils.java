@@ -34,41 +34,37 @@ public class ExtendedCardUtils {
     /**
      * Saves new information to TaskCard
      *
-     * @param title New title from appropriate JavaFX component
-     * @param description New description from appropriate JavaFX component
-     * @param tempSubs New SubTasks from appropriate JavaFX component
-     * @param taskTags New Tags from appropriate JavaFX component
+     * @param newTitle New title from appropriate JavaFX component
+     * @param newDescription New description from appropriate JavaFX component
+     * @param newSubs New SubTasks from appropriate JavaFX component
+     * @param newTags New Tags from appropriate JavaFX component
      * @param card Card object
      */
-    public void save(String title, String description, Map<String, Boolean> tempSubs, Set<Tag> taskTags, TaskCard card){
-        if(!title.isBlank()) {
-            card.setName(title);
+    public void save(String newTitle, String newDescription, Map<String, Boolean> newSubs, Set<Tag> newTags, TaskCard card){
+        if(!newTitle.isBlank()) {
+            card.setName(newTitle);
         } else{
             card.setName("Untitled");
         }
 
-        if(!description.equals(card.getDescription()))
-            card.setDescription(description);
+        if(!newDescription.equals(card.getDescription()))
+            card.setDescription(newDescription);
 
-        card.setSubs(tempSubs);
-        card.setTags(taskTags);
+        card.setSubs(newSubs);
+        card.setTags(newTags);
 
         serverUtils.updateTaskCard(card.getId(), card);
     }
 
     /**
-     * Method for converting Java Color classes to CSS compatible hex colour codes
+     * Method for converting Java Color classes to RGB values
      *
      * @param color input Color object
      * @return String containing hex colour code
      */
     public String colorConverter(Color color){
 
-        //credit: http://www.java2s.com/example/java/javafx/javafx-color-to-css-color.html
-
-        return "rgba(" + Math.round(255 * color.getRed()) + ","
-                + Math.round(255 * color.getGreen()) + ","
-                + Math.round(255 * color.getBlue()) + ","
-                + color.getOpacity() + ")";
+        return "rgba(" + Math.round(255 * color.getRed()) + "," + Math.round(255 * color.getGreen()) + "," + Math.round(255 * color.getBlue()) +
+                "," + color.getOpacity() + ")";
     }
 }
