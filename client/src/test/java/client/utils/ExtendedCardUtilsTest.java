@@ -30,6 +30,9 @@ class ExtendedCardUtilsTest {
     Set<Tag> tags;
     TaskCard card;
 
+    /**
+     * Test setup method
+     */
     @BeforeEach
     void setup(){
 
@@ -47,6 +50,9 @@ class ExtendedCardUtilsTest {
         tags.add(new Tag());
     }
 
+    /**
+     * TaskCard saving testing
+     */
     @Test
     void save() {
 
@@ -58,6 +64,9 @@ class ExtendedCardUtilsTest {
         assertEquals(card.getSubs(), subtasks);
     }
 
+    /**
+     * TaskCard saving testing without title case
+     */
     @Test
     void saveNoTitle() {
 
@@ -67,6 +76,9 @@ class ExtendedCardUtilsTest {
 
     }
 
+    /**
+     * Color converter testing wit color BLUE
+     */
     @Test
     void colorTest1() {
 
@@ -75,6 +87,9 @@ class ExtendedCardUtilsTest {
         assertEquals(sut.colorConverter(color), "rgba(0,0,255,1.0)");
     }
 
+    /**
+     * Color converter testing with color PURPLE
+     */
     @Test
     void colorTest2() {
 
