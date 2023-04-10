@@ -8,6 +8,19 @@
 .back_button {
     -fx-background-color: #00000000;
 }
-.save_button:hover, .back_button:hover {
+.save_button:hover, .back_button:hover, .abutton:hover, .drop_button:hover {
     -fx-cursor: hand;
+}
+.abutton {
+    -fx-background-color: #000;
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+}
+.drop_button .text {
+    -fx-fill: #fff;
+    -fx-font-weight: bold;
+}
+
+.drop_button {
+    -fx-background-color: #000;
 }

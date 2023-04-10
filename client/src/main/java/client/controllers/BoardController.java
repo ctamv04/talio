@@ -85,6 +85,9 @@ public class BoardController implements Initializable {
         overlay.setVisible(false);
     }
 
+    /**
+     * Initialise the scene.
+     */
     public void initialiseScene(){
         overlay.setVisible(false);
         board_parent.setHgap(30);
@@ -110,6 +113,9 @@ public class BoardController implements Initializable {
     private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
     private final ExecutorService taskListIdsUpdatesExecutor=Executors.newSingleThreadExecutor();
 
+    /**
+     * Start long polling for board details and task list ids.
+     */
     public void startLongPolling(){
         boardUtils.registerDetailsUpdates(updatedBoard -> {
             board=updatedBoard;

@@ -76,6 +76,15 @@ public class TaskCardService {
         return ResponseEntity.ok(taskCardRepository.save(taskCard));
     }
 
+    /**
+     * Function to swap cards between different lists with drag and drop
+     * @param id The id of the card
+     * @param pos The position of the card
+     * @param idList1 The id of the first list
+     * @param idList2 The id of the second list
+     * @param idListeners The listeners
+     * @return A response based on the existence of the card and the lists
+     */
     @Transactional
     public ResponseEntity<TaskCard> swapBetweenLists(Long id, int pos, Long idList1, Long idList2,
                                                      Map<Long, Map<Object, Consumer<List<Long>>>> idListeners) {
@@ -136,6 +145,11 @@ public class TaskCardService {
         return ResponseEntity.ok(taskCardRepository.save(taskCard));
     }
 
+    /**
+     * Function to delete a taskCard
+     * @param id The id of the taskCard
+     * @return A response based on the existence of the card
+     */
     @Transactional
     public ResponseEntity<TaskCard> delete(Long id) {
         Optional<TaskCard> optional=taskCardRepository.findById(id);

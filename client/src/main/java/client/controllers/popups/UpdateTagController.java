@@ -8,7 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import models.Tag;
@@ -24,6 +26,12 @@ public class UpdateTagController implements Initializable {
     private final EditBoardController editBoardController;
     private Tag tag;
 
+    @FXML
+    public AnchorPane window;
+    @FXML
+    public Label tag_name_message;
+    @FXML
+    public Label colorLabel;
     @FXML
     private TextField tag_name_input;
     @FXML

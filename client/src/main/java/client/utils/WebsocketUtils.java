@@ -41,6 +41,13 @@ public class WebsocketUtils {
         return null;
     }
 
+    /**
+     * Registers a consumer to be called when a message is received
+     * @param destination destination of the message
+     * @param type type of the message
+     * @param consumer consumer to be called
+     * @param <T> type of the message
+     */
     @SuppressWarnings("unchecked")
     public <T> void registerForMessages(String destination, Class<T> type, Consumer<T> consumer){
         if(session==null)
