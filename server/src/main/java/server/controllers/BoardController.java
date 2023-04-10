@@ -57,19 +57,7 @@ public class BoardController {
     public ResponseEntity<Board> getById(@PathVariable Long id) {
         Optional<Board> board = boardRepository.findById(id);
         return board.map(ResponseEntity::ok).
-                orElseGet(() -> ResponseEntity.badRequest().build());
-    }
-
-    /**
-     * Get by ids method
-     *
-     * @param ids list of ids
-     * @return response with list of boards
-     */
-    @PostMapping("/boards")
-    public ResponseEntity<List<Board>> getByIds(@RequestBody List<Long> ids) {
-        List<Board> boards = boardRepository.findAllById(ids);
-        return ResponseEntity.ok(boards);
+            orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
@@ -99,7 +87,7 @@ public class BoardController {
     public ResponseEntity<List<TaskList>> getTaskLists(@PathVariable Long id) {
         Optional<Board> board = boardRepository.findById(id);
         return board.map(value -> ResponseEntity.ok(value.getTaskLists())).
-                orElseGet(() -> ResponseEntity.badRequest().build());
+            orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**

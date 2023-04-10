@@ -36,7 +36,6 @@ class TaskListTest {
      */
     @Test
     void testConstructor3params() {
-        TaskCard taskCard = new TaskCard("Name", "Description", new TaskList(), 2);
         Board board = new Board("board");
         TaskList taskList = new TaskList("Name", new ArrayList<TaskCard>(), board);
         assertNotNull(taskList);
@@ -51,10 +50,9 @@ class TaskListTest {
      */
     @Test
     void testGetTaskCards() {
-        TaskCard taskCard=new TaskCard("Name","Description",new TaskList(),2);
-        Board board=new Board("board");
-        TaskList taskList=new TaskList("Name",new ArrayList<TaskCard>(),board);
-        assertEquals(taskList.getTaskCards(),new ArrayList<TaskCard>());
+        Board board = new Board("board");
+        TaskList taskList = new TaskList("Name", new ArrayList<TaskCard>(), board);
+        assertEquals(taskList.getTaskCards(), new ArrayList<TaskCard>());
     }
 
     /***
@@ -62,13 +60,13 @@ class TaskListTest {
      */
     @Test
     void testSetTaskCards() {
-        TaskCard taskCard=new TaskCard("Name","Description",new TaskList(),2);
-        Board board=new Board("board");
-        TaskList taskList=new TaskList("Name",new ArrayList<TaskCard>(),board);
-        List<TaskCard> taskCards=new ArrayList<>();
+        TaskCard taskCard = new TaskCard("Name", "Description", new TaskList(), 2);
+        Board board = new Board("board");
+        TaskList taskList = new TaskList("Name", new ArrayList<TaskCard>(), board);
+        List<TaskCard> taskCards = new ArrayList<>();
         taskCards.add(taskCard);
         taskList.setTaskCards(taskCards);
-        assertEquals(taskList.getTaskCards(),taskCards);
+        assertEquals(taskList.getTaskCards(), taskCards);
     }
 
     // Please paste your getters and setters here, if I do it I steal your code :(
