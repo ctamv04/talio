@@ -16,7 +16,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
@@ -24,7 +23,6 @@ import models.TaskList;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,7 +45,7 @@ public class TaskListController implements Initializable {
     @FXML
     private TextField editTaskList_Name;
     @FXML
-    public ListView<Long> taskCards;
+    private ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
     private final Line line = new Line();
     private int entries = 0;
@@ -417,5 +415,13 @@ public class TaskListController implements Initializable {
      */
     public Long getTaskListId() {
         return taskListId;
+    }
+
+    /**
+     * Gets the taskCards list view.
+     * @return taskCards list view.
+     */
+    public ListView<Long> getTaskCards() {
+        return taskCards;
     }
 }

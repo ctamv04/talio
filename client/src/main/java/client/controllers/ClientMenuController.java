@@ -2,12 +2,10 @@ package client.controllers;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import models.Board;
 
 import java.net.URL;
@@ -18,7 +16,8 @@ public class ClientMenuController implements Initializable {
     private final MainCtrl mainCtrl;
     private final BoardController boardController;
     private final Board board;
-    public Button copy_button;
+    @FXML
+    private Button copy_button;
     @FXML
     private Label boardTitle;
     @FXML

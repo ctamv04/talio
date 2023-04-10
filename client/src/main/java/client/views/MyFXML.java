@@ -24,7 +24,6 @@ import client.utils.WebsocketUtils;
 import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.ListView;
 import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 import javafx.util.Callback;

@@ -4,7 +4,6 @@ import client.controllers.*;
 import client.controllers.popups.*;
 import com.google.inject.Injector;
 import javafx.scene.Parent;
-import javafx.scene.control.ListView;
 import javafx.util.Pair;
 import models.Board;
 import models.Tag;
