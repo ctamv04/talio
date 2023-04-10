@@ -17,9 +17,9 @@
             prefHeight="200.0" prefWidth="300.0" styleClass="layout" stylesheets="@../styles/addTasklist.css"
             xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.controllers.popups.UpdateTagController">
-    <Text fx:id="text" layoutX="31.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add tag">
+    <Text fx:id="text" layoutX="31.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add tag">
         <font>
-            <Font size="25.0"/>
+            <Font size="20.0"/>
         </font>
     </Text>
     <VBox layoutX="20.0" layoutY="60.0" prefHeight="150.0" prefWidth="124.0">
@@ -43,8 +43,16 @@
             <ColorPicker fx:id="color" prefHeight="25.0" prefWidth="118.0"/>
         </children>
     </VBox>
-    <Button fx:id="save_button" layoutX="170.0" layoutY="140.0" mnemonicParsing="false" prefHeight="25.0"
-            prefWidth="70.0" text="Save" textAlignment="CENTER"/>
-    <Button fx:id="cancel_button" layoutX="60.0" layoutY="140.0" mnemonicParsing="false" prefHeight="25.0"
-            prefWidth="70.0" text="Cancel" textAlignment="CENTER"/>
+    <Button fx:id="save_button" layoutX="31.0" layoutY="168.0" mnemonicParsing="false"
+            prefHeight="15.0" prefWidth="238.0" styleClass="save_button" text="Save" textFill="WHITE">
+        <font>
+            <Font name="System Bold" size="10.0"/>
+        </font>
+    </Button>
+    <Button fx:id="cancel_button" layoutX="264.0" layoutY="15.0" mnemonicParsing="false" prefHeight="0.0"
+            prefWidth="39.0" styleClass="back_button" text="X">
+        <font>
+            <Font size="15.0"/>
+        </font>
+    </Button>
 </AnchorPane>

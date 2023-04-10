@@ -16,6 +16,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.stage.Window;
 import javafx.util.Callback;
 import models.TaskCard;
 import models.TaskList;
@@ -23,6 +24,7 @@ import models.TaskList;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +37,6 @@ public class TaskListController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskListId;
     private final BoardController boardController;
-    @FXML
     private Pane root;
     @FXML
     private Pane indicator_pane;
@@ -46,10 +47,14 @@ public class TaskListController implements Initializable {
     @FXML
     private TextField editTaskList_Name;
     @FXML
-    private ListView<Long> taskCards;
+    public ListView<Long> taskCards;
     private final List<MinimizedCardController> taskCardControllers = new ArrayList<>();
     private final Line line = new Line();
     private int entries = 0;
+
+    private final Runnable moveDownRunnable = () -> {
+        Platform.runLater(this::moveDown);
+    };
 
 
     @Inject
@@ -86,7 +91,7 @@ public class TaskListController implements Initializable {
 
                         if (!boardController.getTaskCardCache().containsKey(item)) {
 
-                            var taskCardPair = mainCtrl.createMinimizedCard(item, taskCards);
+                            var taskCardPair = mainCtrl.createMinimizedCard(item, boardController);
 
                             boardController.getTaskCardCache().put(item, taskCardPair.getValue());
                             taskCardControllers.add(taskCardPair.getKey());
@@ -98,7 +103,7 @@ public class TaskListController implements Initializable {
         });
 
         taskCards.setOnMouseClicked(event -> {
-            if(event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 openEditWindow();
             }
         });
@@ -107,7 +112,58 @@ public class TaskListController implements Initializable {
         initialiseDragAndDrop();
     }
 
+    /**
+     * Moves the card up one position.
+     */
+    public void moveUp() {
+        Long cardId = taskCards.getSelectionModel().getSelectedItem();
+        System.out.println(cardId);
+        if (cardId != null) {
+            TaskCard card = serverUtils.getTaskCard(cardId);
+            int pos = card.getPosition();
+
+            System.out.println(pos);
+
+            if (pos != 0) {
+                pos--;
+            }
+
+            serverUtils.swapBetweenLists(cardId, pos, taskListId, taskListId);
+            System.out.println(pos);
+        }
+    }
+
+    /**
+     * Moves the card down one position.
+     */
+    public void moveDown() {
+        System.out.println("down");
+        Long cardId = taskCards.getSelectionModel().getSelectedItem();
+
+        if (cardId != null) {
+            TaskCard card = serverUtils.getTaskCard(cardId);
+            int pos = card.getPosition();
+
+            System.out.println(pos);
+
+            if (pos != taskCardControllers.size() - 1) {
+                pos++;
+            }
+
+            serverUtils.swapBetweenLists(cardId, pos, taskListId, taskListId);
+            System.out.println(pos);
+        }
+    }
+
+    /**
+     * Sets up keyboard shortcuts.
+     */
     private void shortcuts() {
+        KeyCombination downKey = new KeyCodeCombination(KeyCode.I);
+        mainCtrl.getPrimaryScene().getAccelerators().put(downKey, this::moveDown);
+        KeyCombination upKey = new KeyCodeCombination(KeyCode.O);
+        mainCtrl.getPrimaryScene().getAccelerators().put(upKey, this::moveUp);
+
 
         taskCards.setOnKeyPressed(event -> {
             switch (event.getCode()) {
@@ -122,6 +178,9 @@ public class TaskListController implements Initializable {
         });
     }
 
+    /**
+     * Opens edit window of selected task card
+     */
     private void openEditWindow() {
         Long cardId = taskCards.getSelectionModel().getSelectedItem();
         if (cardId != null) {
@@ -350,5 +409,13 @@ public class TaskListController implements Initializable {
         updatedTaskList.setName(taskList_name.getText());
         serverUtils.updateTaskList(taskListId, updatedTaskList);
 
+    }
+
+    /**
+     * taskListId's getter.
+     * @return the taskListID.
+     */
+    public Long getTaskListId() {
+        return taskListId;
     }
 }

@@ -27,7 +27,9 @@ public class MinimizedCardController implements Initializable {
     private final MainCtrl mainCtrl;
     private final Long taskCardId;
     private final WebsocketUtils websocketUtils;
-    private final ListView<Long> cards;
+
+    private BoardController boardController;
+
 
     @FXML
     private Button close_button;
@@ -50,12 +52,12 @@ public class MinimizedCardController implements Initializable {
 
     @Inject
     public MinimizedCardController(ServerUtils serverUtils, MainCtrl mainCtrl, Long taskCardId,
-                                   WebsocketUtils websocketUtils, ListView<Long> cards) {
+                                   WebsocketUtils websocketUtils, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
         this.taskCardId = taskCardId;
         this.websocketUtils = websocketUtils;
-        this.cards = cards;
+        this.boardController = boardController;
     }
 
     @Override
@@ -189,13 +191,27 @@ public class MinimizedCardController implements Initializable {
     }
 
     public void Highlight() {
-        minBG.setEffect(new Bloom());
-        cards.requestFocus();
-        cards.getSelectionModel().select(this.taskCardId);
+        minBG.setEffect(new Bloom(0.1));
+        TaskListController controller = getTaskListController();
+        controller.taskCards.requestFocus();
+        controller.taskCards.getSelectionModel().select(this.taskCardId);
     }
 
     public void StopHighlight() {
         minBG.setEffect(null);
-        cards.getSelectionModel().clearSelection();
+        TaskListController controller = getTaskListController();
+        controller.taskCards.getSelectionModel().clearSelection();
     }
+
+    private TaskListController getTaskListController() {
+        TaskCard card = serverUtils.getTaskCard(taskCardId);
+        Long listId = card.getTaskListId();
+        return boardController.getTaskListControllers().stream().filter(cntrl -> cntrl.getTaskListId().equals(listId)).findFirst().get();
+    }
+
+    public Long getTaskCardId() {
+        return taskCardId;
+    }
+
+
 }

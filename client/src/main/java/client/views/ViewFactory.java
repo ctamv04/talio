@@ -62,8 +62,12 @@ public class ViewFactory {
         return FXML.load(ExtendedCardController.class, "/client/card.fxml", cardID);
     }
 
-    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, ListView<Long> cards) {
-        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id, cards);
+    public Pair<MinimizedCardController, Parent> createMinimizedCard(Long card_id, BoardController boardController) {
+        return FXML.load(MinimizedCardController.class, "/client/minimizedCard.fxml", card_id, boardController);
+    }
+
+    public Pair<ShortcutsController, Parent> createShortcutsMenu() {
+        return FXML.load(ShortcutsController.class, "/client/shortcuts.fxml");
     }
 
     public Pair<AddTaskListController, Parent> createAddTaskList(Long board_id) {
