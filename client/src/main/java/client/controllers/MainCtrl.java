@@ -17,6 +17,7 @@ package client.controllers;
 
 import client.controllers.popups.EditBoardController;
 import client.views.ViewFactory;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -25,6 +26,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 import models.Board;
 import models.Tag;
@@ -33,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainCtrl {
-
     private Stage primaryStage;
     private Stage addBoardStage;
     private Stage addTaskListStage;
@@ -163,10 +164,13 @@ public class MainCtrl {
         var clientOverview = viewFactory.createClientOverview(board);
         primaryScene.setRoot(clientOverview.getValue());
         primaryStage.setTitle("Client Overview");
+        EventHandler<WindowEvent> memorized = primaryStage.getOnCloseRequest();
         primaryStage.setOnCloseRequest(event -> {
+            memorized.handle(event);
             if (clientOverview.getKey() != null)
                 clientOverview.getKey().closePolling();
         });
+        System.out.println("there");
         primaryStage.show();
     }
 
