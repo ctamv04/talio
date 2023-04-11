@@ -32,9 +32,7 @@ import models.Board;
 import models.Tag;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MainCtrl {
     private Stage primaryStage;
