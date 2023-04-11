@@ -8,7 +8,7 @@ Run any amount of Server instances on a local network, each supporting one Works
 
 Manage your daily, academic, or professional tasks efficiently by using TaskCards, which are highly customizable and provide support for Subtasks and Tags that allow for better management of your tasks. Organize your TaskCards in highly customizable TaskLists and Boards to maximize your working speed and efficiency.
 
-Alternatively, you mayy use any of the Clients in temporary Admin mode. This way, you can view and manage all Boards currently saved on a Server.
+Alternatively, you may use any of the Clients in temporary Admin mode. This way, you can view and manage all Boards currently saved on a Server.
 
 ## Group members
 
@@ -23,10 +23,10 @@ Alternatively, you mayy use any of the Clients in temporary Admin mode. This way
 
 ## How to run it
 
-* Clone the repo
-* Open the project on any compatible IDE, preferrably IntelliJ
+* Clone the repo with ```git clone```
+* Open the project on any compatible IDE, preferably IntelliJ.
 * Make sure all Gradle dependencies have been imported.
-* Build and Run the Server and any amount of Client instances
+* Build and Run the Server with ```./gradlew bootRun``` and any amount of Client instances with ```./gradlew client:run```
 * If you wish to run multiple Server instances, mame sure to choose an unpopulated port for the new Server instance to use first.
 * If you want to enter Admin mode, the Admin password will be located in the Console every time you start a Server instance.
 
@@ -35,7 +35,3 @@ Alternatively, you mayy use any of the Clients in temporary Admin mode. This way
 You may freely contribute to the project at any time. preferrably by tackling any of the issues in the Issues section, or by working on new features that extend the chrrent application. 
 
 Simply Pull the main branch, commit and push your changes whenever ready, and create a Merge Request. If enough members of the development team approve it after a Code Review, your MR will be merged to main.
-
-## Copyright / License (opt.)
-
--
