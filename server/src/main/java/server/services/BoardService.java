@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import server.repositories.BoardRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
@@ -33,5 +36,17 @@ public class BoardService {
             board.setFontColor(newBoard.getFontColor());
             return ResponseEntity.ok(boardRepository.save(board));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    public List<Board> convertTheBoards(List<Board> boardList){
+        List<Board> res=new ArrayList<>();
+        if(boardList==null)
+            return null;
+        for(var x: boardList){
+            Board board=new Board(x.getName());
+            board.setId(x.getId());
+            res.add(board);
+        }
+        return res;
     }
 }
