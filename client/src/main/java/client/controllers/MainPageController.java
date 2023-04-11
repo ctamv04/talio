@@ -1,16 +1,19 @@
 package client.controllers;
 
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import models.Board;
@@ -24,12 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
 
     private final String file_path;
+    private final BoardUtils boardUtils;
+    private final BoardController boardController;
 
     @FXML
     private Text invalid_text;
@@ -56,8 +63,9 @@ public class MainPageController implements Initializable {
     @FXML
     private Button admin_login_button;
     @FXML
-
     private AnchorPane overlay;
+    @FXML
+    private Text visited_text;
 
     /***
      * Constructor for LoginController
@@ -65,9 +73,11 @@ public class MainPageController implements Initializable {
      * @param mainCtrl the main controller
      */
     @Inject
-    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl, BoardUtils boardUtils, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
+        this.boardUtils = boardUtils;
+        this.boardController = boardController;
         this.file_path = "../client/src/main/java/client/sessions_info/" + serverUtils.getAddress().replace(':', '_') + ".txt";
     }
 
@@ -83,6 +93,8 @@ public class MainPageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initialiseScene();
+        startLongPolling();
         configure_state();
 
         overlay.setVisible(false);
@@ -104,6 +116,7 @@ public class MainPageController implements Initializable {
 
         if (mainCtrl.getIsAdmin()) {
             admin_login_button.setVisible(false);
+            visited_text.setText("All Boards");
         } else {
             admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
         }
@@ -282,12 +295,40 @@ public class MainPageController implements Initializable {
             } else {
                 List<Long> ids = new ArrayList<>();
                 for (String id : rawData) {
-                    ids.add(Long.valueOf(id));
+                    if (!id.equals("@")) {
+                        ids.add(Long.valueOf(id));
+                    }
                 }
                 mainCtrl.setBoards(serverUtils.getBoardsByIds(ids));
             }
         }
 
         reader.close();
+    }
+
+    public void initialiseScene() {
+        try{
+            setVisibleBoards();
+        }catch (WebApplicationException e){
+            closePolling();
+            mainCtrl.showLoginPage();
+        }
+    }
+    private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
+    private final ExecutorService idUpdatesExecutor= Executors.newSingleThreadExecutor();
+    /**
+     * Start long polling for board details and task list ids.
+     */
+    public void startLongPolling(){
+        boardUtils.registerAllBoardDetails(updatedBoards -> {
+            Platform.runLater(() -> {
+                System.out.println("Board details updated");
+                boards_view.setItems(FXCollections.observableArrayList(updatedBoards));
+            });
+        },detailUpdatesExecutor,this);
+    }
+
+    public void closePolling() {
+        boardUtils.closePolling(detailUpdatesExecutor);
     }
 }

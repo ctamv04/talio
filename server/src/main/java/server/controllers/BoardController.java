@@ -98,6 +98,7 @@ public class BoardController {
      */
     @PostMapping("")
     public ResponseEntity<Board> add(@RequestBody Board board) {
+        longPollingService.registerUpdate(allBoardsListener.get(1L), boardRepository.findAll());
         return ResponseEntity.ok(boardRepository.save(board));
     }
 
@@ -115,6 +116,7 @@ public class BoardController {
             return response;
 
         longPollingService.registerUpdate(detailsListeners.get(id), response.getBody());
+        longPollingService.registerUpdate(allBoardsListener.get(1L), boardRepository.findAll());
 
         return response;
     }
@@ -132,14 +134,22 @@ public class BoardController {
         boardRepository.deleteById(id);
 
         longPollingService.registerUpdate(detailsListeners.get(id), null);
+        longPollingService.registerUpdate(allBoardsListener.get(1L), boardRepository.findAll());
 
         return ResponseEntity.ok().build();
     }
 
     private final Map<Long, Map<Object, Consumer<Board>>> detailsListeners = new ConcurrentHashMap<>();
+    private final Map<Long, Map<Object, Consumer<List<Board>>>> allBoardsListener = new ConcurrentHashMap<>();
 
     @GetMapping("/{id}/details-updates")
     public DeferredResult<ResponseEntity<Board>> getDetailsUpdates(@PathVariable("id") Long id) {
         return longPollingService.getUpdates(id, detailsListeners);
     }
+
+    @GetMapping("/boards-updates")
+    public DeferredResult<ResponseEntity<List<Board>>> getAllDetailsUpdates() {
+        return longPollingService.getUpdates(1L, allBoardsListener);
+    }
+
 }
