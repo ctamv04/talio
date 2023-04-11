@@ -332,6 +332,27 @@ public class ServerUtils {
                 .get(Response.class);
     }
 
+    public Response getAllBoardsUpdates() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/boards-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
+
+    /**
+     * Register for the long polling for all boards updates
+     * @return The response of the long polling
+     */
+    public Response getAllBoardUpdates() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/boards/boards-updates") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(Response.class);
+    }
+
     /**
      * Register for the long polling for board's tasklists updates
      *

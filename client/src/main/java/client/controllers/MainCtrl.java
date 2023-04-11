@@ -66,6 +66,7 @@ public class MainCtrl {
 
     public void showMainPage() {
         var loginPage = viewFactory.createMainPage();
+        primaryStage.setOnCloseRequest(event->loginPage.getKey().closePolling());
         primaryScene.setRoot(loginPage.getValue());
         primaryStage.setTitle("Login Page");
         primaryStage.show();
@@ -174,7 +175,6 @@ public class MainCtrl {
             if (clientOverview.getKey() != null)
                 clientOverview.getKey().closePolling();
         });
-        System.out.println("there");
         primaryStage.show();
     }
 

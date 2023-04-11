@@ -1,16 +1,17 @@
 package client.controllers;
 
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.GenericType;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import models.Board;
@@ -20,16 +21,20 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+
 
 public class MainPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
 
     private final String file_path;
+    private final BoardUtils boardUtils;
+    private final BoardController boardController;
 
     @FXML
     private Text invalid_text;
@@ -56,18 +61,23 @@ public class MainPageController implements Initializable {
     @FXML
     private Button admin_login_button;
     @FXML
-
     private AnchorPane overlay;
+    @FXML
+    private Text visited_text;
 
     /***
      * Constructor for LoginController
      * @param serverUtils contains the server and related methods
      * @param mainCtrl the main controller
+     * @param boardUtils contains the board and related methods
+     * @param boardController the board controller
      */
     @Inject
-    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl, BoardUtils boardUtils, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
+        this.boardUtils = boardUtils;
+        this.boardController = boardController;
         this.file_path = "../client/src/main/java/client/sessions_info/" + serverUtils.getAddress().replace(':', '_') + ".txt";
     }
 
@@ -84,13 +94,13 @@ public class MainPageController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configure_state();
+        setVisibleBoards();
+        startLongPolling(updatedBoards-> Platform.runLater(()-> updateBoards(updatedBoards)));
 
         overlay.setVisible(false);
         buttonBox.setOpacity(0L);
 
         invalid_text.setVisible(false);
-
-        setVisibleBoards();
 
         boards_view.setOnMouseClicked(this::boardClicked);
 
@@ -104,6 +114,7 @@ public class MainPageController implements Initializable {
 
         if (mainCtrl.getIsAdmin()) {
             admin_login_button.setVisible(false);
+            visited_text.setText("All Boards");
         } else {
             admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
         }
@@ -117,6 +128,7 @@ public class MainPageController implements Initializable {
             mainCtrl.setIsAdmin(false);
             mainCtrl.getBoards().clear();
             serverUtils.setServer("http://localhost:8080/");
+            closePolling();
             mainCtrl.showLoginPage();
         });
 
@@ -154,11 +166,7 @@ public class MainPageController implements Initializable {
      * user can see boards it created or accessed before.
      */
     private void setVisibleBoards() {
-        if (mainCtrl.getIsAdmin()) {
-            boards_view.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
-        } else {
-            boards_view.setItems(FXCollections.observableArrayList(mainCtrl.getBoards()));
-        }
+        updateBoards(serverUtils.getBoards());
 
         boards_view.setCellFactory(new Callback<>() {
             @Override
@@ -177,6 +185,31 @@ public class MainPageController implements Initializable {
                 };
             }
         });
+    }
+
+    /**
+     * Saves the state of the current session
+     * @param updatedBoards the list of boards
+     */
+    public void updateBoards(List<Board> updatedBoards){
+        if(mainCtrl.getIsAdmin()){
+            Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(updatedBoards)));
+        }
+        else{
+            Map<Long,Board> map=new ConcurrentHashMap<>();
+            for(var board: updatedBoards)
+                map.put(board.getId(),board);
+            List<Board> actualLists=new ArrayList<>();
+            List<Board> userBoards=mainCtrl.getBoards();
+            for(var board: userBoards){
+                if(!(map.get(board.getId())==null)){
+                    board.setName(map.get(board.getId()).getName());
+                    actualLists.add(board);
+                }
+            }
+            mainCtrl.setBoards(actualLists);
+            Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(actualLists)));
+        }
     }
 
     private void joinBoard(Long id) {
@@ -235,6 +268,7 @@ public class MainPageController implements Initializable {
         try {
             Long id = Long.parseLong(code_input.getText());
             Board board = serverUtils.getBoard(id);
+            closePolling();
             mainCtrl.addBoard(board);
             mainCtrl.showClientOverview(board);
         } catch (NumberFormatException | WebApplicationException e) {
@@ -282,5 +316,29 @@ public class MainPageController implements Initializable {
             writer.write(result);
             writer.close();
         }
+    }
+
+    private final ExecutorService allBoardsUpdates= Executors.newSingleThreadExecutor();
+
+    /**
+     * Start long polling for board details and task list ids.
+     * @param consumer the consumer that will be called when a response is received
+     */
+    public void startLongPolling(Consumer<List<Board>> consumer){
+        allBoardsUpdates.submit(()->{
+            while(!allBoardsUpdates.isShutdown()){
+                var response=serverUtils.getAllBoardsUpdates();
+                if(response.getStatus()==204)
+                    continue;
+                if(response.getStatus()==400){
+                    closePolling();
+                }
+                consumer.accept(response.readEntity(new GenericType<>(){}));
+            }
+        });
+    }
+
+    public void closePolling() {
+        allBoardsUpdates.shutdown();
     }
 }

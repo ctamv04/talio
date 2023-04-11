@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import models.Board;
 
@@ -82,8 +81,6 @@ public class ClientOverviewController implements Initializable {
 
     public void setBoardTitle(){
         boardTitle.setText("Talio | "+boardController.getBoard().getName()+" (#"+board.getId()+")");
-        Text text=new Text(boardTitle.getText());
-        System.out.println(text.getLayoutBounds().getWidth()+boardTitle.getPadding().getLeft()+boardTitle.getPadding().getRight());
         boardTitle.setStyle("-fx-text-fill: "+getColor(boardController.getBoard().getFontColor())+";");
     }
 
