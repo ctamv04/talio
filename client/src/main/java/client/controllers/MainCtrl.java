@@ -171,7 +171,6 @@ public class MainCtrl {
             if (clientOverview.getKey() != null)
                 clientOverview.getKey().closePolling();
         });
-        System.out.println("there");
         primaryStage.show();
     }
 

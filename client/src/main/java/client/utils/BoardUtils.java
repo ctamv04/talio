@@ -1,6 +1,5 @@
 package client.utils;
 
-import client.Main;
 import client.controllers.BoardController;
 import client.controllers.MainCtrl;
 import client.controllers.MainPageController;
@@ -106,15 +105,15 @@ public class BoardUtils {
                                        ExecutorService detailUpdatesExecutor, MainPageController mainPageController){
         detailUpdatesExecutor.submit(()->{
             while(!detailUpdatesExecutor.isShutdown()){
-                    var response = serverUtils.getAllBoardUpdates();
-                    if(response.getStatus()==204)
-                        continue;
-                    if(response.getStatus()==400){
-                        mainPageController.closePolling();
-                        return;
-                    }
-                    consumer.accept(Collections.singletonList(response.readEntity(Board.class)));
+                var response = serverUtils.getAllBoardUpdates();
+                if(response.getStatus()==204)
+                    continue;
+                if(response.getStatus()==400){
+                    mainPageController.closePolling();
+                    return;
                 }
+                consumer.accept(Collections.singletonList(response.readEntity(Board.class)));
+            }
         });
     }
 

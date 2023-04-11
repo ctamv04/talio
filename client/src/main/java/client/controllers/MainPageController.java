@@ -9,12 +9,9 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import models.Board;
@@ -71,6 +68,8 @@ public class MainPageController implements Initializable {
      * Constructor for LoginController
      * @param serverUtils contains the server and related methods
      * @param mainCtrl the main controller
+     * @param boardUtils contains the board and related methods
+     * @param boardController the board controller
      */
     @Inject
     public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl, BoardUtils boardUtils, BoardController boardController) {
@@ -187,6 +186,10 @@ public class MainPageController implements Initializable {
         });
     }
 
+    /**
+     * Saves the state of the current session
+     * @param updatedBoards the list of boards
+     */
     public void updateBoards(List<Board> updatedBoards){
         if(mainCtrl.getIsAdmin()){
             Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(updatedBoards)));
@@ -316,6 +319,7 @@ public class MainPageController implements Initializable {
 
     /**
      * Start long polling for board details and task list ids.
+     * @param consumer the consumer that will be called when a response is received
      */
     public void startLongPolling(Consumer<List<Board>> consumer){
         allBoardsUpdates.submit(()->{
