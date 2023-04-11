@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -195,17 +196,19 @@ public class MainPageController implements Initializable {
             Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(updatedBoards)));
         }
         else{
-            Map<Long,Board> map=new HashMap<>();
+            Map<Long,Board> map=new ConcurrentHashMap<>();
             for(var board: updatedBoards)
                 map.put(board.getId(),board);
+            List<Board> actualLists=new ArrayList<>();
             List<Board> userBoards=mainCtrl.getBoards();
             for(var board: userBoards){
-                if(map.get(board.getId())==null)
-                    userBoards.remove(board);
-                else
+                if(!(map.get(board.getId())==null)){
                     board.setName(map.get(board.getId()).getName());
+                    actualLists.add(board);
+                }
             }
-            Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(userBoards)));
+            mainCtrl.setBoards(actualLists);
+            Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(actualLists)));
         }
     }
 
