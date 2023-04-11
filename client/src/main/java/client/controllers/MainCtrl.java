@@ -160,6 +160,10 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * Shows the admin login page.
+     * @param board The board to be deleted.
+     */
     public void showClientOverview(Board board) {
         var clientOverview = viewFactory.createClientOverview(board);
         primaryScene.setRoot(clientOverview.getValue());
