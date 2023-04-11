@@ -8,7 +8,7 @@ Run any amount of Server instances on a local network, each supporting one Works
 
 Manage your daily, academic, or professional tasks efficiently by using TaskCards, which are highly customizable and provide support for Subtasks and Tags that allow for better management of your tasks. Organize your TaskCards in highly customizable TaskLists and Boards to maximize your working speed and efficiency.
 
-Alternatively, you kay use any of the Clients in temporary Admin mode. This way, you can view and manage all Boards currently saved on a Server.
+Alternatively, you mayy use any of the Clients in temporary Admin mode. This way, you can view and manage all Boards currently saved on a Server.
 
 ## Group members
 
