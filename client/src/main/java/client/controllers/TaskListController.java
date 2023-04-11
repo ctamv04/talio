@@ -237,6 +237,9 @@ public class TaskListController implements Initializable {
         Dragboard dragboard = taskCards.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
 
+        if (taskCards.getSelectionModel().getSelectedItem() == null) {
+            return;
+        }
         content.putString(taskCards.getSelectionModel().getSelectedItem().toString() + " " + taskListId);
 
         WritableImage snapshot = boardController.getTaskCardCache().get(taskCards.getSelectionModel().getSelectedItem()).

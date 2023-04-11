@@ -315,15 +315,13 @@ public class MainPageController implements Initializable {
         }
     }
     private final ExecutorService detailUpdatesExecutor= Executors.newSingleThreadExecutor();
-    private final ExecutorService idUpdatesExecutor= Executors.newSingleThreadExecutor();
     /**
      * Start long polling for board details and task list ids.
      */
     public void startLongPolling(){
         boardUtils.registerAllBoardDetails(updatedBoards -> {
             Platform.runLater(() -> {
-                System.out.println("Board details updated");
-                boards_view.setItems(FXCollections.observableArrayList(updatedBoards));
+                setVisibleBoards();
             });
         },detailUpdatesExecutor,this);
     }

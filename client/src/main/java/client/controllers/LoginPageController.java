@@ -40,8 +40,6 @@ public class LoginPageController implements Initializable {
         fail_message.setVisible(false);
         done_button.setOnMouseClicked(event -> validate());
         test_button.setOnMouseClicked(event -> healthCheck());
-        System.out.println(url_input.getLayoutX() + " " + url_input.getLayoutY());
-        System.out.println(url_label.getLayoutX() + " " + url_label.getLayoutY());
     }
 
     public String getServer() {

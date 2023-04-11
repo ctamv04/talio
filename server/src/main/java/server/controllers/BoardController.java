@@ -98,7 +98,7 @@ public class BoardController {
      */
     @PostMapping("")
     public ResponseEntity<Board> add(@RequestBody Board board) {
-        longPollingService.registerUpdate(allBoardsListener.get(1L), boardRepository.findAll());
+        longPollingService.registerUpdate(allBoardsListener.get(1L), boardService.convertTheBoards(boardRepository.findAll()));
         return ResponseEntity.ok(boardRepository.save(board));
     }
 
@@ -115,8 +115,8 @@ public class BoardController {
         if (response.getStatusCodeValue() != 200)
             return response;
 
+        longPollingService.registerUpdate(allBoardsListener.get(1L), boardService.convertTheBoards(boardRepository.findAll()));
         longPollingService.registerUpdate(detailsListeners.get(id), response.getBody());
-        longPollingService.registerUpdate(allBoardsListener.get(1L), boardRepository.findAll());
 
         return response;
     }
@@ -133,8 +133,8 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         boardRepository.deleteById(id);
 
+        longPollingService.registerUpdate(allBoardsListener.get(1L), boardService.convertTheBoards(boardRepository.findAll()));
         longPollingService.registerUpdate(detailsListeners.get(id), null);
-        longPollingService.registerUpdate(allBoardsListener.get(1L), boardRepository.findAll());
 
         return ResponseEntity.ok().build();
     }

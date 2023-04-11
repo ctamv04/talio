@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import server.repositories.BoardRepository;
 
+import java.util.List;
+
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
@@ -33,5 +35,15 @@ public class BoardService {
             board.setFontColor(newBoard.getFontColor());
             return ResponseEntity.ok(boardRepository.save(board));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    public List<Board> convertTheBoards(List<Board> boardList) {
+        if (boardList == null)
+            return null;
+        for (var x: boardList) {
+            x.setTags(null);
+            x.setTaskLists(null);
+        }
+        return boardList;
     }
 }
