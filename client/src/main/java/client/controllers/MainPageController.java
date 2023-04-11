@@ -3,14 +3,17 @@ package client.controllers;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.GenericType;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import models.Board;
@@ -20,10 +23,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class MainPageController implements Initializable {
     private final ServerUtils serverUtils;
@@ -84,13 +87,13 @@ public class MainPageController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configure_state();
+        setVisibleBoards();
+        startLongPolling(updatedBoards-> Platform.runLater(()-> updateBoards(updatedBoards)));
 
         overlay.setVisible(false);
         buttonBox.setOpacity(0L);
 
         invalid_text.setVisible(false);
-
-        setVisibleBoards();
 
         boards_view.setOnMouseClicked(this::boardClicked);
 
@@ -117,6 +120,7 @@ public class MainPageController implements Initializable {
             mainCtrl.setIsAdmin(false);
             mainCtrl.getBoards().clear();
             serverUtils.setServer("http://localhost:8080/");
+            closePolling();
             mainCtrl.showLoginPage();
         });
 
@@ -154,11 +158,7 @@ public class MainPageController implements Initializable {
      * user can see boards it created or accessed before.
      */
     private void setVisibleBoards() {
-        if (mainCtrl.getIsAdmin()) {
-            boards_view.setItems(FXCollections.observableArrayList(serverUtils.getBoards()));
-        } else {
-            boards_view.setItems(FXCollections.observableArrayList(mainCtrl.getBoards()));
-        }
+        updateBoards(serverUtils.getBoards());
 
         boards_view.setCellFactory(new Callback<>() {
             @Override
@@ -177,6 +177,25 @@ public class MainPageController implements Initializable {
                 };
             }
         });
+    }
+
+    public void updateBoards(List<Board> updatedBoards){
+        if(mainCtrl.getIsAdmin()){
+            Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(updatedBoards)));
+        }
+        else{
+            Map<Long,Board> map=new HashMap<>();
+            for(var board: updatedBoards)
+                map.put(board.getId(),board);
+            List<Board> userBoards=mainCtrl.getBoards();
+            for(var board: userBoards){
+                if(map.get(board.getId())==null)
+                    userBoards.remove(board);
+                else
+                    board.setName(map.get(board.getId()).getName());
+            }
+            Platform.runLater(()->boards_view.setItems(FXCollections.observableArrayList(userBoards)));
+        }
     }
 
     private void joinBoard(Long id) {
@@ -235,6 +254,7 @@ public class MainPageController implements Initializable {
         try {
             Long id = Long.parseLong(code_input.getText());
             Board board = serverUtils.getBoard(id);
+            closePolling();
             mainCtrl.addBoard(board);
             mainCtrl.showClientOverview(board);
         } catch (NumberFormatException | WebApplicationException e) {
@@ -283,4 +303,28 @@ public class MainPageController implements Initializable {
             writer.close();
         }
     }
+
+    private final ExecutorService allBoardsUpdates= Executors.newSingleThreadExecutor();
+
+    /**
+     * Start long polling for board details and task list ids.
+     */
+    public void startLongPolling(Consumer<List<Board>> consumer){
+        allBoardsUpdates.submit(()->{
+            while(!allBoardsUpdates.isShutdown()){
+                var response=serverUtils.getAllBoardsUpdates();
+                if(response.getStatus()==204)
+                    continue;
+                if(response.getStatus()==400){
+                    closePolling();
+                }
+                consumer.accept(response.readEntity(new GenericType<>(){}));
+            }
+        });
+    }
+
+    public void closePolling() {
+        allBoardsUpdates.shutdown();
+    }
+
 }
