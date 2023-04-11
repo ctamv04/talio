@@ -1,10 +1,14 @@
-# Starting template
-
-This README will need to contain a description of your project, how to run it, how to set up the development environment, and who worked on it.
-This information can be added throughout the course, except for the names of the group members.
-Add your own name (do not add the names for others!) to the section below.
-
 ## Description of project
+
+Welcome to Group 27's Talio application, developed as part of the CSE1105 Course at TU Delft.
+
+Talio is an advanced task management application built with Java, REST and JavaFX.
+
+Run any amount of Server instances on a local network, each supporting one Workspace and connection for an arbitrary amount of different Clients. 
+
+Manage your daily, academic, or professional tasks efficiently by using TaskCards, which are highly customizable and provide support for Subtasks and Tags that allow for better management of your tasks. Organize your TaskCards in highly customizable TaskLists and Boards to maximize your working speed and efficiency.
+
+Alternatively, you kay use any of the Clients in temporary Admin mode. This way, you can view and manage all Boards currently saved on a Server.
 
 ## Group members
 
@@ -17,15 +21,21 @@ Add your own name (do not add the names for others!) to the section below.
 | <img src="https://secure.gravatar.com/avatar/97736bc46764412ba5bd097a08968233?s=800&d=identicon" width="100" height="100"> | Ksenia Sycheva      | K.Sycheva@student.tudelft.nl      |
 | <img src="https://secure.gravatar.com/avatar/0512d1ce7a232f4e148e8ed9b6f0e11f?s=800&d=identicon" width="100" height="100"> | Yasir al-Hasnawy    | y.al-hasnawy@student.tudelft.nl   |
 
-
-<!-- Instructions (remove once assignment has been completed -->
-<!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
-<!-- - Mention your *student* email address -->
-<!-- - Preferably add a recognizable photo, otherwise add your GitLab photo -->
-<!-- - (please make sure the photos have the same size) -->
-
 ## How to run it
+
+* Clone the repo
+* Open the project on any compatible IDE, preferrably IntelliJ
+* Make sure all Gradle dependencies have been imported.
+* Build and Run the Server and any amount of Client instances
+* If you wish to run multiple Server instances, mame sure to choose an unpopulated port for the new Server instance to use first.
+* If you want to enter Admin mode, the Admin password will be located in the Console every time you start a Server instance.
 
 ## How to contribute to it
 
+You may freely contribute to the project at any time. preferrably by tackling any of the issues in the Issues section, or by working on new features that extend the chrrent application. 
+
+Simply Pull the main branch, commit and push your changes whenever ready, and create a Merge Request. If enough members of the development team approve it after a Code Review, your MR will be merged to main.
+
 ## Copyright / License (opt.)
+
+-
