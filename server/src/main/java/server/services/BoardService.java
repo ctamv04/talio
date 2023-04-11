@@ -37,7 +37,6 @@ public class BoardService {
             return ResponseEntity.ok(boardRepository.save(board));
         }).orElseGet(() -> ResponseEntity.badRequest().build());
     }
-
     public List<Board> convertTheBoards(List<Board> boardList){
         List<Board> res=new ArrayList<>();
         if(boardList==null)

@@ -104,6 +104,13 @@ public class MyFXML {
                     return new BoardController(injector.getInstance(ServerUtils.class),
                             injector.getInstance(MainCtrl.class), (Board) params[0],
                             injector.getInstance(BoardUtils.class));
+
+                case "MainPageController":
+                    return new MainPageController(injector.getInstance(ServerUtils.class),
+                            injector.getInstance(MainCtrl.class),
+                            injector.getInstance(BoardUtils.class),
+                            injector.getInstance(BoardController.class));
+
                 case "ClientOverviewController":
                     return new ClientOverviewController(injector.getInstance(ServerUtils.class),
                             injector.getInstance(MainCtrl.class), (Board) params[0]);

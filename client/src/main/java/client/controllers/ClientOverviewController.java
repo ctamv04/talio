@@ -83,7 +83,6 @@ public class ClientOverviewController implements Initializable {
     public void setBoardTitle(){
         boardTitle.setText("Talio | "+boardController.getBoard().getName()+" (#"+board.getId()+")");
         Text text=new Text(boardTitle.getText());
-        System.out.println(text.getLayoutBounds().getWidth()+boardTitle.getPadding().getLeft()+boardTitle.getPadding().getRight());
         boardTitle.setStyle("-fx-text-fill: "+getColor(boardController.getBoard().getFontColor())+";");
     }
 

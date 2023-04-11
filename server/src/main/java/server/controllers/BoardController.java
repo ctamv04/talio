@@ -131,8 +131,8 @@ public class BoardController {
         if (response.getStatusCodeValue() != 200)
             return response;
 
-        longPollingService.registerUpdate(detailsListeners.get(id), response.getBody());
         longPollingService.registerUpdate(allBoardsListeners.get(1L), boardService.convertTheBoards(boardRepository.findAll()));
+        longPollingService.registerUpdate(detailsListeners.get(id), response.getBody());
 
         return response;
     }
@@ -149,8 +149,8 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         boardRepository.deleteById(id);
 
-        longPollingService.registerUpdate(detailsListeners.get(id), null);
         longPollingService.registerUpdate(allBoardsListeners.get(1L), boardService.convertTheBoards(boardRepository.findAll()));
+        longPollingService.registerUpdate(detailsListeners.get(id), null);
 
         return ResponseEntity.ok().build();
     }
@@ -164,7 +164,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards-updates")
-    public DeferredResult<ResponseEntity<List<Board>>> getAllBoardsUpdates() {
+    public DeferredResult<ResponseEntity<List<Board>>> getAllDetailsUpdates() {
         return longPollingService.getUpdates(1L, allBoardsListeners);
     }
+
 }

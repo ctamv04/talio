@@ -61,7 +61,7 @@
             </VBox>
             <VBox prefHeight="157.0" prefWidth="338.0" spacing="5.0" styleClass="visited_boards_vbox" stylesheets="@../styles/loginPage.css">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Visited Boards" />
+                  <Text fx:id="visited_text" strokeType="OUTSIDE" strokeWidth="0.0" text="Visited Boards" />
                   <HBox prefHeight="117.0" prefWidth="321.0" spacing="10.0">
                      <children>
                         <ListView fx:id="boards_view" prefHeight="117.0" prefWidth="205.0" />

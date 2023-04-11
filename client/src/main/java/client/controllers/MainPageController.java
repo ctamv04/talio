@@ -1,5 +1,6 @@
 package client.controllers;
 
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -28,11 +29,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+
 public class MainPageController implements Initializable {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
 
     private final String file_path;
+    private final BoardUtils boardUtils;
+    private final BoardController boardController;
 
     @FXML
     private Text invalid_text;
@@ -59,8 +63,9 @@ public class MainPageController implements Initializable {
     @FXML
     private Button admin_login_button;
     @FXML
-
     private AnchorPane overlay;
+    @FXML
+    private Text visited_text;
 
     /***
      * Constructor for LoginController
@@ -68,9 +73,11 @@ public class MainPageController implements Initializable {
      * @param mainCtrl the main controller
      */
     @Inject
-    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl) {
+    public MainPageController(ServerUtils serverUtils, MainCtrl mainCtrl, BoardUtils boardUtils, BoardController boardController) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
+        this.boardUtils = boardUtils;
+        this.boardController = boardController;
         this.file_path = "../client/src/main/java/client/sessions_info/" + serverUtils.getAddress().replace(':', '_') + ".txt";
     }
 
@@ -107,6 +114,7 @@ public class MainPageController implements Initializable {
 
         if (mainCtrl.getIsAdmin()) {
             admin_login_button.setVisible(false);
+            visited_text.setText("All Boards");
         } else {
             admin_login_button.setOnAction(event -> mainCtrl.showAdminLogin());
         }
@@ -326,5 +334,4 @@ public class MainPageController implements Initializable {
     public void closePolling() {
         allBoardsUpdates.shutdown();
     }
-
 }
