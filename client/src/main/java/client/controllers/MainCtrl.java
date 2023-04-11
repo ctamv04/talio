@@ -67,8 +67,12 @@ public class MainCtrl {
 
     public void showMainPage() {
         var loginPage = viewFactory.createMainPage();
-        recentMainPageController=loginPage.getKey();
-        primaryStage.setOnCloseRequest(event->loginPage.getKey().closePolling());
+        recentMainPageController = loginPage.getKey();
+        EventHandler<WindowEvent> memorized = primaryStage.getOnCloseRequest();
+        primaryStage.setOnCloseRequest(event -> {
+            memorized.handle(event);
+            loginPage.getKey().closePolling();
+        });
         primaryScene.setRoot(loginPage.getValue());
         primaryStage.setTitle("Login Page");
         primaryStage.show();
@@ -165,6 +169,7 @@ public class MainCtrl {
 
     /**
      * Shows the admin login page.
+     *
      * @param board The board to be deleted.
      */
     public void showClientOverview(Board board) {
@@ -172,7 +177,7 @@ public class MainCtrl {
         primaryScene.setRoot(clientOverview.getValue());
         primaryStage.setTitle("Client Overview");
         EventHandler<WindowEvent> memorized = primaryStage.getOnCloseRequest();
-        if(recentMainPageController!=null)
+        if (recentMainPageController != null)
             recentMainPageController.closePolling();
         primaryStage.setOnCloseRequest(event -> {
             memorized.handle(event);
