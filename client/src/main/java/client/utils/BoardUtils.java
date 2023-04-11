@@ -2,7 +2,6 @@ package client.utils;
 
 import client.controllers.BoardController;
 import client.controllers.MainCtrl;
-import client.controllers.MainPageController;
 import client.controllers.TaskListController;
 import com.google.inject.Inject;
 import jakarta.ws.rs.core.GenericType;
@@ -11,7 +10,6 @@ import javafx.scene.Parent;
 import models.Board;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -91,28 +89,6 @@ public class BoardUtils {
                     continue;
                 List<Long> ids=response.readEntity(new GenericType<>() {});
                 consumer.accept(ids);
-            }
-        });
-    }
-
-    /**
-     * Registers a consumer to be called when the board is updated
-     * @param consumer consumer to be called
-     * @param detailUpdatesExecutor executor service to be used
-     * @param mainPageController Main page controller
-     */
-    public void registerAllBoardDetails(Consumer<List<Board>> consumer,
-                                       ExecutorService detailUpdatesExecutor, MainPageController mainPageController){
-        detailUpdatesExecutor.submit(()->{
-            while(!detailUpdatesExecutor.isShutdown()){
-                var response = serverUtils.getAllBoardUpdates();
-                if(response.getStatus()==204)
-                    continue;
-                if(response.getStatus()==400){
-                    mainPageController.closePolling();
-                    return;
-                }
-                consumer.accept(Collections.singletonList(response.readEntity(Board.class)));
             }
         });
     }

@@ -51,6 +51,7 @@ public class MainCtrl {
 
     private boolean isAdmin;
     private List<Board> boards;
+    private MainPageController recentMainPageController;
 
     public void initialize(Stage primaryStage, ViewFactory viewFactory) {
         this.primaryStage = primaryStage;
@@ -66,6 +67,7 @@ public class MainCtrl {
 
     public void showMainPage() {
         var loginPage = viewFactory.createMainPage();
+        recentMainPageController=loginPage.getKey();
         primaryStage.setOnCloseRequest(event->loginPage.getKey().closePolling());
         primaryScene.setRoot(loginPage.getValue());
         primaryStage.setTitle("Login Page");
@@ -170,6 +172,8 @@ public class MainCtrl {
         primaryScene.setRoot(clientOverview.getValue());
         primaryStage.setTitle("Client Overview");
         EventHandler<WindowEvent> memorized = primaryStage.getOnCloseRequest();
+        if(recentMainPageController!=null)
+            recentMainPageController.closePolling();
         primaryStage.setOnCloseRequest(event -> {
             memorized.handle(event);
             if (clientOverview.getKey() != null)
