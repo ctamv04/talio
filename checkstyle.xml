@@ -6,7 +6,7 @@
 <module name="Checker">
     <module name="TreeWalker">
         <module name="UnusedImports">
-            <property name="severity" value="warning"/>
+             <property name="severity" value="warning"/>
         </module>
 
         <module name="MethodLength">
