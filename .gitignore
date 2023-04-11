@@ -41,3 +41,4 @@ out/
 .vscode/
 ### session info
 /client/src/main/java/client/sessions_info
+/server/Talio.trace.db
